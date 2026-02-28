@@ -8,7 +8,7 @@ test.describe("Folder & Deck CRUD", () => {
     await page.goto("/")
 
     // Create folder via FAB
-    await page.getByRole("button", { name: "+" }).click()
+    await page.getByRole("button", { name: "추가" }).click()
     await page.getByPlaceholder("단어장 이름").fill(TEST_FOLDER)
     await page.getByRole("button", { name: "만들기" }).click()
 
@@ -35,7 +35,7 @@ test.describe("Folder & Deck CRUD", () => {
       await expect(page).toHaveURL(/\/folder\//)
 
       // Create a deck via FAB
-      await page.getByRole("button", { name: "+" }).click()
+      await page.getByRole("button", { name: "추가" }).click()
       await page.getByPlaceholder("덱 이름").fill(TEST_DECK)
       await page.getByRole("button", { name: "만들기" }).click()
 

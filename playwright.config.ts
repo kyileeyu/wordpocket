@@ -1,4 +1,18 @@
 import { defineConfig, devices } from "@playwright/test"
+import { readFileSync } from "fs"
+
+// Load .env.test
+try {
+  const envFile = readFileSync(".env.test", "utf-8")
+  for (const line of envFile.split("\n")) {
+    const trimmed = line.trim()
+    if (!trimmed || trimmed.startsWith("#")) continue
+    const [key, ...rest] = trimmed.split("=")
+    process.env[key] = rest.join("=")
+  }
+} catch {
+  // .env.test is optional
+}
 
 export default defineConfig({
   testDir: "./e2e",
@@ -26,7 +40,9 @@ export default defineConfig({
     {
       name: "mobile",
       use: {
-        ...devices["iPhone 14"],
+        ...devices["Desktop Chrome"],
+        viewport: { width: 390, height: 844 },
+        isMobile: true,
         storageState: "e2e/.auth/user.json",
       },
       dependencies: ["setup"],
