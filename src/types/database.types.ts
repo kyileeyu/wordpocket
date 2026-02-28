@@ -34,6 +34,7 @@ export type Database = {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [];
       };
       folders: {
         Row: {
@@ -63,6 +64,7 @@ export type Database = {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [];
       };
       decks: {
         Row: {
@@ -98,6 +100,15 @@ export type Database = {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: "decks_folder_id_fkey";
+            columns: ["folder_id"];
+            isOneToOne: false;
+            referencedRelation: "folders";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       cards: {
         Row: {
@@ -133,6 +144,15 @@ export type Database = {
           created_at?: string;
           updated_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: "cards_deck_id_fkey";
+            columns: ["deck_id"];
+            isOneToOne: false;
+            referencedRelation: "decks";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       card_states: {
         Row: {
@@ -174,6 +194,15 @@ export type Database = {
           last_reviewed_at?: string | null;
           updated_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: "card_states_card_id_fkey";
+            columns: ["card_id"];
+            isOneToOne: false;
+            referencedRelation: "cards";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       review_logs: {
         Row: {
@@ -212,6 +241,15 @@ export type Database = {
           review_duration?: number | null;
           reviewed_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: "review_logs_card_id_fkey";
+            columns: ["card_id"];
+            isOneToOne: false;
+            referencedRelation: "cards";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       user_settings: {
         Row: {
@@ -247,7 +285,11 @@ export type Database = {
           leech_threshold?: number;
           updated_at?: string;
         };
+        Relationships: [];
       };
+    };
+    Views: {
+      [_ in never]: never;
     };
     Functions: {
       get_study_queue: {
@@ -312,6 +354,9 @@ export type Database = {
       };
     };
     Enums: {
+      [_ in never]: never;
+    };
+    CompositeTypes: {
       [_ in never]: never;
     };
   };
