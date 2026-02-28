@@ -1,19 +1,63 @@
-import { Link } from "react-router"
+import { useState } from "react"
+import { Link, useParams, useNavigate } from "react-router"
 import TopBar from "@/components/navigation/TopBar"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
+import { Skeleton } from "@/components/ui/skeleton"
 import { StatBox, SegmentedProgress } from "@/components/stats"
 import { CardListItem } from "@/components/cards"
 import FAB from "@/components/feedback/FAB"
+import EmptyState from "@/components/feedback/EmptyState"
+import InputDialog from "@/components/feedback/InputDialog"
+import ConfirmDialog from "@/components/feedback/ConfirmDialog"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal } from "lucide-react"
+import { useDeck, useDeckProgress, useUpdateDeck, useDeleteDeck } from "@/hooks/useDecks"
+import { useCardsByDeck } from "@/hooks/useCards"
+
+function mapStatus(status: string | undefined): "new" | "learning" | "mature" {
+  if (status === "review") return "mature"
+  if (status === "learning") return "learning"
+  return "new"
+}
 
 export default function DeckPage() {
+  const { id: deckId } = useParams<{ id: string }>()
+  const navigate = useNavigate()
+  const { data: deck } = useDeck(deckId!)
+  const { data: cards, isLoading: cardsLoading } = useCardsByDeck(deckId!)
+  const { data: deckProgress } = useDeckProgress()
+  const updateDeck = useUpdateDeck()
+  const deleteDeck = useDeleteDeck()
+
+  const [renameOpen, setRenameOpen] = useState(false)
+  const [deleteOpen, setDeleteOpen] = useState(false)
+
+  const progress = deckProgress?.find((d) => d.deck_id === deckId)
+  const newCount = progress?.new_count ?? 0
+  const learningCount = progress?.learning_count ?? 0
+  const reviewCount = progress?.review_count ?? 0
+  const totalCards = progress?.total_cards ?? 0
+  const dueToday = progress?.due_today ?? 0
+
+  const handleRename = (name: string) => {
+    updateDeck.mutate(
+      { id: deckId!, name },
+      { onSuccess: () => setRenameOpen(false) },
+    )
+  }
+
+  const handleDelete = () => {
+    deleteDeck.mutate(deckId!, {
+      onSuccess: () => navigate(-1),
+    })
+  }
+
   return (
     <>
       <TopBar
         left="back"
-        title="TOEIC 필수"
+        title={deck?.name ?? ""}
         right={
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -22,8 +66,8 @@ export default function DeckPage() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem>이름 편집</DropdownMenuItem>
-              <DropdownMenuItem className="text-brick">삭제</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setRenameOpen(true)}>이름 편집</DropdownMenuItem>
+              <DropdownMenuItem className="text-brick" onClick={() => setDeleteOpen(true)}>삭제</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         }
@@ -32,9 +76,9 @@ export default function DeckPage() {
       {/* Stat Boxes */}
       <div className="px-5 pt-2">
         <div className="flex gap-[6px] mb-2">
-          <StatBox value={42} label="New" color="#3A4A6B" />
-          <StatBox value={28} label="Learning" color="#6B5F4F" />
-          <StatBox value={50} label="Mature" color="#3A6B4A" />
+          <StatBox value={newCount} label="New" color="#3A4A6B" />
+          <StatBox value={learningCount} label="Learning" color="#6B5F4F" />
+          <StatBox value={reviewCount} label="Mature" color="#3A6B4A" />
         </div>
       </div>
 
@@ -42,35 +86,80 @@ export default function DeckPage() {
       <div className="px-5 mb-4">
         <SegmentedProgress
           segments={[
-            { value: 35, color: "#3A4A6B" },
-            { value: 23, color: "#6B5F4F" },
-            { value: 42, color: "#3A6B4A" },
+            { value: newCount, color: "#3A4A6B" },
+            { value: learningCount, color: "#6B5F4F" },
+            { value: reviewCount, color: "#3A6B4A" },
           ]}
         />
       </div>
 
       {/* CTA Buttons */}
       <div className="px-5 mb-4">
-        <Button asChild className="w-full mb-2">
-          <Link to="/study/toeic">▶ 학습 시작 · 8장</Link>
-        </Button>
+        {dueToday > 0 && (
+          <Button asChild className="w-full mb-2">
+            <Link to={`/study/${deckId}`}>▶ 학습 시작 · {dueToday}장</Link>
+          </Button>
+        )}
         <div className="flex gap-2">
           <Button asChild variant="secondary" size="sm" className="flex-1">
-            <Link to="/deck/toeic/import">📤 CSV 가져오기</Link>
+            <Link to={`/deck/${deckId}/import`}>📤 CSV 가져오기</Link>
           </Button>
-          <Button variant="secondary" size="sm" className="flex-1">🔍 검색</Button>
         </div>
       </div>
 
       {/* Card List */}
       <div className="px-5">
-        <Label>카드 120장</Label>
-        <CardListItem word="Ephemeral" meaning="덧없는, 순간적인" status="mature" />
-        <CardListItem word="Ubiquitous" meaning="어디에나 있는" status="learning" />
-        <CardListItem word="Pragmatic" meaning="실용적인" status="new" />
+        {cardsLoading ? (
+          <div className="space-y-2 mt-2">
+            <Skeleton className="h-14 rounded-[12px]" />
+            <Skeleton className="h-14 rounded-[12px]" />
+            <Skeleton className="h-14 rounded-[12px]" />
+          </div>
+        ) : cards && cards.length > 0 ? (
+          <>
+            <Label>카드 {totalCards}장</Label>
+            {cards.map((card) => {
+              const state = card.card_states?.[0]
+              return (
+                <Link key={card.id} to={`/deck/${deckId}/edit/${card.id}`}>
+                  <CardListItem
+                    word={card.word}
+                    meaning={card.meaning}
+                    status={mapStatus(state?.status)}
+                  />
+                </Link>
+              )
+            })}
+          </>
+        ) : (
+          <EmptyState
+            icon="🃏"
+            text="아직 카드가 없습니다. 첫 카드를 추가해보세요!"
+          />
+        )}
       </div>
 
-      <FAB to="/deck/toeic/add" />
+      <FAB to={`/deck/${deckId}/add`} />
+
+      <InputDialog
+        open={renameOpen}
+        onOpenChange={setRenameOpen}
+        title="덱 이름 편집"
+        placeholder="덱 이름"
+        defaultValue={deck?.name}
+        submitLabel="저장"
+        onSubmit={handleRename}
+        loading={updateDeck.isPending}
+      />
+
+      <ConfirmDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        title="덱 삭제"
+        description="이 덱과 포함된 모든 카드가 삭제됩니다. 되돌릴 수 없습니다."
+        onConfirm={handleDelete}
+        loading={deleteDeck.isPending}
+      />
     </>
   )
 }
