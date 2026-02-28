@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WordPocket — User Flow Map</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Instrument+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1A1715;
+    --parchment: #FDFCF9;
+    --canvas: #FAF9F6;
+    --sepia: #8A7E6D;
+    --dust: #D4CFC4;
+    --warm-white: #F7F5F0;
+    --moss: #3A6B4A;
+    --brick: #8B4A4A;
+    --oak: #6B5F4F;
+    --slate: #3A4A6B;
+    --border: #E8E3D9;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: 'Instrument Sans', 'Noto Sans KR', sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── COVER ─── */
+  .cover {
+    min-height: 50vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 48px;
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .cover-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--sepia);
+    margin-bottom: 24px;
+  }
+
+  .cover-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(40px, 6vw, 64px);
+    color: var(--ink);
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .cover-sub {
+    font-size: 16px;
+    color: var(--sepia);
+    max-width: 520px;
+    line-height: 1.7;
+  }
+
+  .cover-meta {
+    margin-top: 48px;
+    display: flex;
+    gap: 32px;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .meta-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--sepia);
+    opacity: 0.6;
+  }
+
+  .meta-value {
+    font-size: 13px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  /* ─── TOC ─── */
+  .toc {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 48px 60px;
+  }
+
+  .toc-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--sepia);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+  }
+
+  .toc-item {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 8px 0;
+    text-decoration: none;
+    color: var(--ink);
+    transition: color 0.15s;
+  }
+
+  .toc-item:hover { color: var(--moss); }
+
+  .toc-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--dust);
+    min-width: 24px;
+  }
+
+  .toc-text {
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  /* ─── FLOW SECTIONS ─── */
+  .flow-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 60px 48px;
+    border-top: 1px solid var(--border);
+  }
+
+  .flow-header {
+    margin-bottom: 40px;
+  }
+
+  .flow-number {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--sepia);
+    opacity: 0.5;
+    margin-bottom: 8px;
+  }
+
+  .flow-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+
+  .flow-desc {
+    font-size: 14px;
+    color: var(--sepia);
+    max-width: 600px;
+    line-height: 1.7;
+  }
+
+  /* ─── DIAGRAM CONTAINER ─── */
+  .diagram-wrap {
+    background: var(--parchment);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px 32px;
+    margin-bottom: 32px;
+    overflow-x: auto;
+  }
+
+  .diagram-wrap .mermaid {
+    display: flex;
+    justify-content: center;
+  }
+
+  /* Mermaid overrides for Ink & Paper aesthetic */
+  .diagram-wrap .mermaid svg {
+    max-width: 100%;
+  }
+
+  /* ─── ANNOTATION CARDS ─── */
+  .annotations {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .annotation {
+    background: var(--parchment);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .annotation-step {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--sepia);
+    opacity: 0.6;
+    margin-bottom: 6px;
+  }
+
+  .annotation-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+
+  .annotation-body {
+    font-size: 12px;
+    color: var(--sepia);
+    line-height: 1.6;
+  }
+
+  .annotation-tag {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .tag-screen { background: #EEE9DF; color: var(--oak); }
+  .tag-action { background: #E3EEE6; color: var(--moss); }
+  .tag-decision { background: #E3E8EE; color: var(--slate); }
+  .tag-system { background: #F5E6E6; color: var(--brick); }
+
+  /* ─── SCREEN MAP ─── */
+  .screen-map {
+    margin-top: 60px;
+    padding-top: 60px;
+    border-top: 1px solid var(--border);
+  }
+
+  .screen-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 13px;
+  }
+
+  .screen-table thead th {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--sepia);
+    text-align: left;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--dust);
+    font-weight: 400;
+  }
+
+  .screen-table tbody td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  .screen-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .screen-name {
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .screen-route {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--sepia);
+  }
+
+  .screen-components {
+    font-size: 12px;
+    color: var(--oak);
+    line-height: 1.6;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    .cover, .toc, .flow-section { padding-left: 24px; padding-right: 24px; }
+    .diagram-wrap { padding: 24px 16px; }
+    .annotations { grid-template-columns: 1fr; }
+    .cover-meta { flex-direction: column; gap: 16px; }
+    .flow-title { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ COVER ═══ -->
+<section class="cover">
+  <div class="cover-label">WordPocket · Phase 1 MVP</div>
+  <h1 class="cover-title">User Flow Map</h1>
+  <p class="cover-sub">
+    MVP 범위의 전체 사용자 경험을 7개 핵심 플로우로 정리한 문서. 각 플로우는 다이어그램 + 화면별 주석으로 구성됩니다.
+  </p>
+  <div class="cover-meta">
+    <div class="meta-item">
+      <span class="meta-label">Total Screens</span>
+      <span class="meta-value">14 Screens</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Core Flows</span>
+      <span class="meta-value">7 Flows</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Version</span>
+      <span class="meta-value">v1.0 — MVP</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TOC ═══ -->
+<nav class="toc">
+  <div class="toc-title">Flow Index</div>
+  <div class="toc-grid">
+    <a class="toc-item" href="#flow-1"><span class="toc-num">01</span><span class="toc-text">Onboarding & Auth</span></a>
+    <a class="toc-item" href="#flow-2"><span class="toc-num">02</span><span class="toc-text">Home Dashboard</span></a>
+    <a class="toc-item" href="#flow-3"><span class="toc-num">03</span><span class="toc-text">Folder & Deck 관리</span></a>
+    <a class="toc-item" href="#flow-4"><span class="toc-num">04</span><span class="toc-text">Card 관리</span></a>
+    <a class="toc-item" href="#flow-5"><span class="toc-num">05</span><span class="toc-text">Study Session (Core)</span></a>
+    <a class="toc-item" href="#flow-6"><span class="toc-num">06</span><span class="toc-text">Progress & Stats</span></a>
+    <a class="toc-item" href="#flow-7"><span class="toc-num">07</span><span class="toc-text">Settings & Profile</span></a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- FLOW 01: ONBOARDING & AUTH -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="flow-section" id="flow-1">
+  <div class="flow-header">
+    <div class="flow-number">Flow 01</div>
+    <h2 class="flow-title">Onboarding & Auth</h2>
+    <p class="flow-desc">최초 진입부터 홈 화면 도달까지. 기존 사용자의 재방문(로그인) 경로와 신규 사용자의 가입 경로를 포함합니다.</p>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="mermaid">
+flowchart TD
+    A["🌐 앱 진입<br/>(PWA / 브라우저)"] --> B{"로그인 상태?"}
+    B -- "토큰 유효" --> C["🏠 Home Dashboard"]
+    B -- "토큰 없음/만료" --> D["📋 Welcome Screen"]
+    D --> E["로그인"]
+    D --> F["회원가입"]
+    F --> G["이메일 + 비밀번호 입력"]
+    G --> H{"유효성 검증"}
+    H -- "실패" --> G
+    H -- "성공" --> I["이메일 인증 안내"]
+    I --> J["이메일 인증 완료"]
+    J --> C
+    E --> K["이메일 + 비밀번호 입력"]
+    K --> L{"인증 확인"}
+    L -- "실패" --> K
+    L -- "성공" --> C
+
+    style A fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style B fill:#E3E8EE,stroke:#3A4A6B,color:#3A4A6B
+    style C fill:#E3EEE6,stroke:#3A6B4A,color:#3A6B4A
+    style D fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style E fill:#EEE9DF,stroke:#8A7E6D,color:#1A1715
+    style F fill:#EEE9DF,stroke:#8A7E6D,color:#1A1715
+    style G fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style H fill:#E3E8EE,stroke:#3A4A6B,color:#3A4A6B
+    style I fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style J fill:#E3EEE6,stroke:#3A6B4A,color:#3A6B4A
+    style K fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style L fill:#E3E8EE,stroke:#3A4A6B,color:#3A4A6B
+    </div>
+  </div>
+
+  <div class="annotations">
+    <div class="annotation">
+      <div class="annotation-step">Step 01</div>
+      <div class="annotation-title">Welcome Screen</div>
+      <div class="annotation-body">앱 로고, 한 줄 소개 카피, 로그인/회원가입 두 개 CTA. 최초 진입 시에만 노출되며, 토큰이 유효하면 자동 스킵.</div>
+      <span class="annotation-tag tag-screen">Screen</span>
+    </div>
+    <div class="annotation">
+      <div class="annotation-step">Step 02</div>
+      <div class="annotation-title">JWT 자동 갱신</div>
+      <div class="annotation-body">Supabase Auth의 refresh token으로 세션 자동 연장. 만료 시에만 Welcome Screen으로 리다이렉트. 사용자는 로그인 상태를 인지하지 못할 정도로 매끄러워야 함.</div>
+      <span class="annotation-tag tag-system">System</span>
+    </div>
+    <div class="annotation">
+      <div class="annotation-step">Step 03</div>
+      <div class="annotation-title">이메일 인증</div>
+      <div class="annotation-body">회원가입 후 이메일 인증 필수. 인증 전에는 앱 접근 불가하되, "인증 메일 재전송" 버튼 제공. 인증 완료 시 자동으로 홈 이동.</div>
+      <span class="annotation-tag tag-action">Action</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- FLOW 02: HOME DASHBOARD -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="flow-section" id="flow-2">
+  <div class="flow-header">
+    <div class="flow-number">Flow 02</div>
+    <h2 class="flow-title">Home Dashboard</h2>
+    <p class="flow-desc">로그인 후 메인 화면. 오늘의 학습 현황을 한눈에 보여주고, 가장 빈번한 액션(학습 시작)으로 즉시 연결합니다.</p>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="mermaid">
+flowchart TD
+    A["🏠 Home Dashboard"] --> B["오늘의 요약 카드<br/>새 카드 · 복습 · 완료"]
+    A --> C["연속 학습일 Streak"]
+    A --> D["폴더/덱 리스트<br/>(복습 대기 수 뱃지)"]
+
+    B --> E["▶ 학습 시작 CTA"]
+    E --> F{"복습 카드 존재?"}
+    F -- "있음" --> G["📖 Study Session"]
+    F -- "없음" --> H["🎉 Empty State<br/>'오늘의 복습 완료!'"]
+    
+    D --> I["폴더 선택"]
+    I --> J["덱 목록"]
+    J --> K["덱 선택"]
+    K --> L{"액션 선택"}
+    L --> M["📖 이 덱 학습하기"]
+    L --> N["📝 카드 관리"]
+
+    A --> O["⚙️ Settings"]
+    A --> P["📊 Stats"]
+
+    style A fill:#EEE9DF,stroke:#8A7E6D,color:#1A1715
+    style B fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style C fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style D fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style E fill:#E3EEE6,stroke:#3A6B4A,color:#3A6B4A
+    style F fill:#E3E8EE,stroke:#3A4A6B,color:#3A4A6B
+    style G fill:#E3EEE6,stroke:#3A6B4A,color:#3A6B4A
+    style H fill:#FAF9F6,stroke:#D4CFC4,color:#8A7E6D
+    style I fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style J fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style K fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style L fill:#E3E8EE,stroke:#3A4A6B,color:#3A4A6B
+    style M fill:#E3EEE6,stroke:#3A6B4A,color:#3A6B4A
+    style N fill:#EEE9DF,stroke:#8A7E6D,color:#1A1715
+    style O fill:#FAF9F6,stroke:#D4CFC4,color:#8A7E6D
+    style P fill:#FAF9F6,stroke:#D4CFC4,color:#8A7E6D
+    </div>
+  </div>
+
+  <div class="annotations">
+    <div class="annotation">
+      <div class="annotation-step">UX 원칙</div>
+      <div class="annotation-title">1-Tap to Study</div>
+      <div class="annotation-body">홈에서 학습 시작까지 최대 1탭. "오늘의 요약 카드" 자체가 탭 가능한 CTA 역할. 복습할 카드가 있으면 카드 수와 예상 시간을 표시하여 학습 동기 유발.</div>
+      <span class="annotation-tag tag-action">UX Principle</span>
+    </div>
+    <div class="annotation">
+      <div class="annotation-step">구조</div>
+      <div class="annotation-title">화면 구성 위계</div>
+      <div class="annotation-body">① 오늘의 학습 CTA (최상단, 가장 큰 면적) → ② 스트릭 뱃지 → ③ 폴더/덱 리스트 → ④ 하단 내비게이션(Home, Stats, Settings). 시선 흐름: 위→아래, 액션→정보 순.</div>
+      <span class="annotation-tag tag-screen">Layout</span>
+    </div>
+    <div class="annotation">
+      <div class="annotation-step">엣지 케이스</div>
+      <div class="annotation-title">Empty States</div>
+      <div class="annotation-body">덱 0개: "첫 단어장 만들기" CTA. 오늘 복습 완료: 축하 메시지 + 내일 복습 예정 수. 새 카드 없음: "카드 추가하기" CTA로 유도.</div>
+      <span class="annotation-tag tag-decision">Edge Case</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- FLOW 03: FOLDER & DECK -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="flow-section" id="flow-3">
+  <div class="flow-header">
+    <div class="flow-number">Flow 03</div>
+    <h2 class="flow-title">Folder & Deck 관리</h2>
+    <p class="flow-desc">단어장의 계층 구조를 관리하는 플로우. 폴더(언어별 그룹) → 덱(개별 단어장)의 1-depth 구조.</p>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="mermaid">
+flowchart TD
+    A["📂 폴더 리스트"] --> B["+ 새 폴더 만들기"]
+    B --> C["폴더 이름 · 설명 입력"]
+    C --> D["폴더 생성 완료"]
+    D --> A
+
+    A --> E["폴더 선택<br/>(예: 영어)"]
+    E --> F["📚 덱 리스트"]
+    
+    F --> G["+ 새 덱 만들기"]
+    G --> H["덱 이름 · 설명 · 색상"]
+    H --> I["덱 생성 완료"]
+    I --> F
+
+    F --> J["덱 선택<br/>(예: TOEIC 필수)"]
+    J --> K["덱 상세"]
+
+    K --> L["▶ 학습 시작"]
+    K --> M["📝 카드 목록"]
+    K --> N["📤 CSV 가져오기"]
+    K --> O["✏️ 덱 편집"]
+    K --> Q["🗑 덱 삭제"]
+
+    E --> R["✏️ 폴더 편집"]
+    E --> S["🗑 폴더 삭제"]
+    S --> T{"하위 덱 존재?"}
+    T -- "있음" --> U["⚠️ 경고 확인<br/>'모든 덱과 카드가<br/>삭제됩니다'"]
+    T -- "없음" --> V["즉시 삭제"]
+
+    style A fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style B fill:#E3EEE6,stroke:#3A6B4A,color:#3A6B4A
+    style C fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style D fill:#E3EEE6,stroke:#3A6B4A,color:#3A6B4A
+    style E fill:#EEE9DF,stroke:#8A7E6D,color:#1A1715
+    style F fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style G fill:#E3EEE6,stroke:#3A6B4A,color:#3A6B4A
+    style H fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style I fill:#E3EEE6,stroke:#3A6B4A,color:#3A6B4A
+    style J fill:#EEE9DF,stroke:#8A7E6D,color:#1A1715
+    style K fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style L fill:#E3EEE6,stroke:#3A6B4A,color:#3A6B4A
+    style M fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style N fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style O fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style Q fill:#F5E6E6,stroke:#8B4A4A,color:#8B4A4A
+    style R fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style S fill:#F5E6E6,stroke:#8B4A4A,color:#8B4A4A
+    style T fill:#E3E8EE,stroke:#3A4A6B,color:#3A4A6B
+    style U fill:#F5E6E6,stroke:#8B4A4A,color:#8B4A4A
+    style V fill:#F5E6E6,stroke:#8B4A4A,color:#8B4A4A
+    </div>
+  </div>
+
+  <div class="annotations">
+    <div class="annotation">
+      <div class="annotation-step">정보구조</div>
+      <div class="annotation-title">1-Depth 계층 제한</div>
+      <div class="annotation-body">폴더 안에 폴더를 중첩할 수 없다. Folder → Deck만 허용. Anki의 복잡한 서브덱 구조를 의도적으로 단순화하여 인지 부하를 낮춤.</div>
+      <span class="annotation-tag tag-decision">IA Decision</span>
+    </div>
+    <div class="annotation">
+      <div class="annotation-step">인터랙션</div>
+      <div class="annotation-title">폴더 전체 학습</div>
+      <div class="annotation-body">폴더 선택 시 하위 모든 덱의 복습 카드를 합산하여 학습 가능. 폴더 레벨에서도 "▶ 학습 시작" CTA를 제공하여 덱 선택 없이 바로 학습 진입.</div>
+      <span class="annotation-tag tag-action">Interaction</span>
+    </div>
+    <div class="annotation">
+      <div class="annotation-step">파괴적 액션</div>
+      <div class="annotation-title">삭제 시 안전장치</div>
+      <div class="annotation-body">하위 데이터가 있는 삭제는 반드시 2단계 확인. 경고 모달에 삭제될 덱/카드 수를 명시. 삭제 버튼은 brick 컬러, 3초 딜레이 또는 텍스트 입력 확인.</div>
+      <span class="annotation-tag tag-system">Safety</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- FLOW 04: CARD MANAGEMENT -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="flow-section" id="flow-4">
+  <div class="flow-header">
+    <div class="flow-number">Flow 04</div>
+    <h2 class="flow-title">Card 관리</h2>
+    <p class="flow-desc">단어 카드의 생성, 편집, 삭제, 일괄 가져오기. 개별 카드 단위의 CRUD와 CSV 임포트 플로우.</p>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="mermaid">
+flowchart TD
+    A["📝 카드 목록<br/>(덱 상세 내)"] --> B["🔍 카드 검색"]
+    A --> C["+ 카드 추가"]
+    A --> D["카드 선택"]
+
+    C --> E["카드 입력 폼"]
+    E --> |"필수"| F["단어 (앞면)"]
+    E --> |"필수"| G["뜻 (뒷면)"]
+    E --> |"선택"| H["예문"]
+    E --> |"선택"| I["발음"]
+    E --> |"선택"| J["태그"]
+    E --> K{"저장"}
+    K -- "성공" --> L["카드 추가 완료<br/>→ 계속 추가 모드"]
+    K -- "입력 누락" --> E
+
+    D --> M["카드 상세 보기"]
+    M --> N["✏️ 편집"]
+    M --> O["🗑 삭제"]
+    N --> E
+
+    A --> P["📤 CSV 가져오기"]
+    P --> Q["파일 선택/드래그"]
+    Q --> R["미리보기<br/>(컬럼 매핑 확인)"]
+    R --> S{"매핑 확인"}
+    S -- "수정 필요" --> T["컬럼 매핑 수동 조정"]
+    T --> R
+    S -- "확인" --> U["가져오기 실행"]
+    U --> V["결과 요약<br/>성공 N장 · 실패 N장"]
+    V --> A
+
+    style A fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style B fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style C fill:#E3EEE6,stroke:#3A6B4A,color:#3A6B4A
+    style D fill:#EEE9DF,stroke:#8A7E6D,color:#1A1715
+    style E fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style F fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style G fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style H fill:#FAF9F6,stroke:#D4CFC4,color:#8A7E6D
+    style I fill:#FAF9F6,stroke:#D4CFC4,color:#8A7E6D
+    style J fill:#FAF9F6,stroke:#D4CFC4,color:#8A7E6D
+    style K fill:#E3E8EE,stroke:#3A4A6B,color:#3A4A6B
+    style L fill:#E3EEE6,stroke:#3A6B4A,color:#3A6B4A
+    style M fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style N fill:#EEE9DF,stroke:#8A7E6D,color:#1A1715
+    style O fill:#F5E6E6,stroke:#8B4A4A,color:#8B4A4A
+    style P fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style Q fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style R fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style S fill:#E3E8EE,stroke:#3A4A6B,color:#3A4A6B
+    style T fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style U fill:#E3EEE6,stroke:#3A6B4A,color:#3A6B4A
+    style V fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    </div>
+  </div>
+
+  <div class="annotations">
+    <div class="annotation">
+      <div class="annotation-step">UX 패턴</div>
+      <div class="annotation-title">계속 추가 모드</div>
+      <div class="annotation-body">카드 저장 후 폼이 초기화되며 바로 다음 카드를 입력할 수 있는 상태로 유지. 매번 "+" 버튼을 다시 누르지 않아도 됨. 상단에 "방금 추가: ephemeral" 토스트 확인.</div>
+      <span class="annotation-tag tag-action">UX Pattern</span>
+    </div>
+    <div class="annotation">
+      <div class="annotation-step">데이터</div>
+      <div class="annotation-title">CSV 매핑 규칙</div>
+      <div class="annotation-body">기본 매핑: 1열=단어, 2열=뜻, 3열=예문, 4열=발음. 헤더 행 자동 감지. 매핑이 다를 경우 드롭다운으로 수동 지정. 중복 단어는 "건너뛰기/덮어쓰기" 선택.</div>
+      <span class="annotation-tag tag-system">Data</span>
+    </div>
+    <div class="annotation">
+      <div class="annotation-step">자동 생성</div>
+      <div class="annotation-title">양방향 카드</div>
+      <div class="annotation-body">카드 생성 시 자동으로 정방향(단어→뜻) + 역방향(뜻→단어) 카드 생성. 사용자는 설정에서 "역방향 카드 자동 생성" 토글 가능.</div>
+      <span class="annotation-tag tag-system">Auto</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- FLOW 05: STUDY SESSION (CORE) -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="flow-section" id="flow-5">
+  <div class="flow-header">
+    <div class="flow-number">Flow 05</div>
+    <h2 class="flow-title">Study Session</h2>
+    <p class="flow-desc">WordPocket의 핵심 경험. SM-2 알고리즘 기반 카드 학습 세션의 전체 흐름. 카드 상태 전이와 사용자 응답에 따른 분기를 포함합니다.</p>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="mermaid">
+flowchart TD
+    A["▶ 학습 시작"] --> B["세션 초기화<br/>새 카드 + 복습 카드 큐 구성"]
+    B --> C{"카드 남음?"}
+    C -- "없음" --> D["🎉 세션 완료<br/>오늘의 결과 요약"]
+    D --> E["🏠 홈으로"]
+
+    C -- "있음" --> F["📖 카드 앞면<br/>(단어 표시)"]
+    F --> |"탭 / 스와이프 업"| G["📖 카드 뒷면<br/>(단어 + 뜻 + 예문)"]
+
+    G --> H["Again"]
+    G --> I["Hard"]
+    G --> J["Good"]
+    G --> K["Easy"]
+
+    H --> L["EF -0.2<br/>학습 단계 리셋<br/>1분 후 재출현"]
+    I --> M["EF -0.15<br/>간격 × 1.2"]
+    J --> N["간격 × EF<br/>EF 유지"]
+    K --> O["EF +0.15<br/>간격 × EF × 1.3<br/>학습 카드 즉시 졸업"]
+
+    L --> P["큐 재배치"]
+    M --> P
+    N --> P
+    O --> P
+    P --> C
+
+    F --> Q["↩ Undo"]
+    Q --> R["이전 카드 복원<br/>응답 취소"]
+    R --> G
+
+    F --> S["✏️ 카드 수정"]
+    S --> T["인라인 편집"]
+    T --> F
+
+    style A fill:#E3EEE6,stroke:#3A6B4A,color:#3A6B4A
+    style B fill:#FAF9F6,stroke:#D4CFC4,color:#8A7E6D
+    style C fill:#E3E8EE,stroke:#3A4A6B,color:#3A4A6B
+    style D fill:#E3EEE6,stroke:#3A6B4A,color:#3A6B4A
+    style E fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style F fill:#EEE9DF,stroke:#8A7E6D,color:#1A1715
+    style G fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style H fill:#F5E6E6,stroke:#8B4A4A,color:#8B4A4A
+    style I fill:#F0EBE3,stroke:#6B5F4F,color:#6B5F4F
+    style J fill:#E3EEE6,stroke:#3A6B4A,color:#3A6B4A
+    style K fill:#E3E8EE,stroke:#3A4A6B,color:#3A4A6B
+    style L fill:#F5E6E6,stroke:#8B4A4A,color:#8B4A4A
+    style M fill:#F0EBE3,stroke:#6B5F4F,color:#6B5F4F
+    style N fill:#E3EEE6,stroke:#3A6B4A,color:#3A6B4A
+    style O fill:#E3E8EE,stroke:#3A4A6B,color:#3A4A6B
+    style P fill:#FAF9F6,stroke:#D4CFC4,color:#8A7E6D
+    style Q fill:#FAF9F6,stroke:#D4CFC4,color:#8A7E6D
+    style R fill:#FAF9F6,stroke:#D4CFC4,color:#8A7E6D
+    style S fill:#FAF9F6,stroke:#D4CFC4,color:#8A7E6D
+    style T fill:#FAF9F6,stroke:#D4CFC4,color:#8A7E6D
+    </div>
+  </div>
+
+  <div class="annotations">
+    <div class="annotation">
+      <div class="annotation-step">카드 상태</div>
+      <div class="annotation-title">3단계 카드 생명주기</div>
+      <div class="annotation-body"><strong>New</strong> → 처음 보는 카드. 학습 단계(1분→10분) 진입.<br/><strong>Learning</strong> → 학습 단계 진행 중. 세션 내에서 반복 출현.<br/><strong>Review</strong> → 졸업 후 복습 대기. SM-2 간격에 따라 재출현.</div>
+      <span class="annotation-tag tag-system">Card State</span>
+    </div>
+    <div class="annotation">
+      <div class="annotation-step">핵심 인터랙션</div>
+      <div class="annotation-title">카드 플립</div>
+      <div class="annotation-body">앞면(단어만) → 탭 또는 위로 스와이프 → 뒷면(단어+뜻+예문) 공개. Y축 3D 플립 애니메이션(200ms, spring easing). 플립 후 하단에 4개 응답 버튼 페이드인.</div>
+      <span class="annotation-tag tag-action">Core Interaction</span>
+    </div>
+    <div class="annotation">
+      <div class="annotation-step">Leech 감지</div>
+      <div class="annotation-title">반복 실패 카드 처리</div>
+      <div class="annotation-body">Again 5회 누적 시 "리치 카드" 자동 감지. 토스트 알림: "이 단어가 어려우신가요?" 옵션: 계속 학습 / 일시 중지 / 태그 추가. 일시 중지 시 수동 해제 전까지 세션에서 제외.</div>
+      <span class="annotation-tag tag-system">Algorithm</span>
+    </div>
+    <div class="annotation">
+      <div class="annotation-step">세션 UI</div>
+      <div class="annotation-title">프로그레스 표시</div>
+      <div class="annotation-body">상단에 얇은 프로그레스 바 (완료/전체). 카드 수 카운터: "8 / 24". 세션 중에는 내비게이션 바를 숨기고 "✕ 닫기" 버튼만 노출하여 몰입감 확보.</div>
+      <span class="annotation-tag tag-screen">Session UI</span>
+    </div>
+    <div class="annotation">
+      <div class="annotation-step">제스처</div>
+      <div class="annotation-title">스와이프 응답 (PWA)</div>
+      <div class="annotation-body">카드 뒷면에서 좌→우 스와이프: Good (가장 빈번한 응답을 가장 자연스러운 제스처에 매핑). 버튼 탭과 스와이프 모두 지원. 스와이프 감도 설정 가능.</div>
+      <span class="annotation-tag tag-action">Gesture</span>
+    </div>
+    <div class="annotation">
+      <div class="annotation-step">안전장치</div>
+      <div class="annotation-title">Undo 지원</div>
+      <div class="annotation-body">직전 응답 1회 되돌리기 가능. 좌측 상단 ↩ 버튼 또는 좌→우 엣지 스와이프. 이전 카드가 원래 상태로 복원되며 다시 응답 가능. 연속 Undo는 지원하지 않음 (1회만).</div>
+      <span class="annotation-tag tag-action">Safety</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- FLOW 06: PROGRESS & STATS -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="flow-section" id="flow-6">
+  <div class="flow-header">
+    <div class="flow-number">Flow 06</div>
+    <h2 class="flow-title">Progress & Stats</h2>
+    <p class="flow-desc">학습 통계와 진행 현황. 동기 부여를 위한 시각적 피드백에 집중하되, Anki처럼 과도한 그래프는 지양합니다.</p>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="mermaid">
+flowchart TD
+    A["📊 Stats 화면"] --> B["오늘의 요약"]
+    A --> C["주간 히트맵<br/>(학습일 시각화)"]
+    A --> D["전체 진행률"]
+    
+    B --> B1["새 카드 학습 수"]
+    B --> B2["복습 완료 수"]
+    B --> B3["평균 응답 시간"]
+    B --> B4["정답률 (Good+Easy 비율)"]
+
+    D --> D1["덱별 진행률 리스트"]
+    D1 --> D2["덱 선택"]
+    D2 --> D3["덱 상세 통계"]
+    D3 --> D4["새 카드 / 학습 중 / 숙지<br/>비율 바 차트"]
+    D3 --> D5["리치 카드 목록"]
+
+    C --> C1["연속 학습일 Streak<br/>최장 기록 표시"]
+
+    style A fill:#EEE9DF,stroke:#8A7E6D,color:#1A1715
+    style B fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style C fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style D fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style B1 fill:#FAF9F6,stroke:#D4CFC4,color:#8A7E6D
+    style B2 fill:#FAF9F6,stroke:#D4CFC4,color:#8A7E6D
+    style B3 fill:#FAF9F6,stroke:#D4CFC4,color:#8A7E6D
+    style B4 fill:#FAF9F6,stroke:#D4CFC4,color:#8A7E6D
+    style D1 fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style D2 fill:#EEE9DF,stroke:#8A7E6D,color:#1A1715
+    style D3 fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style D4 fill:#FAF9F6,stroke:#D4CFC4,color:#8A7E6D
+    style D5 fill:#F5E6E6,stroke:#8B4A4A,color:#8B4A4A
+    style C1 fill:#E3EEE6,stroke:#3A6B4A,color:#3A6B4A
+    </div>
+  </div>
+
+  <div class="annotations">
+    <div class="annotation">
+      <div class="annotation-step">MVP 범위</div>
+      <div class="annotation-title">핵심 통계만</div>
+      <div class="annotation-body">Anki의 간격 분포, 리뷰 타임 그래프 등 고급 통계는 v2로. MVP에서는 오늘의 요약, 주간 히트맵, 덱별 진행률, 스트릭의 4가지만 제공.</div>
+      <span class="annotation-tag tag-decision">Scope</span>
+    </div>
+    <div class="annotation">
+      <div class="annotation-step">동기 부여</div>
+      <div class="annotation-title">스트릭 시각화</div>
+      <div class="annotation-body">주간 히트맵은 GitHub 잔디 스타일. 학습한 날은 moss 컬러로 채움, 학습량에 따라 농도 차이. 현재 연속일 + 최장 연속일 동시 표시.</div>
+      <span class="annotation-tag tag-screen">Motivation</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- FLOW 07: SETTINGS -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="flow-section" id="flow-7">
+  <div class="flow-header">
+    <div class="flow-number">Flow 07</div>
+    <h2 class="flow-title">Settings & Profile</h2>
+    <p class="flow-desc">학습 파라미터 조정과 계정 관리. Anki의 복잡한 옵션을 핵심만 추려 단순화.</p>
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="mermaid">
+flowchart TD
+    A["⚙️ Settings"] --> B["👤 프로필"]
+    A --> C["📖 학습 설정"]
+    A --> D["🔔 알림 설정"]
+    A --> E["ℹ️ 앱 정보"]
+    A --> F["🚪 로그아웃"]
+
+    B --> B1["이메일 확인 (읽기전용)"]
+    B --> B2["비밀번호 변경"]
+    B --> B3["계정 삭제"]
+
+    C --> C1["하루 새 카드 수<br/>(기본 20장)"]
+    C --> C2["학습 단계<br/>(기본 1분, 10분)"]
+    C --> C3["역방향 카드 자동 생성<br/>(토글)"]
+    C --> C4["리치 임계값<br/>(기본 5회)"]
+    C --> C5["최대 간격<br/>(기본 365일)"]
+
+    D --> D1["일일 복습 리마인더<br/>(시간 설정)"]
+
+    F --> F1{"확인"}
+    F1 -- "예" --> F2["로그아웃 → Welcome"]
+    F1 -- "아니오" --> A
+
+    style A fill:#EEE9DF,stroke:#8A7E6D,color:#1A1715
+    style B fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style C fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style D fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style E fill:#FAF9F6,stroke:#D4CFC4,color:#8A7E6D
+    style F fill:#F5E6E6,stroke:#8B4A4A,color:#8B4A4A
+    style B1 fill:#FAF9F6,stroke:#D4CFC4,color:#8A7E6D
+    style B2 fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style B3 fill:#F5E6E6,stroke:#8B4A4A,color:#8B4A4A
+    style C1 fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style C2 fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style C3 fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style C4 fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style C5 fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style D1 fill:#FAF9F6,stroke:#D4CFC4,color:#1A1715
+    style F1 fill:#E3E8EE,stroke:#3A4A6B,color:#3A4A6B
+    style F2 fill:#F5E6E6,stroke:#8B4A4A,color:#8B4A4A
+    </div>
+  </div>
+
+  <div class="annotations">
+    <div class="annotation">
+      <div class="annotation-step">원칙</div>
+      <div class="annotation-title">설정의 단순화</div>
+      <div class="annotation-body">Anki에는 30개 이상의 스케줄링 파라미터가 있지만, WordPocket MVP에서는 5개만 노출. 나머지는 합리적인 기본값으로 고정. "대부분의 사용자에게 변경 불필요" 원칙.</div>
+      <span class="annotation-tag tag-decision">Philosophy</span>
+    </div>
+    <div class="annotation">
+      <div class="annotation-step">안전</div>
+      <div class="annotation-title">계정 삭제 플로우</div>
+      <div class="annotation-body">Settings → 프로필 → 계정 삭제 → 비밀번호 재입력 → "모든 데이터가 영구 삭제됩니다" 경고 → 최종 확인. 삭제 후 30일 유예 기간(soft delete) 검토.</div>
+      <span class="annotation-tag tag-system">Safety</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SCREEN MAP TABLE -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="flow-section screen-map">
+  <div class="flow-header">
+    <div class="flow-number">Appendix</div>
+    <h2 class="flow-title">Screen Inventory</h2>
+    <p class="flow-desc">MVP 전체 화면 목록과 라우팅, 주요 컴포넌트 구성.</p>
+  </div>
+
+  <table class="screen-table">
+    <thead>
+      <tr>
+        <th>Screen</th>
+        <th>Route</th>
+        <th>Key Components</th>
+        <th>Navigation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="screen-name">Welcome</span></td>
+        <td><span class="screen-route">/welcome</span></td>
+        <td class="screen-components">로고, 소개 카피, 로그인/회원가입 CTA</td>
+        <td class="screen-components">→ Login, Signup</td>
+      </tr>
+      <tr>
+        <td><span class="screen-name">Login</span></td>
+        <td><span class="screen-route">/login</span></td>
+        <td class="screen-components">이메일 인풋, 비밀번호 인풋, 로그인 버튼</td>
+        <td class="screen-components">→ Home, Signup</td>
+      </tr>
+      <tr>
+        <td><span class="screen-name">Signup</span></td>
+        <td><span class="screen-route">/signup</span></td>
+        <td class="screen-components">이메일, 비밀번호, 확인 인풋, 가입 버튼</td>
+        <td class="screen-components">→ Email Verify, Login</td>
+      </tr>
+      <tr>
+        <td><span class="screen-name">Email Verify</span></td>
+        <td><span class="screen-route">/verify</span></td>
+        <td class="screen-components">인증 안내 메시지, 재전송 버튼</td>
+        <td class="screen-components">→ Home (인증 후)</td>
+      </tr>
+      <tr>
+        <td><span class="screen-name">Home</span></td>
+        <td><span class="screen-route">/</span></td>
+        <td class="screen-components">학습 요약 CTA, 스트릭, 폴더/덱 리스트</td>
+        <td class="screen-components">→ Study, Folder, Stats, Settings</td>
+      </tr>
+      <tr>
+        <td><span class="screen-name">Folder View</span></td>
+        <td><span class="screen-route">/folder/:id</span></td>
+        <td class="screen-components">폴더 헤더, 덱 리스트, 학습 CTA, 편집/삭제</td>
+        <td class="screen-components">→ Deck, Study, Home</td>
+      </tr>
+      <tr>
+        <td><span class="screen-name">Deck View</span></td>
+        <td><span class="screen-route">/deck/:id</span></td>
+        <td class="screen-components">덱 헤더, 진행률, 카드 리스트, 학습/추가 CTA</td>
+        <td class="screen-components">→ Study, Card Form, Folder</td>
+      </tr>
+      <tr>
+        <td><span class="screen-name">Card Form</span></td>
+        <td><span class="screen-route">/deck/:id/add</span></td>
+        <td class="screen-components">단어/뜻/예문/발음/태그 인풋, 저장 버튼</td>
+        <td class="screen-components">→ Deck (저장 후 계속)</td>
+      </tr>
+      <tr>
+        <td><span class="screen-name">CSV Import</span></td>
+        <td><span class="screen-route">/deck/:id/import</span></td>
+        <td class="screen-components">파일 업로드, 미리보기 테이블, 매핑 드롭다운</td>
+        <td class="screen-components">→ Deck (완료 후)</td>
+      </tr>
+      <tr>
+        <td><span class="screen-name">Study Session</span></td>
+        <td><span class="screen-route">/study/:deckId</span></td>
+        <td class="screen-components">프로그레스 바, 플립 카드, 응답 버튼 4개, Undo</td>
+        <td class="screen-components">→ Session Complete, Home (중단)</td>
+      </tr>
+      <tr>
+        <td><span class="screen-name">Session Complete</span></td>
+        <td><span class="screen-route">/study/complete</span></td>
+        <td class="screen-components">결과 요약 (신규/복습/정답률), 홈 CTA</td>
+        <td class="screen-components">→ Home</td>
+      </tr>
+      <tr>
+        <td><span class="screen-name">Stats</span></td>
+        <td><span class="screen-route">/stats</span></td>
+        <td class="screen-components">오늘 요약, 히트맵, 덱별 진행률</td>
+        <td class="screen-components">→ Deck Stats, Home</td>
+      </tr>
+      <tr>
+        <td><span class="screen-name">Settings</span></td>
+        <td><span class="screen-route">/settings</span></td>
+        <td class="screen-components">프로필, 학습 설정, 알림, 로그아웃</td>
+        <td class="screen-components">→ Home</td>
+      </tr>
+      <tr>
+        <td><span class="screen-name">Folder/Deck Form</span></td>
+        <td><span class="screen-route">Modal overlay</span></td>
+        <td class="screen-components">이름/설명/색상 인풋 (폴더·덱 공용)</td>
+        <td class="screen-components">→ 이전 화면 (저장/취소)</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      primaryColor: '#FAF9F6',
+      primaryTextColor: '#1A1715',
+      primaryBorderColor: '#D4CFC4',
+      lineColor: '#8A7E6D',
+      secondaryColor: '#EEE9DF',
+      tertiaryColor: '#E3EEE6',
+      fontFamily: '"Instrument Sans", "Noto Sans KR", sans-serif',
+      fontSize: '13px',
+      edgeLabelBackground: '#FAF9F6',
+    },
+    flowchart: {
+      htmlLabels: true,
+      curve: 'basis',
+      padding: 16,
+      nodeSpacing: 30,
+      rankSpacing: 50,
+    }
+  });
+</script>
+
+</body>
+</html>
