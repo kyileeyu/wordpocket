@@ -22,14 +22,17 @@ WordPocket은 SM-2 기반 간격 반복 단어 학습 웹앱 (Anki 스타일)
 | AuthGuard/GuestGuard | ✅ | 라우트 보호 동작 |
 | 기본 레이아웃 (AppShell, AuthShell, TopBar, BottomNav) | ✅ | |
 
-### Week 2 — 폴더/덱 & 카드 CRUD ⚠️ 마크업만 완료, 기능 미구현
+### Week 2 — 폴더/덱 & 카드 CRUD ✅ 완료
 | 항목 | 상태 | 비고 |
 |------|------|------|
-| 폴더 CRUD API + UI | ❌ | HomePage에 폴더 목록 마크업은 있으나 **하드코딩된 목데이터**, Supabase 연동 없음 |
-| 덱 CRUD API + UI | ❌ | FolderPage/DeckPage 마크업 있으나 **데이터 페칭 없음** |
-| 카드 CRUD API + UI | ❌ | CardFormPage 마크업 있으나 **폼 제출 핸들러 없음** |
-| 덱 상세 페이지 (카드 목록, 검색) | ❌ | DeckPage UI 있으나 **실제 카드 로딩 없음** |
-| CSV import 기능 | ❌ | CsvImportPage/CsvDropZone UI 있으나 **파싱/업로드 로직 없음** |
+| TanStack Query 설정 | ✅ | QueryClientProvider 래핑, Zustand은 authStore(클라이언트 상태)만 유지 |
+| 폴더 CRUD API + UI | ✅ | useFolders 훅 + HomePage 연동, InputDialog로 생성/편집, ConfirmDialog로 삭제 |
+| 덱 CRUD API + UI | ✅ | useDecks 훅 + FolderPage 연동, 생성/이름 편집/삭제 |
+| 카드 CRUD API + UI | ✅ | useCards 훅 + CardFormPage 연동, 추가(toast)/편집(navigate back) |
+| 덱 상세 페이지 (카드 목록) | ✅ | DeckPage에서 useCardsByDeck + card_states 조인으로 상태 표시 |
+| CSV import 기능 | ✅ | CsvDropZone 파일 선택 → FileReader 파싱 → Edge Function 호출 |
+| 덱 진행률 (get_deck_progress) | ✅ | useDeckProgress 훅, HomePage/FolderPage/DeckPage 통계 연동 |
+| RPC 함수 마이그레이션 | ✅ | SQL 예약어(interval) 및 UNION ALL 구문 수정 완료 |
 | RLS 정책 테스트 | ❌ | |
 
 ### Week 3 — 학습 세션 & SM-2 알고리즘 ⚠️ 백엔드 완료, 프론트 미연결
@@ -56,16 +59,17 @@ WordPocket은 SM-2 기반 간격 반복 단어 학습 웹앱 (Anki 스타일)
 
 ## 핵심 미구현 영역 (구현 필요 목록)
 
-### 1. 데이터 레이어 (최우선)
-현재 authStore만 존재. 나머지 모든 데이터는 하드코딩된 목데이터.
+### 1. 데이터 레이어 — ✅ 폴더/덱/카드 완료, 학습/통계/설정 미연동
+TanStack Query 기반 커스텀 훅으로 서버 상태 관리. Zustand은 authStore(클라이언트 상태)만 유지.
 
-**필요한 작업:**
-- Supabase 데이터 페칭/뮤테이션 훅 또는 Zustand 스토어 구현
-- 폴더 CRUD (list, create, edit, delete)
-- 덱 CRUD (list, create, edit, delete, 폴더 할당)
-- 카드 CRUD (list, create, edit, delete)
+**완료:**
+- ✅ useFolders (list, create, update, delete)
+- ✅ useDecks (listByFolder, detail, create, update, delete, progress)
+- ✅ useCards (listByDeck, detail, create, update, delete)
+
+**남은 작업:**
 - 학습 세션 데이터 (get_study_queue, submit_review 연동)
-- 통계 데이터 (get_today_stats, get_heatmap_data, get_streak, get_deck_progress 연동)
+- 통계 데이터 (get_today_stats, get_heatmap_data, get_streak 연동)
 - 사용자 설정 CRUD
 
 ### 2. 학습 세션 로직
@@ -74,10 +78,10 @@ WordPocket은 SM-2 기반 간격 반복 단어 학습 웹앱 (Anki 스타일)
 - 학습 진행률 실시간 추적
 - 세션 완료 시 실제 통계 전달
 
-### 3. CSV Import
-- CSV 파일 파싱 로직
-- Supabase Edge Function (import-csv) 호출 연동
-- 미리보기 및 에러 처리
+### 3. CSV Import — ✅ 완료
+- ✅ CSV 파일 파싱 로직 (FileReader + parseCsv)
+- ✅ Supabase Edge Function (import-csv) 호출 연동
+- ✅ 미리보기 및 에러 처리 (toast)
 
 ### 4. 검색 & 필터
 - 카드 목록 검색 기능
@@ -104,8 +108,8 @@ WordPocket은 SM-2 기반 간격 반복 단어 학습 웹앱 (Anki 스타일)
 | Supabase 백엔드 | 100% | 스키마, RLS, 트리거, RPC, Edge Function |
 | 인증 | 100% | 회원가입, 로그인, 가드, 상태관리 |
 | UI 마크업 | ~95% | 13개 페이지 + 31개 컴포넌트 완성 |
-| **데이터 연동** | **~5%** | **authStore만 구현, 나머지 전부 목데이터** |
-| **CRUD 기능** | **0%** | **폴더/덱/카드 생성·수정·삭제 미구현** |
+| **데이터 연동** | **~60%** | TanStack Query 훅으로 폴더/덱/카드 연동 완료, 학습/통계 미연결 |
+| **CRUD 기능** | **90%** | 폴더/덱/카드 CRUD 완료, 검색 미구현 |
 | **학습 세션** | **0%** | **백엔드 Ready, 프론트 미연결** |
 | **통계 연동** | **0%** | **백엔드 Ready, 프론트 미연결** |
 | PWA | 0% | 미착수 |
@@ -116,4 +120,4 @@ WordPocket은 SM-2 기반 간격 반복 단어 학습 웹앱 (Anki 스타일)
 
 ## 결론
 
-백엔드(Supabase)와 프론트엔드 UI(마크업)는 거의 완성되었으나, **둘을 연결하는 데이터 레이어가 전혀 구현되지 않은 상태**입니다. 다음 단계는 Supabase 데이터 페칭 훅/스토어를 만들고 각 페이지에 실제 데이터를 연동하는 것입니다.
+Week 2 CRUD 연동이 완료되어 폴더/덱/카드의 생성·조회·수정·삭제가 실제 Supabase 데이터로 동작합니다. 다음 단계는 **학습 세션(StudyPage)과 통계(StatsPage)를 RPC 함수에 연결**하는 것입니다.
