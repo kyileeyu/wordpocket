@@ -1,25 +1,66 @@
-import { Link } from "react-router"
+import { useState } from "react"
+import { Link, useNavigate } from "react-router"
 import TopBar from "@/components/navigation/TopBar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { useAuthStore } from "@/stores/authStore"
 
 export default function LoginPage() {
+  const navigate = useNavigate()
+  const { signIn, loading } = useAuthStore()
+
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState<string | null>(null)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError(null)
+
+    const { error } = await signIn(email, password)
+    if (error) {
+      setError(error)
+    } else {
+      navigate("/", { replace: true })
+    }
+  }
+
   return (
     <>
       <TopBar left="back" />
-      <div className="px-5 pt-6">
+      <form onSubmit={handleSubmit} className="px-5 pt-6">
         <h1 className="font-display text-[20px] font-medium text-ink mb-[6px]">다시 만나서 반가워요</h1>
         <p className="text-[11px] text-sepia leading-relaxed mb-7">이메일과 비밀번호를 입력해주세요.</p>
+
+        {error && (
+          <div className="bg-brick/10 text-brick text-[11px] px-3 py-2 rounded-lg mb-4">
+            {error}
+          </div>
+        )}
 
         <div className="space-y-[10px]">
           <div>
             <Label htmlFor="email">이메일</Label>
-            <Input id="email" type="email" placeholder="user@email.com" />
+            <Input
+              id="email"
+              type="email"
+              placeholder="user@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
           </div>
           <div>
             <Label htmlFor="password">비밀번호</Label>
-            <Input id="password" type="password" placeholder="••••••••" />
+            <Input
+              id="password"
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
           </div>
         </div>
 
@@ -27,7 +68,9 @@ export default function LoginPage() {
           <span className="text-[11px] text-sepia cursor-pointer hover:text-ink transition-colors">비밀번호를 잊으셨나요?</span>
         </div>
 
-        <Button className="w-full">로그인</Button>
+        <Button type="submit" className="w-full" disabled={loading}>
+          {loading ? "로그인 중..." : "로그인"}
+        </Button>
 
         <div className="h-4" />
 
@@ -36,7 +79,7 @@ export default function LoginPage() {
             계정이 없나요? <strong className="text-ink ml-1">회원가입</strong>
           </Link>
         </Button>
-      </div>
+      </form>
     </>
   )
 }
