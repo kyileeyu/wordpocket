@@ -6,9 +6,9 @@ interface HeatmapProps {
 
 const levelClass = {
   0: "bg-border",
-  1: "bg-[#d4e6d0]",
-  2: "bg-[#a3bf8f]",
-  3: "bg-moss",
+  1: "bg-accent-lighter",
+  2: "bg-accent-light",
+  3: "bg-accent",
 } as const
 
 export default function Heatmap({ cells }: HeatmapProps) {
@@ -18,11 +18,11 @@ export default function Heatmap({ cells }: HeatmapProps) {
         {cells.map((level, i) => (
           <div
             key={i}
-            className={cn("aspect-square rounded-[3px]", levelClass[level])}
+            className={cn("aspect-square rounded-[8px]", levelClass[level])}
           />
         ))}
       </div>
-      <div className="flex justify-between text-[9px] text-dust mt-1">
+      <div className="flex justify-between text-[9px] text-text-tertiary mt-1">
         <span>4주 전</span>
         <span>오늘</span>
       </div>

@@ -6,9 +6,9 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, React.ComponentProps<"tex
     return (
       <textarea
         className={cn(
-          "flex w-full min-h-[60px] rounded-[10px] border border-border bg-canvas px-[14px] py-[11px] font-body text-[13px] text-ink transition-colors",
-          "placeholder:text-dust",
-          "focus:border-ink focus:ring-2 focus:ring-ink/6 focus:outline-none",
+          "flex w-full min-h-[60px] rounded-[12px] border border-border bg-bg-subtle px-[14px] py-[11px] font-body text-[13px] text-text-primary transition-colors",
+          "placeholder:text-text-tertiary",
+          "focus:border-accent focus:ring-2 focus:ring-accent/10 focus:outline-none",
           "disabled:cursor-not-allowed disabled:opacity-50",
           "resize-none",
           className

@@ -3,15 +3,14 @@ import { Link } from "react-router"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
-import { StatPill, Heatmap } from "@/components/stats"
+import { StatPill } from "@/components/stats"
 import { FolderListItem } from "@/components/cards"
 import EmptyState from "@/components/feedback/EmptyState"
 import FAB from "@/components/feedback/FAB"
 import InputDialog from "@/components/feedback/InputDialog"
 import { useFolders, useCreateFolder } from "@/hooks/useFolders"
 import { useDeckProgress } from "@/hooks/useDecks"
-import { useTodayStats, useStreak, useHeatmapData } from "@/hooks/useStats"
-import { buildHeatmapCells } from "@/lib/heatmap"
+import { useTodayStats, useStreak } from "@/hooks/useStats"
 
 function getGreeting() {
   const h = new Date().getHours()
@@ -28,14 +27,11 @@ export default function HomePage() {
 
   const { data: todayStats } = useTodayStats()
   const { data: streakData } = useStreak()
-  const { data: heatmapData } = useHeatmapData(28)
-
   const reviewedCount = todayStats?.reviewed_count ?? 0
   const newLearnedCount = todayStats?.new_learned_count ?? 0
   const streak = streakData?.current_streak ?? 0
   const studySeconds = todayStats?.study_seconds ?? 0
   const studyMin = Math.round(studySeconds / 60)
-  const cells = buildHeatmapCells(heatmapData)
 
   const totalNew = deckProgress?.reduce((sum, d) => sum + d.new_count, 0) ?? 0
   const totalDue = (deckProgress?.reduce((sum, d) => sum + d.due_today, 0) ?? 0) + totalNew
@@ -60,8 +56,8 @@ export default function HomePage() {
     <div>
       {/* Greeting + Title */}
       <div className="px-5 pt-3">
-        <div className="font-display text-[11px] text-sepia italic mb-[2px]">{getGreeting()}</div>
-        <h1 className="font-display text-[20px] font-medium text-ink">오늘의 복습</h1>
+        <div className="font-display text-[11px] text-text-secondary italic mb-[2px]">{getGreeting()}</div>
+        <h1 className="font-display text-[20px] font-medium text-text-primary">오늘의 복습</h1>
       </div>
 
       {/* Stat Pills */}
@@ -83,22 +79,14 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Mini Heatmap */}
-      <div className="px-5 mt-4">
-        <Label>최근 4주 · 🔥 {streak}일 연속</Label>
-        <div className="mt-1">
-          <Heatmap cells={cells} />
-        </div>
-      </div>
-
       {/* Folder List */}
       <div className="px-5 mt-4">
         <Label>단어장</Label>
 
         {foldersLoading ? (
           <div className="space-y-3 mt-2">
-            <Skeleton className="h-14 rounded-[12px]" />
-            <Skeleton className="h-14 rounded-[12px]" />
+            <Skeleton className="h-14 rounded-[20px]" />
+            <Skeleton className="h-14 rounded-[20px]" />
           </div>
         ) : folders && folders.length > 0 ? (
           folders.map((folder) => (

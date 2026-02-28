@@ -41,7 +41,7 @@ function DropdownMenuContent({ children, className, align = "end" }: {
     <>
       <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
       <div className={cn(
-        "absolute z-50 mt-1 min-w-[160px] rounded-[12px] border border-border bg-parchment p-1 shadow-md",
+        "absolute z-50 mt-1 min-w-[160px] rounded-[20px] border border-border bg-bg-elevated p-1 shadow-md",
         align === "end" ? "right-0" : "left-0",
         className
       )}>
@@ -56,7 +56,7 @@ function DropdownMenuItem({ children, className, ...props }: React.ButtonHTMLAtt
   return (
     <button
       className={cn(
-        "flex w-full items-center rounded-[8px] px-3 py-2 text-[13px] text-ink hover:bg-canvas transition-colors",
+        "flex w-full items-center rounded-[12px] px-3 py-2 text-[13px] text-text-primary hover:bg-bg-subtle transition-colors",
         className
       )}
       onClick={(e) => {

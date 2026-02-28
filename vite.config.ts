@@ -14,8 +14,8 @@ export default defineConfig({
         name: 'WordPocket — 단어 암기 앱',
         short_name: 'WordPocket',
         description: '반복 학습 기반 단어 암기 웹앱',
-        theme_color: '#FDFCF9',
-        background_color: '#FAF9F6',
+        theme_color: '#FAFAFE',
+        background_color: '#FAFAFE',
         display: 'standalone',
         orientation: 'portrait',
         icons: [
@@ -63,6 +63,20 @@ export default defineConfig({
             handler: 'CacheFirst',
             options: {
               cacheName: 'gstatic-fonts-cache',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+          {
+            urlPattern: /^https:\/\/cdn\.jsdelivr\.net\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'cdn-fonts-cache',
               expiration: {
                 maxEntries: 10,
                 maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year

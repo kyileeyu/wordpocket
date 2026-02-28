@@ -24,14 +24,14 @@ export default function StatsPage() {
     <div>
       {/* Title */}
       <div className="px-5 pt-3">
-        <h1 className="font-display text-[20px] font-medium text-ink mb-4">학습 통계</h1>
+        <h1 className="font-display text-[20px] font-medium text-text-primary mb-4">학습 통계</h1>
       </div>
 
       {/* Today Stats */}
       <div className="px-5">
         <Label>오늘</Label>
         {statsLoading ? (
-          <Skeleton className="h-[72px] rounded-[10px] mb-4" />
+          <Skeleton className="h-[72px] rounded-[20px] mb-4" />
         ) : (
           <div className="flex gap-[6px] mb-4">
             <StatBox value={newLearnedCount} label="New" />
@@ -59,8 +59,8 @@ export default function StatsPage() {
         <div className="mt-1">
           {progressLoading ? (
             <div className="space-y-2">
-              <Skeleton className="h-[52px] rounded-[12px]" />
-              <Skeleton className="h-[52px] rounded-[12px]" />
+              <Skeleton className="h-[52px] rounded-[20px]" />
+              <Skeleton className="h-[52px] rounded-[20px]" />
             </div>
           ) : deckProgress && deckProgress.length > 0 ? (
             deckProgress.map((deck) => {
@@ -76,7 +76,7 @@ export default function StatsPage() {
               )
             })
           ) : (
-            <p className="text-[12px] text-sepia py-4 text-center">덱이 없습니다.</p>
+            <p className="text-[12px] text-text-secondary py-4 text-center">덱이 없습니다.</p>
           )}
         </div>
       </div>

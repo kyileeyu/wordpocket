@@ -15,7 +15,7 @@ import { MoreHorizontal } from "lucide-react"
 import { useFolders, useUpdateFolder, useDeleteFolder } from "@/hooks/useFolders"
 import { useDecksByFolder, useDeckProgress, useCreateDeck } from "@/hooks/useDecks"
 
-const STRIPE_COLORS = ["#3A6B4A", "#3A4A6B", "#6B5F4F", "#6B3A4A", "#4A6B5F"]
+const STRIPE_COLORS = ["#7C6CE7", "#A99BF0", "#6E6B7B", "#E55B7A", "#D4CEFA"]
 
 export default function FolderPage() {
   const { id: folderId } = useParams<{ id: string }>()
@@ -74,13 +74,13 @@ export default function FolderPage() {
         right={
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="w-7 h-7 rounded-[8px] bg-canvas border border-border flex items-center justify-center text-sepia">
-                <MoreHorizontal className="w-4 h-4" />
+              <button className="w-11 h-11 rounded-full bg-bg-subtle flex items-center justify-center text-text-secondary">
+                <MoreHorizontal className="w-[18px] h-[18px]" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem onClick={() => setRenameOpen(true)}>이름 편집</DropdownMenuItem>
-              <DropdownMenuItem className="text-brick" onClick={() => setDeleteOpen(true)}>삭제</DropdownMenuItem>
+              <DropdownMenuItem className="text-danger" onClick={() => setDeleteOpen(true)}>삭제</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         }
@@ -93,7 +93,7 @@ export default function FolderPage() {
           <StatPill emoji="📦" value={totalCards} label="전체 카드" />
         </div>
         {totalDue > 0 && (
-          <Button asChild variant="moss" className="w-full mb-4">
+          <Button asChild className="w-full mb-4">
             <Link to={`/study/${folderId}`}>▶ 전체 학습 시작</Link>
           </Button>
         )}
@@ -103,8 +103,8 @@ export default function FolderPage() {
       <div className="px-5">
         {decksLoading ? (
           <div className="space-y-3 mt-2">
-            <Skeleton className="h-[72px] rounded-[14px]" />
-            <Skeleton className="h-[72px] rounded-[14px]" />
+            <Skeleton className="h-[72px] rounded-[20px]" />
+            <Skeleton className="h-[72px] rounded-[20px]" />
           </div>
         ) : decks && decks.length > 0 ? (
           <>

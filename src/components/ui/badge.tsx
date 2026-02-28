@@ -7,10 +7,11 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-moss-bg text-moss",
-        new: "bg-slate-bg text-slate",
-        learning: "bg-oak-bg text-oak",
-        mature: "bg-moss-bg text-moss",
+        default: "bg-accent-bg text-accent",
+        muted: "bg-bg-subtle text-text-secondary",
+        new: "bg-accent-bg text-accent",
+        learning: "bg-bg-subtle text-text-secondary",
+        mature: "bg-accent-bg text-accent",
       },
     },
     defaultVariants: {

@@ -30,11 +30,11 @@ export default function LoginPage() {
     <>
       <TopBar left="back" />
       <form onSubmit={handleSubmit} className="px-5 pt-6">
-        <h1 className="font-display text-[20px] font-medium text-ink mb-[6px]">다시 만나서 반가워요</h1>
-        <p className="text-[11px] text-sepia leading-relaxed mb-7">이메일과 비밀번호를 입력해주세요.</p>
+        <h1 className="font-display text-[20px] font-medium text-text-primary mb-[6px]">다시 만나서 반가워요</h1>
+        <p className="text-[11px] text-text-secondary leading-relaxed mb-7">이메일과 비밀번호를 입력해주세요.</p>
 
         {error && (
-          <div className="bg-brick/10 text-brick text-[11px] px-3 py-2 rounded-lg mb-4">
+          <div className="bg-danger-bg text-danger text-[11px] px-3 py-2 rounded-lg mb-4">
             {error}
           </div>
         )}
@@ -65,7 +65,7 @@ export default function LoginPage() {
         </div>
 
         <div className="text-right mt-2 mb-6">
-          <span className="text-[11px] text-sepia cursor-pointer hover:text-ink transition-colors">비밀번호를 잊으셨나요?</span>
+          <span className="text-[11px] text-text-secondary cursor-pointer hover:text-text-primary transition-colors">비밀번호를 잊으셨나요?</span>
         </div>
 
         <Button type="submit" className="w-full" disabled={loading}>
@@ -76,7 +76,7 @@ export default function LoginPage() {
 
         <Button asChild variant="ghost" className="w-full text-center text-[11px]">
           <Link to="/signup">
-            계정이 없나요? <strong className="text-ink ml-1">회원가입</strong>
+            계정이 없나요? <strong className="text-accent ml-1">회원가입</strong>
           </Link>
         </Button>
       </form>

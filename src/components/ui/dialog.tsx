@@ -44,9 +44,9 @@ function DialogContent({ children, className }: { children: React.ReactNode; cla
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="fixed inset-0 bg-ink/40" onClick={() => setOpen(false)} />
+      <div className="fixed inset-0 bg-text-primary/40" onClick={() => setOpen(false)} />
       <div className={cn(
-        "relative z-50 w-full max-w-[340px] sm:max-w-[400px] mx-4 rounded-[16px] bg-parchment p-6 shadow-lg",
+        "relative z-50 w-full max-w-[340px] sm:max-w-[400px] mx-4 rounded-[32px] bg-bg-elevated p-6 shadow-lg",
         className
       )}>
         <button
@@ -70,7 +70,7 @@ function DialogTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingEl
 }
 
 function DialogDescription({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
-  return <p className={cn("text-sm text-sepia", className)} {...props} />
+  return <p className={cn("text-sm text-text-secondary", className)} {...props} />
 }
 
 export { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription }

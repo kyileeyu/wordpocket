@@ -7,8 +7,8 @@ export default function AuthGuard() {
 
   if (!initialized) {
     return (
-      <div className="min-h-dvh flex items-center justify-center bg-canvas">
-        <div className="text-sepia text-sm">로딩 중...</div>
+      <div className="min-h-dvh flex items-center justify-center bg-bg-primary">
+        <div className="text-text-secondary text-sm">로딩 중...</div>
       </div>
     );
   }

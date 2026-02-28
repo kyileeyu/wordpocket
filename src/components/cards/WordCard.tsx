@@ -12,12 +12,12 @@ interface WordCardProps {
 export default function WordCard({ word, phonetic, meaning, example, flipped, onFlip }: WordCardProps) {
   return (
     <div
-      className="bg-white border border-border rounded-[16px] p-[28px_20px] text-center shadow-md cursor-pointer w-full"
+      className="bg-bg-elevated border border-border rounded-[24px] p-[28px_20px] text-center shadow-md cursor-pointer w-full"
       onClick={!flipped ? onFlip : undefined}
     >
       {/* Word */}
       <div className={cn(
-        "font-display text-ink mb-1 font-medium",
+        "font-display text-text-primary mb-1 font-medium",
         flipped ? "text-[26px]" : "text-[30px]"
       )}>
         {word}
@@ -25,27 +25,27 @@ export default function WordCard({ word, phonetic, meaning, example, flipped, on
 
       {/* Phonetic */}
       {phonetic && (
-        <div className="font-mono text-[11px] text-sepia mb-[14px]">{phonetic}</div>
+        <div className="font-mono text-[11px] text-text-secondary mb-[14px]">{phonetic}</div>
       )}
 
       {flipped ? (
         <>
           {/* Divider */}
-          <div className="w-9 h-px bg-dust mx-auto mb-[14px]" />
+          <div className="w-9 h-[3px] bg-accent-lighter mx-auto mb-[14px] rounded-full" />
 
           {/* Meaning */}
-          <div className="font-korean text-[14px] text-ink-light">{meaning}</div>
+          <div className="font-korean text-[14px] text-text-primary">{meaning}</div>
 
           {/* Example */}
           {example && (
-            <div className="text-[11px] text-sepia mt-[10px] leading-relaxed italic">
+            <div className="text-[11px] text-text-secondary mt-[10px] leading-relaxed italic">
               "{example}"
             </div>
           )}
         </>
       ) : (
         /* Hint */
-        <div className="text-[10px] text-dust mt-4">탭하여 뜻 확인</div>
+        <div className="text-[10px] text-text-tertiary mt-4">탭하여 뜻 확인</div>
       )}
     </div>
   )

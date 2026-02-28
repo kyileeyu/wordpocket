@@ -75,9 +75,9 @@ export default function CsvImportPage() {
                 <table className="w-full text-[10px]">
                   <thead>
                     <tr>
-                      <th className="font-mono text-[8px] tracking-[1px] uppercase text-sepia text-left p-[6px_8px] border-b border-dust">단어</th>
-                      <th className="font-mono text-[8px] tracking-[1px] uppercase text-sepia text-left p-[6px_8px] border-b border-dust">뜻</th>
-                      <th className="font-mono text-[8px] tracking-[1px] uppercase text-sepia text-left p-[6px_8px] border-b border-dust">예문</th>
+                      <th className="font-mono text-[8px] tracking-[1px] uppercase text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary">단어</th>
+                      <th className="font-mono text-[8px] tracking-[1px] uppercase text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary">뜻</th>
+                      <th className="font-mono text-[8px] tracking-[1px] uppercase text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary">예문</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -93,8 +93,8 @@ export default function CsvImportPage() {
               </div>
             </div>
 
-            <p className="text-[11px] text-sepia mb-4">
-              총 <strong className="text-ink">{rows.length}</strong>장의 카드가 감지되었습니다.
+            <p className="text-[11px] text-text-secondary mb-4">
+              총 <strong className="text-text-primary">{rows.length}</strong>장의 카드가 감지되었습니다.
             </p>
 
             <Button className="w-full" onClick={handleImport} disabled={loading}>

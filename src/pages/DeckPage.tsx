@@ -61,13 +61,13 @@ export default function DeckPage() {
         right={
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="w-7 h-7 rounded-[8px] bg-canvas border border-border flex items-center justify-center text-sepia">
-                <MoreHorizontal className="w-4 h-4" />
+              <button className="w-11 h-11 rounded-full bg-bg-subtle flex items-center justify-center text-text-secondary">
+                <MoreHorizontal className="w-[18px] h-[18px]" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem onClick={() => setRenameOpen(true)}>이름 편집</DropdownMenuItem>
-              <DropdownMenuItem className="text-brick" onClick={() => setDeleteOpen(true)}>삭제</DropdownMenuItem>
+              <DropdownMenuItem className="text-danger" onClick={() => setDeleteOpen(true)}>삭제</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         }
@@ -76,9 +76,9 @@ export default function DeckPage() {
       {/* Stat Boxes */}
       <div className="px-5 pt-2">
         <div className="flex gap-[6px] mb-2">
-          <StatBox value={newCount} label="New" color="#3A4A6B" />
-          <StatBox value={learningCount} label="Learning" color="#6B5F4F" />
-          <StatBox value={reviewCount} label="Mature" color="#3A6B4A" />
+          <StatBox value={newCount} label="New" />
+          <StatBox value={learningCount} label="Learning" />
+          <StatBox value={reviewCount} label="Mature" />
         </div>
       </div>
 
@@ -86,9 +86,9 @@ export default function DeckPage() {
       <div className="px-5 mb-4">
         <SegmentedProgress
           segments={[
-            { value: newCount, color: "#3A4A6B" },
-            { value: learningCount, color: "#6B5F4F" },
-            { value: reviewCount, color: "#3A6B4A" },
+            { value: newCount, color: "#D4CEFA" },
+            { value: learningCount, color: "#A99BF0" },
+            { value: reviewCount, color: "#7C6CE7" },
           ]}
         />
       </div>
@@ -111,9 +111,9 @@ export default function DeckPage() {
       <div className="px-5">
         {cardsLoading ? (
           <div className="space-y-2 mt-2">
-            <Skeleton className="h-14 rounded-[12px]" />
-            <Skeleton className="h-14 rounded-[12px]" />
-            <Skeleton className="h-14 rounded-[12px]" />
+            <Skeleton className="h-14 rounded-[20px]" />
+            <Skeleton className="h-14 rounded-[20px]" />
+            <Skeleton className="h-14 rounded-[20px]" />
           </div>
         ) : cards && cards.length > 0 ? (
           <>

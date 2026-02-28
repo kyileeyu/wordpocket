@@ -15,18 +15,18 @@ export default function TopBar({ left, title, right, onLeftClick }: TopBarProps)
 
   return (
     <div className="flex items-center justify-between px-5 pt-2 pb-1">
-      <div className="w-7">
+      <div className="w-11">
         {left && (
           <button
             onClick={handleLeft}
-            className="w-7 h-7 rounded-[8px] bg-canvas border border-border flex items-center justify-center text-sepia hover:text-ink transition-colors"
+            className="w-11 h-11 rounded-full bg-bg-subtle flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors"
           >
-            {left === "back" ? <ArrowLeft className="w-4 h-4" /> : <X className="w-4 h-4" />}
+            {left === "back" ? <ArrowLeft className="w-[18px] h-[18px]" /> : <X className="w-[18px] h-[18px]" />}
           </button>
         )}
       </div>
-      <div className="text-[13px] font-semibold text-ink truncate">{title}</div>
-      <div className="w-7 flex justify-end">{right}</div>
+      <div className="text-[13px] font-semibold text-text-primary truncate">{title}</div>
+      <div className="w-11 flex justify-end">{right}</div>
     </div>
   )
 }

@@ -27,7 +27,6 @@ export default function StudyPage() {
   const reviewStartRef = useRef(Date.now())
   const newCountTrackedRef = useRef(false)
 
-  // 서버 큐 최초 로드 시에만 workingQueue 초기화
   useEffect(() => {
     if (queue && queue.length > 0 && !newCountTrackedRef.current) {
       setWorkingQueue(queue)
@@ -73,7 +72,6 @@ export default function StudyPage() {
 
           const nextIndex = index + 1
           if (nextIndex >= nextQueue.length) {
-            // 로컬 큐 소진 → 서버 refetch
             refetch().then(({ data: serverQueue }) => {
               if (serverQueue && serverQueue.length > 0) {
                 setWorkingQueue(serverQueue)
@@ -108,7 +106,7 @@ export default function StudyPage() {
         <TopBar left="close" />
         <div className="px-5 space-y-4 mt-4">
           <Skeleton className="h-2 rounded-full" />
-          <Skeleton className="h-[280px] rounded-[16px]" />
+          <Skeleton className="h-[280px] rounded-[24px]" />
         </div>
       </>
     )
@@ -134,7 +132,7 @@ export default function StudyPage() {
         <TopBar left="close" />
         <div className="px-5 space-y-4 mt-4">
           <Skeleton className="h-2 rounded-full" />
-          <Skeleton className="h-[280px] rounded-[16px]" />
+          <Skeleton className="h-[280px] rounded-[24px]" />
         </div>
       </>
     )
@@ -145,14 +143,14 @@ export default function StudyPage() {
       <TopBar
         left="close"
         title={
-          <span className="font-mono text-[11px] text-sepia font-normal">
+          <span className="font-mono text-[11px] text-text-secondary font-normal">
             {Math.min(index + 1, initialTotal)} / {initialTotal}
             {againCount > 0 && ` + 복습 ${againCount}`}
           </span>
         }
         right={
-          <button className="w-7 h-7 rounded-[8px] bg-canvas border border-border flex items-center justify-center text-sepia">
-            {flipped ? <Pencil className="w-3.5 h-3.5" /> : <RotateCcw className="w-3.5 h-3.5" />}
+          <button className="w-11 h-11 rounded-full bg-bg-subtle flex items-center justify-center text-text-secondary">
+            {flipped ? <Pencil className="w-4 h-4" /> : <RotateCcw className="w-4 h-4" />}
           </button>
         }
       />

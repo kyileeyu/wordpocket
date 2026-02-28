@@ -40,11 +40,11 @@ export default function SignupPage() {
     <>
       <TopBar left="back" />
       <form onSubmit={handleSubmit} className="px-5 pt-6">
-        <h1 className="font-display text-[20px] font-medium text-ink mb-[6px]">시작해볼까요</h1>
-        <p className="text-[11px] text-sepia leading-relaxed mb-7">간단한 가입으로 바로 학습을 시작하세요.</p>
+        <h1 className="font-display text-[20px] font-medium text-text-primary mb-[6px]">시작해볼까요</h1>
+        <p className="text-[11px] text-text-secondary leading-relaxed mb-7">간단한 가입으로 바로 학습을 시작하세요.</p>
 
         {error && (
-          <div className="bg-brick/10 text-brick text-[11px] px-3 py-2 rounded-lg mb-4">
+          <div className="bg-danger-bg text-danger text-[11px] px-3 py-2 rounded-lg mb-4">
             {error}
           </div>
         )}
@@ -94,7 +94,7 @@ export default function SignupPage() {
 
         <div className="h-4" />
 
-        <p className="text-[10px] text-dust text-center leading-relaxed">
+        <p className="text-[10px] text-text-tertiary text-center leading-relaxed">
           가입 시 <span className="underline cursor-pointer">이용약관</span> 및 <span className="underline cursor-pointer">개인정보처리방침</span>에<br />동의하는 것으로 간주합니다.
         </p>
       </form>
