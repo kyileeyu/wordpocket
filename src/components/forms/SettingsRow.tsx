@@ -10,11 +10,15 @@ interface SettingsRowProps {
   chevron?: boolean
   danger?: boolean
   noBorder?: boolean
+  onPress?: () => void
 }
 
-export default function SettingsRow({ label, description, value, toggle, toggleOn, chevron, danger, noBorder }: SettingsRowProps) {
+export default function SettingsRow({ label, description, value, toggle, toggleOn, chevron, danger, noBorder, onPress }: SettingsRowProps) {
   return (
-    <div className={cn("flex items-center justify-between py-3", !noBorder && "border-b border-border")}>
+    <div
+      className={cn("flex items-center justify-between py-3", !noBorder && "border-b border-border", onPress && "cursor-pointer")}
+      onClick={onPress}
+    >
       <div>
         <div className={cn("text-[13px]", danger ? "text-brick" : "text-ink")}>{label}</div>
         {description && (

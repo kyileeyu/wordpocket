@@ -1,13 +1,23 @@
+import { useNavigate } from "react-router"
 import { Label } from "@/components/ui/label"
 import SettingsRow from "@/components/forms/SettingsRow"
+import { useAuthStore } from "@/stores/authStore"
 
 export default function SettingsPage() {
+  const navigate = useNavigate()
+  const { user, signOut } = useAuthStore()
+
+  const handleSignOut = async () => {
+    await signOut()
+    navigate("/welcome", { replace: true })
+  }
+
   return (
     <div>
       {/* Header */}
       <div className="px-5 pt-3">
         <h1 className="font-display text-[20px] font-medium text-ink mb-1">설정</h1>
-        <p className="text-[11px] text-sepia mb-1">user@email.com</p>
+        <p className="text-[11px] text-sepia mb-1">{user?.email ?? ""}</p>
       </div>
 
       {/* Learning Section */}
@@ -29,7 +39,7 @@ export default function SettingsPage() {
       <div className="px-5 mt-4">
         <Label>계정</Label>
         <SettingsRow label="비밀번호 변경" chevron />
-        <SettingsRow label="로그아웃" danger noBorder />
+        <SettingsRow label="로그아웃" danger noBorder onPress={handleSignOut} />
       </div>
     </div>
   )

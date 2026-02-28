@@ -1,4 +1,6 @@
 import { createBrowserRouter } from "react-router"
+import AuthGuard from "@/components/AuthGuard"
+import GuestGuard from "@/components/GuestGuard"
 import AuthShell from "@/components/layouts/AuthShell"
 import AppShell from "@/components/layouts/AppShell"
 import WelcomePage from "@/pages/WelcomePage"
@@ -16,28 +18,41 @@ import StatsPage from "@/pages/StatsPage"
 import SettingsPage from "@/pages/SettingsPage"
 
 export const router = createBrowserRouter([
+  // Guest-only routes (redirect to / if already logged in)
   {
-    element: <AuthShell />,
+    element: <GuestGuard />,
     children: [
-      { path: "/welcome", element: <WelcomePage /> },
-      { path: "/login", element: <LoginPage /> },
-      { path: "/signup", element: <SignupPage /> },
-      { path: "/verify", element: <VerifyPage /> },
+      {
+        element: <AuthShell />,
+        children: [
+          { path: "/welcome", element: <WelcomePage /> },
+          { path: "/login", element: <LoginPage /> },
+          { path: "/signup", element: <SignupPage /> },
+          { path: "/verify", element: <VerifyPage /> },
+        ],
+      },
     ],
   },
+  // Protected routes (redirect to /welcome if not logged in)
   {
-    element: <AppShell />,
+    element: <AuthGuard />,
     children: [
-      { path: "/", element: <HomePage /> },
-      { path: "/folder/:id", element: <FolderPage /> },
-      { path: "/deck/:id", element: <DeckPage /> },
-      { path: "/stats", element: <StatsPage /> },
-      { path: "/settings", element: <SettingsPage /> },
+      {
+        element: <AppShell />,
+        children: [
+          { path: "/", element: <HomePage /> },
+          { path: "/folder/:id", element: <FolderPage /> },
+          { path: "/deck/:id", element: <DeckPage /> },
+          { path: "/stats", element: <StatsPage /> },
+          { path: "/settings", element: <SettingsPage /> },
+        ],
+      },
+      // Standalone pages (own shell, still protected)
+      { path: "/deck/:id/add", element: <CardFormPage /> },
+      { path: "/deck/:id/edit/:cardId", element: <CardFormPage /> },
+      { path: "/deck/:id/import", element: <CsvImportPage /> },
+      { path: "/study/:deckId", element: <StudyPage /> },
+      { path: "/study/complete", element: <CompletePage /> },
     ],
   },
-  // Standalone pages (own shell)
-  { path: "/deck/:id/add", element: <CardFormPage /> },
-  { path: "/deck/:id/import", element: <CsvImportPage /> },
-  { path: "/study/:deckId", element: <StudyPage /> },
-  { path: "/study/complete", element: <CompletePage /> },
 ])
