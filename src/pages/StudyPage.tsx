@@ -15,20 +15,24 @@ export default function StudyPage() {
   const { data: queue, isLoading, refetch } = useStudyQueue(deckId!)
   const submitReview = useSubmitReview()
 
+  const [workingQueue, setWorkingQueue] = useState<NonNullable<typeof queue>>([])
   const [index, setIndex] = useState(0)
   const [flipped, setFlipped] = useState(false)
   const [reviewedCount, setReviewedCount] = useState(0)
   const [correctCount, setCorrectCount] = useState(0)
   const [newCount, setNewCount] = useState(0)
-  const [isRefetching, setIsRefetching] = useState(false)
+  const [againCount, setAgainCount] = useState(0)
+  const initialTotalRef = useRef(0)
 
   const reviewStartRef = useRef(Date.now())
   const newCountTrackedRef = useRef(false)
 
-  // 첫 큐 로드 시 새 카드 수 기록
+  // 서버 큐 최초 로드 시에만 workingQueue 초기화
   useEffect(() => {
-    if (queue && !newCountTrackedRef.current) {
+    if (queue && queue.length > 0 && !newCountTrackedRef.current) {
+      setWorkingQueue(queue)
       setNewCount(queue.filter((c) => c.queue_type === "new").length)
+      initialTotalRef.current = queue.length
       newCountTrackedRef.current = true
     }
   }, [queue])
@@ -37,8 +41,8 @@ export default function StudyPage() {
     reviewStartRef.current = Date.now()
   }, [index])
 
-  const total = queue?.length ?? 0
-  const card = queue?.[index]
+  const initialTotal = initialTotalRef.current || (queue?.length ?? 0)
+  const card = workingQueue[index]
 
   const goToComplete = useCallback((reviewed: number, correct: number, newCards: number) => {
     navigate("/study/complete", {
@@ -61,32 +65,37 @@ export default function StudyPage() {
       { cardId: card.card_id, rating, reviewDuration },
       {
         onSuccess: () => {
-          if (index + 1 >= total) {
-            // 마지막 카드 → 큐 재조회하여 learning 카드 확인
-            setIsRefetching(true)
-            setTimeout(() => {
-              refetch().then(({ data: newQueue }) => {
-                setIsRefetching(false)
-                if (newQueue && newQueue.length > 0) {
-                  setNewCount((prev) => prev + newQueue.filter((c) => c.queue_type === "new").length)
-                  setIndex(0)
-                  setFlipped(false)
-                } else {
-                  goToComplete(nextReviewed, nextCorrect, newCount)
-                }
-              })
-            }, 1500)
+          let nextQueue = [...workingQueue]
+          if (rating === "again") {
+            nextQueue = [...nextQueue, card]
+            setAgainCount((c) => c + 1)
+          }
+
+          const nextIndex = index + 1
+          if (nextIndex >= nextQueue.length) {
+            // 로컬 큐 소진 → 서버 refetch
+            refetch().then(({ data: serverQueue }) => {
+              if (serverQueue && serverQueue.length > 0) {
+                setWorkingQueue(serverQueue)
+                setIndex(0)
+                setFlipped(false)
+              } else {
+                goToComplete(nextReviewed, nextCorrect, newCount)
+              }
+            })
           } else {
+            setWorkingQueue(nextQueue)
+            setIndex(nextIndex)
             setFlipped(false)
-            setIndex((i) => i + 1)
           }
         },
         onError: () => {
-          if (index + 1 >= total) {
+          const nextIndex = index + 1
+          if (nextIndex >= workingQueue.length) {
             goToComplete(nextReviewed, nextCorrect, newCount)
           } else {
             setFlipped(false)
-            setIndex((i) => i + 1)
+            setIndex(nextIndex)
           }
         },
       },
@@ -100,18 +109,6 @@ export default function StudyPage() {
         <div className="px-5 space-y-4 mt-4">
           <Skeleton className="h-2 rounded-full" />
           <Skeleton className="h-[280px] rounded-[16px]" />
-        </div>
-      </>
-    )
-  }
-
-  if (isRefetching) {
-    return (
-      <>
-        <TopBar left="close" />
-        <div className="flex-1 flex flex-col items-center justify-center gap-3">
-          <div className="text-[32px]">⏳</div>
-          <p className="text-[13px] text-sepia">틀린 카드를 다시 준비하고 있어요...</p>
         </div>
       </>
     )
@@ -131,13 +128,26 @@ export default function StudyPage() {
     )
   }
 
+  if (!card) {
+    return (
+      <>
+        <TopBar left="close" />
+        <div className="px-5 space-y-4 mt-4">
+          <Skeleton className="h-2 rounded-full" />
+          <Skeleton className="h-[280px] rounded-[16px]" />
+        </div>
+      </>
+    )
+  }
+
   return (
     <>
       <TopBar
         left="close"
         title={
           <span className="font-mono text-[11px] text-sepia font-normal">
-            {index + 1} / {total}
+            {Math.min(index + 1, initialTotal)} / {initialTotal}
+            {againCount > 0 && ` + 복습 ${againCount}`}
           </span>
         }
         right={
@@ -147,7 +157,7 @@ export default function StudyPage() {
         }
       />
 
-      <StudyProgress current={index + 1} total={total} />
+      <StudyProgress current={Math.min(index + 1, initialTotal)} total={initialTotal} />
 
       <div className="flex-1 flex items-center justify-center px-5">
         <WordCard
