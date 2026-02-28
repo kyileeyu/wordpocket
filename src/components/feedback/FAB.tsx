@@ -12,14 +12,14 @@ export default function FAB({ to, onClick }: FABProps) {
 
   if (to) {
     return (
-      <Link to={to} className={className}>
+      <Link to={to} className={className} aria-label="추가">
         <Plus className="w-[22px] h-[22px]" strokeWidth={1.5} />
       </Link>
     )
   }
 
   return (
-    <button onClick={onClick} className={className}>
+    <button onClick={onClick} className={className} aria-label="추가">
       <Plus className="w-[22px] h-[22px]" strokeWidth={1.5} />
     </button>
   )

@@ -38,7 +38,7 @@ export default function DeckPage() {
   const learningCount = progress?.learning_count ?? 0
   const reviewCount = progress?.review_count ?? 0
   const totalCards = progress?.total_cards ?? 0
-  const dueToday = progress?.due_today ?? 0
+  const dueToday = (progress?.due_today ?? 0) + newCount
 
   const handleRename = (name: string) => {
     updateDeck.mutate(

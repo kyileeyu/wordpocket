@@ -1,8 +1,23 @@
-import { Link } from "react-router"
+import { Link, useLocation } from "react-router"
 import { Button } from "@/components/ui/button"
 import { StatBox } from "@/components/stats"
+import { useStreak } from "@/hooks/useStats"
 
 export default function CompletePage() {
+  const location = useLocation()
+  const { reviewed = 0, correct = 0, newCount = 0 } = (location.state ?? {}) as {
+    reviewed?: number
+    correct?: number
+    newCount?: number
+    deckId?: string
+  }
+
+  const { data: streakData } = useStreak()
+  const streak = streakData?.current_streak ?? 0
+
+  const reviewCount = reviewed - newCount
+  const accuracy = reviewed > 0 ? Math.round((correct / reviewed) * 100) : 0
+
   return (
     <>
       <div className="flex-1 flex flex-col justify-center px-7">
@@ -13,15 +28,15 @@ export default function CompletePage() {
 
         {/* Stats */}
         <div className="flex gap-[6px] mb-5">
-          <StatBox value={5} label="New" />
-          <StatBox value={19} label="복습" />
-          <StatBox value="87%" label="정답률" />
+          <StatBox value={newCount} label="New" />
+          <StatBox value={reviewCount} label="복습" />
+          <StatBox value={`${accuracy}%`} label="정답률" />
         </div>
 
         {/* Streak Card */}
         <div className="bg-white border border-border rounded-[14px] p-4 text-center mb-5">
           <div className="text-[11px] text-sepia mb-1">연속 학습</div>
-          <div className="text-[28px] font-bold text-moss">🔥 7일</div>
+          <div className="text-[28px] font-bold text-moss">🔥 {streak}일</div>
         </div>
 
         {/* CTA */}
