@@ -16,7 +16,7 @@ RETURNS TABLE (
   tags          TEXT[],
   status        TEXT,
   ease_factor   REAL,
-  interval      INTEGER,
+  "interval"    INTEGER,
   due_date      TIMESTAMPTZ,
   step_index    INTEGER,
   lapse_count   INTEGER,
@@ -48,9 +48,9 @@ BEGIN
   RETURN QUERY
 
   -- 1순위: 학습 중인 카드
-  SELECT
+  (SELECT
     c.id, c.word, c.meaning, c.example, c.pronunciation, c.tags,
-    cs.status, cs.ease_factor, cs.interval, cs.due_date,
+    cs.status, cs.ease_factor, cs."interval", cs.due_date,
     cs.step_index, cs.lapse_count,
     'learning'::TEXT AS queue_type
   FROM cards c
@@ -58,14 +58,14 @@ BEGIN
   WHERE c.deck_id = p_deck_id
     AND cs.status = 'learning'
     AND cs.due_date <= now()
-  ORDER BY cs.due_date ASC
+  ORDER BY cs.due_date ASC)
 
   UNION ALL
 
   -- 2순위: 복습 카드
-  SELECT
+  (SELECT
     c.id, c.word, c.meaning, c.example, c.pronunciation, c.tags,
-    cs.status, cs.ease_factor, cs.interval, cs.due_date,
+    cs.status, cs.ease_factor, cs."interval", cs.due_date,
     cs.step_index, cs.lapse_count,
     'review'::TEXT AS queue_type
   FROM cards c
@@ -73,14 +73,14 @@ BEGIN
   WHERE c.deck_id = p_deck_id
     AND cs.status = 'review'
     AND cs.due_date <= CURRENT_DATE + INTERVAL '1 day'
-  ORDER BY cs.due_date ASC
+  ORDER BY cs.due_date ASC)
 
   UNION ALL
 
   -- 3순위: 새 카드 (하루 한도 내)
-  SELECT
+  (SELECT
     c.id, c.word, c.meaning, c.example, c.pronunciation, c.tags,
-    cs.status, cs.ease_factor, cs.interval, cs.due_date,
+    cs.status, cs.ease_factor, cs."interval", cs.due_date,
     cs.step_index, cs.lapse_count,
     'new'::TEXT AS queue_type
   FROM cards c
@@ -88,7 +88,7 @@ BEGIN
   WHERE c.deck_id = p_deck_id
     AND cs.status = 'new'
   ORDER BY c.created_at ASC
-  LIMIT GREATEST(0, v_new_cards_limit - v_today_new_count)
+  LIMIT GREATEST(0, v_new_cards_limit - v_today_new_count))
 
   LIMIT p_limit;
 END;
@@ -230,7 +230,7 @@ BEGIN
   UPDATE card_states
   SET status          = v_new_status,
       ease_factor     = v_new_ef,
-      interval        = v_new_interval,
+      "interval"      = v_new_interval,
       due_date        = v_new_due,
       step_index      = v_new_step,
       lapse_count     = v_new_lapse,
