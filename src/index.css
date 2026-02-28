@@ -1,0 +1,98 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* WordPocket design tokens */
+  --color-ink: #1A1715;
+  --color-parchment: #FDFCF9;
+  --color-canvas: #FAF9F6;
+  --color-sepia: #8A7E6D;
+  --color-dust: #D4CFC4;
+  --color-warm-white: #F7F5F0;
+  --color-moss: #3A6B4A;
+  --color-brick: #8B4A4A;
+  --color-oak: #6B5F4F;
+  --color-slate: #3A4A6B;
+  --color-moss-bg: #E3EEE6;
+  --color-brick-bg: #F5E6E6;
+  --color-oak-bg: #F0EBE3;
+  --color-slate-bg: #E3E8EE;
+  --color-badge-bg: #EEE9DF;
+  --color-border: #E8E3D9;
+  --color-border-subtle: #F0ECE4;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Instrument Sans', -apple-system, sans-serif;
+  --font-korean: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+  --font-mono: 'Space Mono', Menlo, monospace;
+
+  --shadow-sm: 0 1px 3px rgba(26, 23, 21, 0.04);
+  --shadow-md: 0 4px 12px rgba(26, 23, 21, 0.06);
+  --shadow-lg: 0 8px 24px rgba(26, 23, 21, 0.1);
+
+  /* shadcn theme mappings */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+}
+
+:root {
+  --radius: 0.75rem;
+  --background: #FAF9F6;
+  --foreground: #1A1715;
+  --card: #FDFCF9;
+  --card-foreground: #1A1715;
+  --popover: #FDFCF9;
+  --popover-foreground: #1A1715;
+  --primary: #1A1715;
+  --primary-foreground: #FDFCF9;
+  --secondary: #EEE9DF;
+  --secondary-foreground: #6B5F4F;
+  --muted: #FAF9F6;
+  --muted-foreground: #8A7E6D;
+  --accent: #EEE9DF;
+  --accent-foreground: #1A1715;
+  --destructive: #8B4A4A;
+  --destructive-foreground: #FDFCF9;
+  --border: #E8E3D9;
+  --input: #E8E3D9;
+  --ring: #1A1715;
+}
+
+body {
+  font-family: var(--font-body), var(--font-korean);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
