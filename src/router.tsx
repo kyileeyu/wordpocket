@@ -3,19 +3,21 @@ import AuthGuard from "@/components/AuthGuard"
 import GuestGuard from "@/components/GuestGuard"
 import AuthShell from "@/components/layouts/AuthShell"
 import AppShell from "@/components/layouts/AppShell"
-import WelcomePage from "@/pages/WelcomePage"
-import LoginPage from "@/pages/LoginPage"
-import SignupPage from "@/pages/SignupPage"
-import VerifyPage from "@/pages/VerifyPage"
-import HomePage from "@/pages/HomePage"
-import FolderPage from "@/pages/FolderPage"
-import DeckPage from "@/pages/DeckPage"
-import CardFormPage from "@/pages/CardFormPage"
-import CsvImportPage from "@/pages/CsvImportPage"
-import StudyPage from "@/pages/StudyPage"
-import CompletePage from "@/pages/CompletePage"
-import StatsPage from "@/pages/StatsPage"
-import SettingsPage from "@/pages/SettingsPage"
+import {
+  WelcomePage,
+  LoginPage,
+  SignupPage,
+  VerifyPage,
+  HomePage,
+  FolderPage,
+  DeckPage,
+  CardFormPage,
+  CsvImportPage,
+  StudyPage,
+  CompletePage,
+  StatsPage,
+  SettingsPage,
+} from "@/pages"
 
 export const router = createBrowserRouter([
   // Guest-only routes (redirect to / if already logged in)

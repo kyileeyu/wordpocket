@@ -1,6 +1,4 @@
-import StatBox from "@/components/stats/StatBox"
-import Heatmap from "@/components/stats/Heatmap"
-import DeckProgressRow from "@/components/stats/DeckProgressRow"
+import { StatBox, Heatmap, DeckProgressRow } from "@/components/stats"
 import { Label } from "@/components/ui/label"
 
 const heatmapData: (0 | 1 | 2 | 3)[] = [

@@ -1,6 +1,6 @@
 import TopBar from "@/components/navigation/TopBar"
 import { Button } from "@/components/ui/button"
-import CsvDropZone from "@/components/forms/CsvDropZone"
+import { CsvDropZone } from "@/components/forms"
 import { Label } from "@/components/ui/label"
 
 export default function CsvImportPage() {

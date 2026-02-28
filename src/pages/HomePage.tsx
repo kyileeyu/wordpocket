@@ -1,8 +1,8 @@
 import { Link } from "react-router"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import StatPill from "@/components/stats/StatPill"
-import FolderListItem from "@/components/cards/FolderListItem"
+import { StatPill } from "@/components/stats"
+import { FolderListItem } from "@/components/cards"
 
 export default function HomePage() {
   return (

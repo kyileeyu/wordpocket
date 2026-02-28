@@ -1,5 +1,5 @@
 import TopBar from "@/components/navigation/TopBar"
-import CardForm from "@/components/forms/CardForm"
+import { CardForm } from "@/components/forms"
 
 export default function CardFormPage() {
   return (

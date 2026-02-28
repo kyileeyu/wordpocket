@@ -1,7 +1,7 @@
 import { useState } from "react"
 import TopBar from "@/components/navigation/TopBar"
 import StudyProgress from "@/components/study/StudyProgress"
-import WordCard from "@/components/cards/WordCard"
+import { WordCard } from "@/components/cards"
 import ResponseButtons from "@/components/study/ResponseButtons"
 import { RotateCcw, Pencil } from "lucide-react"
 

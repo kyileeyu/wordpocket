@@ -1,6 +1,6 @@
 import { Link } from "react-router"
 import { Button } from "@/components/ui/button"
-import StatBox from "@/components/stats/StatBox"
+import { StatBox } from "@/components/stats"
 
 export default function CompletePage() {
   return (

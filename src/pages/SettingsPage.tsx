@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router"
 import { Label } from "@/components/ui/label"
-import SettingsRow from "@/components/forms/SettingsRow"
+import { SettingsRow } from "@/components/forms"
 import { useAuthStore } from "@/stores/authStore"
 
 export default function SettingsPage() {
