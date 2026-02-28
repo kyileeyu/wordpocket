@@ -45,12 +45,12 @@ WordPocket은 SM-2 기반 간격 반복 단어 학습 웹앱 (Anki 스타일)
 | 리뷰 로그 기록 API | ✅ | **Postgres RPC로 구현 완료** |
 | 세션 완료 요약 화면 | ✅ | CompletePage location.state + useStreak 연동 완료 |
 
-### Week 4 — 대시보드, 통계, PWA ⚠️ 통계 연동 완료, PWA/배포 미착수
+### Week 4 — 대시보드, 통계, PWA ⚠️ 통계 연동 완료, PWA 완료, 배포 미착수
 | 항목 | 상태 | 비고 |
 |------|------|------|
 | 대시보드 페이지 | ⚠️ | HomePage 마크업 완료, **실제 통계 데이터 없음** |
 | 통계 페이지 (히트맵, 리뷰 횟수) | ✅ | StatsPage RPC 연동 완료 (useTodayStats, useHeatmapData, useStreak, useDeckProgress) |
-| PWA 셋업 | ❌ | vite-plugin-pwa 미설치 |
+| PWA 셋업 | ✅ | vite-plugin-pwa + manifest + Service Worker + 아이콘 세트 + workbox 캐싱 |
 | 반응형 디자인 마무리 | ⚠️ | 모바일 퍼스트 480px 레이아웃 구성됨 |
 | E2E 테스트 | ❌ | |
 | 배포 | ❌ | |
@@ -87,9 +87,9 @@ TanStack Query 기반 커스텀 훅으로 서버 상태 관리. Zustand은 authS
 - 카드 목록 검색 기능
 - 덱/폴더 필터링
 
-### 5. PWA
-- vite-plugin-pwa 설치 및 설정
-- Service Worker, manifest, 아이콘
+### 5. PWA — ✅ 완료
+- ✅ vite-plugin-pwa 설치 및 설정
+- ✅ Service Worker, manifest, 아이콘
 
 ### 6. 테스트
 - SM-2 스케줄러 유닛 테스트
@@ -112,7 +112,7 @@ TanStack Query 기반 커스텀 훅으로 서버 상태 관리. Zustand은 authS
 | **CRUD 기능** | **90%** | 폴더/덱/카드 CRUD 완료, 검색 미구현 |
 | **학습 세션** | **100%** | useStudyQueue + useSubmitReview 연동 완료 |
 | **통계 연동** | **100%** | useTodayStats, useHeatmapData, useStreak, useDeckProgress 연동 완료 |
-| PWA | 0% | 미착수 |
+| PWA | 100% | vite-plugin-pwa, manifest, SW, 아이콘, workbox 캐싱 |
 | 테스트 | 0% | 미착수 |
 | 배포 | 0% | 미착수 |
 
