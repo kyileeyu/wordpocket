@@ -47,12 +47,17 @@ export const router = createBrowserRouter([
           { path: "/settings", element: <SettingsPage /> },
         ],
       },
-      // Standalone pages (own shell, still protected)
-      { path: "/deck/:id/add", element: <CardFormPage /> },
-      { path: "/deck/:id/edit/:cardId", element: <CardFormPage /> },
-      { path: "/deck/:id/import", element: <CsvImportPage /> },
-      { path: "/study/:deckId", element: <StudyPage /> },
-      { path: "/study/complete", element: <CompletePage /> },
+      // Standalone pages (AuthShell layout, no bottom nav)
+      {
+        element: <AuthShell />,
+        children: [
+          { path: "/deck/:id/add", element: <CardFormPage /> },
+          { path: "/deck/:id/edit/:cardId", element: <CardFormPage /> },
+          { path: "/deck/:id/import", element: <CsvImportPage /> },
+          { path: "/study/:deckId", element: <StudyPage /> },
+          { path: "/study/complete", element: <CompletePage /> },
+        ],
+      },
     ],
   },
 ])

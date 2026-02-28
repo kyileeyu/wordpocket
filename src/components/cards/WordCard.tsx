@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils"
+
 interface WordCardProps {
   word: string
   phonetic?: string
@@ -14,7 +16,10 @@ export default function WordCard({ word, phonetic, meaning, example, flipped, on
       onClick={!flipped ? onFlip : undefined}
     >
       {/* Word */}
-      <div className="font-display text-ink mb-1" style={{ fontSize: flipped ? 26 : 30, fontWeight: 500 }}>
+      <div className={cn(
+        "font-display text-ink mb-1 font-medium",
+        flipped ? "text-[26px]" : "text-[30px]"
+      )}>
         {word}
       </div>
 
@@ -29,7 +34,7 @@ export default function WordCard({ word, phonetic, meaning, example, flipped, on
           <div className="w-9 h-px bg-dust mx-auto mb-[14px]" />
 
           {/* Meaning */}
-          <div className="font-korean text-[14px] text-[#3A3632]">{meaning}</div>
+          <div className="font-korean text-[14px] text-ink-light">{meaning}</div>
 
           {/* Example */}
           {example && (

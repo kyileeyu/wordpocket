@@ -1,4 +1,5 @@
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 
 interface CardFormProps {
@@ -30,8 +31,7 @@ export default function CardForm({ showToast }: CardFormProps) {
           <Label>
             예문 <span className="opacity-40">(선택)</span>
           </Label>
-          <textarea
-            className="flex w-full min-h-[60px] rounded-[10px] border border-border bg-canvas px-[14px] py-[11px] font-body text-[13px] text-ink placeholder:text-dust focus:border-ink focus:ring-2 focus:ring-ink/6 focus:outline-none resize-none"
+          <Textarea
             placeholder="Smartphones have become ubiquitous in modern society."
           />
         </div>

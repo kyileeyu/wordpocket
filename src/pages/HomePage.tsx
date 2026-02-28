@@ -1,5 +1,6 @@
 import { Link } from "react-router"
 import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
 import StatPill from "@/components/stats/StatPill"
 import FolderListItem from "@/components/cards/FolderListItem"
 
@@ -30,7 +31,7 @@ export default function HomePage() {
 
       {/* Folder List */}
       <div className="px-5">
-        <div className="font-mono text-[8px] tracking-[2px] uppercase text-sepia opacity-50 mb-[6px]">단어장</div>
+        <Label>단어장</Label>
         <FolderListItem
           id="english"
           emoji="🇺🇸"

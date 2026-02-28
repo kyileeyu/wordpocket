@@ -1,6 +1,7 @@
 import { Link } from "react-router"
 import TopBar from "@/components/navigation/TopBar"
 import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
 import StatPill from "@/components/stats/StatPill"
 import DeckCard from "@/components/cards/DeckCard"
 import FAB from "@/components/feedback/FAB"
@@ -41,7 +42,7 @@ export default function FolderPage() {
 
       {/* Deck List */}
       <div className="px-5">
-        <div className="font-mono text-[8px] tracking-[2px] uppercase text-sepia opacity-50 mb-[6px]">3개의 덱</div>
+        <Label>3개의 덱</Label>
         <DeckCard id="toeic" name="TOEIC 필수" cardCount={120} reviewCount={8} stripeColor="#3A6B4A" />
         <DeckCard id="business" name="비즈니스 영어" cardCount={95} reviewCount={10} stripeColor="#3A4A6B" />
         <DeckCard id="daily" name="일상 회화" cardCount={125} reviewCount={0} stripeColor="#6B5F4F" />

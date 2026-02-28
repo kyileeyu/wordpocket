@@ -7,6 +7,7 @@
 @theme inline {
   /* WordPocket design tokens */
   --color-ink: #1A1715;
+  --color-ink-light: #3A3632;
   --color-parchment: #FDFCF9;
   --color-canvas: #FAF9F6;
   --color-sepia: #8A7E6D;

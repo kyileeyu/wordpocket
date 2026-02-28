@@ -1,6 +1,7 @@
 import { Link } from "react-router"
 import TopBar from "@/components/navigation/TopBar"
 import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
 import StatBox from "@/components/stats/StatBox"
 import SegmentedProgress from "@/components/stats/SegmentedProgress"
 import CardListItem from "@/components/cards/CardListItem"
@@ -64,7 +65,7 @@ export default function DeckPage() {
 
       {/* Card List */}
       <div className="px-5">
-        <div className="font-mono text-[8px] tracking-[2px] uppercase text-sepia opacity-50 mb-[6px]">카드 120장</div>
+        <Label>카드 120장</Label>
         <CardListItem word="Ephemeral" meaning="덧없는, 순간적인" status="mature" />
         <CardListItem word="Ubiquitous" meaning="어디에나 있는" status="learning" />
         <CardListItem word="Pragmatic" meaning="실용적인" status="new" />
