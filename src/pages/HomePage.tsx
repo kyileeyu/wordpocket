@@ -17,8 +17,10 @@ export default function HomePage() {
   const createFolder = useCreateFolder()
   const [dialogOpen, setDialogOpen] = useState(false)
 
-  const totalDue = deckProgress?.reduce((sum, d) => sum + d.due_today, 0) ?? 0
+  const totalNew = deckProgress?.reduce((sum, d) => sum + d.new_count, 0) ?? 0
+  const totalDue = (deckProgress?.reduce((sum, d) => sum + d.due_today, 0) ?? 0) + totalNew
   const totalCards = deckProgress?.reduce((sum, d) => sum + d.total_cards, 0) ?? 0
+  const firstDueDeck = deckProgress?.find((d) => d.due_today > 0 || d.new_count > 0)
 
   // Aggregate due_today per folder
   const folderDueMap = new Map<string, number>()
@@ -52,10 +54,10 @@ export default function HomePage() {
       </div>
 
       {/* Study CTA */}
-      {totalDue > 0 && (
+      {totalDue > 0 && firstDueDeck && (
         <div className="px-5 mt-4 mb-4">
           <Button asChild size="lg" className="w-full">
-            <Link to="/study/all">▶ 학습 시작</Link>
+            <Link to={`/study/${firstDueDeck.deck_id}`}>▶ 학습 시작 · {totalDue}장</Link>
           </Button>
         </div>
       )}
