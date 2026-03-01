@@ -56,7 +56,7 @@ function DropdownMenuItem({ children, className, ...props }: React.ButtonHTMLAtt
   return (
     <button
       className={cn(
-        "flex w-full items-center rounded-[12px] px-3 py-2 text-[13px] text-text-primary hover:bg-bg-subtle transition-colors",
+        "flex w-full items-center rounded-[12px] px-3 py-2 typo-body-md text-text-primary hover:bg-bg-subtle transition-colors",
         className
       )}
       onClick={(e) => {

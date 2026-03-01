@@ -104,7 +104,7 @@ export default function StudyPage() {
     return (
       <>
         <TopBar left="close" />
-        <div className="px-5 space-y-4 mt-4">
+        <div className="px-7 space-y-4 mt-4">
           <Skeleton className="h-2 rounded-full" />
           <Skeleton className="h-[280px] rounded-[24px]" />
         </div>
@@ -130,7 +130,7 @@ export default function StudyPage() {
     return (
       <>
         <TopBar left="close" />
-        <div className="px-5 space-y-4 mt-4">
+        <div className="px-7 space-y-4 mt-4">
           <Skeleton className="h-2 rounded-full" />
           <Skeleton className="h-[280px] rounded-[24px]" />
         </div>
@@ -143,7 +143,7 @@ export default function StudyPage() {
       <TopBar
         left="close"
         title={
-          <span className="font-mono text-[11px] text-text-secondary font-normal">
+          <span className="typo-mono-md text-text-secondary font-normal">
             {Math.min(index + 1, initialTotal)} / {initialTotal}
             {againCount > 0 && ` + 복습 ${againCount}`}
           </span>
@@ -157,7 +157,7 @@ export default function StudyPage() {
 
       <StudyProgress current={Math.min(index + 1, initialTotal)} total={initialTotal} />
 
-      <div className="flex-1 flex items-center justify-center px-5">
+      <div className="flex-1 flex items-center justify-center px-7">
         <WordCard
           word={card!.word}
           phonetic={card!.pronunciation ?? undefined}

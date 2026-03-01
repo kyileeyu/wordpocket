@@ -54,7 +54,7 @@ export default function CardForm({ initialData, onSubmit, loading }: CardFormPro
   }
 
   return (
-    <form id="card-form" onSubmit={handleSubmit} className="px-5 pt-4">
+    <form id="card-form" onSubmit={handleSubmit} className="px-7 pt-4">
       <div className="space-y-[10px]">
         <div>
           <Label>단어 *</Label>

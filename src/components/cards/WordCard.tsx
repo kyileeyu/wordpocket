@@ -12,20 +12,20 @@ interface WordCardProps {
 export default function WordCard({ word, phonetic, meaning, example, flipped, onFlip }: WordCardProps) {
   return (
     <div
-      className="bg-bg-elevated border border-border rounded-[24px] p-[28px_20px] text-center shadow-md cursor-pointer w-full"
+      className="bg-bg-elevated rounded-[24px] p-[32px_24px] text-center shadow-[0_2px_16px_rgba(26,26,46,0.08)] cursor-pointer w-full h-[380px] flex flex-col items-center justify-center overflow-hidden"
       onClick={!flipped ? onFlip : undefined}
     >
       {/* Word */}
       <div className={cn(
-        "font-display text-text-primary mb-1 font-medium",
-        flipped ? "text-[26px]" : "text-[30px]"
+        "text-text-primary mb-1",
+        flipped ? "typo-display-xl text-[28px]" : "typo-display-xl"
       )}>
         {word}
       </div>
 
       {/* Phonetic */}
       {phonetic && (
-        <div className="font-mono text-[11px] text-text-secondary mb-[14px]">{phonetic}</div>
+        <div className="typo-mono-md text-text-secondary mb-[14px]">{phonetic}</div>
       )}
 
       {flipped ? (
@@ -34,18 +34,18 @@ export default function WordCard({ word, phonetic, meaning, example, flipped, on
           <div className="w-9 h-[3px] bg-accent-lighter mx-auto mb-[14px] rounded-full" />
 
           {/* Meaning */}
-          <div className="font-korean text-[14px] text-text-primary">{meaning}</div>
+          <div className="font-korean text-[18px] font-medium text-text-primary">{meaning}</div>
 
           {/* Example */}
           {example && (
-            <div className="text-[11px] text-text-secondary mt-[10px] leading-relaxed italic">
+            <div className="typo-caption text-text-secondary mt-[10px] italic line-clamp-3">
               "{example}"
             </div>
           )}
         </>
       ) : (
         /* Hint */
-        <div className="text-[10px] text-text-tertiary mt-4">탭하여 뜻 확인</div>
+        <div className="typo-mono-sm text-text-tertiary mt-4">탭하여 뜻 확인</div>
       )}
     </div>
   )

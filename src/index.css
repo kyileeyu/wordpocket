@@ -43,6 +43,20 @@
   --font-korean: 'Pretendard Variable', 'Pretendard', -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', Menlo, monospace;
 
+  /* Font sizes (Typography tokens) */
+  --font-size-display-xl: 32px;
+  --font-size-display-lg: 30px;
+  --font-size-display-md: 20px;
+  --font-size-stat-value: 18px;
+  --font-size-body-lg: 14px;
+  --font-size-body-md: 13px;
+  --font-size-body-sm: 12px;
+  --font-size-caption: 11px;
+  --font-size-mono-md: 12px;
+  --font-size-mono-sm: 10px;
+  --font-size-overline: 8px;
+  --font-size-nav: 9px;
+
   /* Shadows (navy-based) */
   --shadow-sm: 0 1px 3px rgba(26, 26, 46, 0.04);
   --shadow-md: 0 4px 12px rgba(26, 26, 46, 0.06);
@@ -120,45 +134,110 @@ body {
   position: relative;
   background: linear-gradient(
     135deg,
-    rgba(229, 222, 248, 0.6) 0%,
-    rgba(250, 229, 242, 0.6) 100%
+    #EADFFD 0%,
+    #FDE0EF 100%
   );
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.8),
-    inset 0 -1px 2px rgba(124, 108, 231, 0.1),
-    0 8px 32px rgba(124, 108, 231, 0.15),
-    0 2px 8px rgba(124, 108, 231, 0.1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: none;
+  box-shadow: 0 1px 3px rgba(26, 26, 46, 0.05);
   overflow: hidden;
 }
 
-.btn-glass::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 50%;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.5) 0%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  border-radius: inherit;
-  pointer-events: none;
-}
 
 .btn-glass:hover {
   background: linear-gradient(
     135deg,
-    rgba(229, 222, 248, 0.75) 0%,
-    rgba(250, 229, 242, 0.75) 100%
+    #E0D4FA 0%,
+    #FAD4E8 100%
   );
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.9),
-    inset 0 -1px 2px rgba(124, 108, 231, 0.15),
-    0 12px 40px rgba(124, 108, 231, 0.2),
-    0 4px 12px rgba(124, 108, 231, 0.15);
+  box-shadow: 0 2px 6px rgba(26, 26, 46, 0.07);
+}
+
+/* ── Typography Utility Classes ── */
+
+@utility typo-display-xl {
+  font-family: var(--font-display);
+  font-size: var(--font-size-display-xl);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+@utility typo-display-lg {
+  font-family: var(--font-display);
+  font-size: var(--font-size-display-lg);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+@utility typo-display-md {
+  font-family: var(--font-display);
+  font-size: var(--font-size-display-md);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+@utility typo-stat-value {
+  font-family: var(--font-body);
+  font-size: var(--font-size-stat-value);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+@utility typo-body-lg {
+  font-family: var(--font-body);
+  font-size: var(--font-size-body-lg);
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+@utility typo-body-md {
+  font-family: var(--font-body);
+  font-size: var(--font-size-body-md);
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+@utility typo-body-sm {
+  font-family: var(--font-body);
+  font-size: var(--font-size-body-sm);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+@utility typo-caption {
+  font-family: var(--font-body);
+  font-size: var(--font-size-caption);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+@utility typo-mono-md {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-mono-md);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+@utility typo-mono-sm {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-mono-sm);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+@utility typo-overline {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-overline);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+@utility typo-nav-label {
+  font-family: var(--font-body);
+  font-size: var(--font-size-nav);
+  font-weight: 500;
+  line-height: 1.2;
 }

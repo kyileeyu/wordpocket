@@ -17,18 +17,17 @@ export default function BottomNav() {
             to={to}
             end={to === "/"}
             className={({ isActive }) =>
-              `flex-1 flex flex-col items-center justify-center gap-[3px] text-[9px] font-medium transition-colors ${
+              `flex-1 flex flex-col items-center justify-center gap-[3px] typo-nav-label transition-colors ${
                 isActive ? "text-accent" : "text-text-tertiary"
               }`
             }
           >
             {({ isActive }) => (
               <>
-                <Icon className="w-5 h-5" strokeWidth={isActive ? 2.5 : 2} />
+                <div className={`rounded-[10px] p-1.5 ${isActive ? "bg-accent-bg" : ""}`}>
+                  <Icon className="w-5 h-5" strokeWidth={isActive ? 2.5 : 2} />
+                </div>
                 {label}
-                {isActive && (
-                  <div className="w-1 h-1 rounded-full bg-accent -mt-[2px]" />
-                )}
               </>
             )}
           </NavLink>

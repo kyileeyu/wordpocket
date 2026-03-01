@@ -22,7 +22,7 @@ export default function Heatmap({ cells }: HeatmapProps) {
           />
         ))}
       </div>
-      <div className="flex justify-between text-[9px] text-text-tertiary mt-1">
+      <div className="flex justify-between typo-nav-label text-text-tertiary mt-1">
         <span>4주 전</span>
         <span>오늘</span>
       </div>
