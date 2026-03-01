@@ -23,7 +23,7 @@ export default function CompletePage() {
       <div className="flex-1 flex flex-col justify-center px-7">
         {/* Celebration */}
         <div className="text-[48px] text-center mb-2">🎉</div>
-        <h1 className="typo-display-md text-center text-text-primary mb-1">학습 완료!</h1>
+        <h1 className="typo-display-xl text-center text-text-primary mb-1">학습 완료!</h1>
         <p className="typo-body-sm text-text-secondary text-center mb-5">오늘도 한 걸음 나아갔어요.</p>
 
         {/* Stats */}

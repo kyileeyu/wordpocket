@@ -24,7 +24,7 @@ export default function StatsPage() {
     <div>
       {/* Title */}
       <div className="px-5 pt-3">
-        <h1 className="typo-display-md text-text-primary mb-4">학습 통계</h1>
+        <h1 className="typo-display-xl text-text-primary mb-4">학습 통계</h1>
       </div>
 
       {/* Today Stats */}

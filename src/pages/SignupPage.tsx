@@ -40,7 +40,7 @@ export default function SignupPage() {
     <>
       <TopBar left="back" />
       <form onSubmit={handleSubmit} className="px-5 pt-6">
-        <h1 className="typo-display-md text-text-primary mb-[6px]">시작해볼까요</h1>
+        <h1 className="typo-display-xl text-text-primary mb-[6px]">시작해볼까요</h1>
         <p className="typo-caption text-text-secondary mb-7">간단한 가입으로 바로 학습을 시작하세요.</p>
 
         {error && (

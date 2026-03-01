@@ -57,7 +57,7 @@ export default function HomePage() {
       {/* Greeting + Title */}
       <div className="px-5 pt-3">
         <div className="typo-caption font-display text-text-secondary italic mb-[2px]">{getGreeting()}</div>
-        <h1 className="typo-display-md text-text-primary">오늘의 복습</h1>
+        <h1 className="typo-display-xl text-text-primary">오늘의 복습</h1>
       </div>
 
       {/* Stat Pills */}
