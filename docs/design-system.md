@@ -101,21 +101,26 @@ WordPocket은 현대적이고 깔끔한 학습 도구다. 울트라 라운드 �
 
 ### 3.2 Type Scale
 
-| Token        | Size | Weight      | Line-height | 용도                                      |
-| ------------ | ---- | ----------- | ----------- | ----------------------------------------- |
-| `display-lg` | 30px | Outfit 500  | 1.2         | 학습 카드 — 영단어 (앞면)                 |
-| `display-md` | 20px | Outfit 500  | 1.25        | 섹션 타이틀 (오늘의 복습)                 |
-| `body-lg`    | 14px | Outfit 400  | 1.6         | 한글 뜻, 설명 텍스트                      |
-| `body-md`    | 13px | Outfit 400  | 1.5         | 일반 본문                                 |
-| `body-sm`    | 12px | Outfit 500  | 1.4         | 버튼 레이블, 캡션                         |
-| `caption`    | 11px | Outfit 400  | 1.4         | 보조 정보, 그리팅                         |
-| `mono-md`    | 12px | JetBrains 400 | 1.4       | 발음기호, 통계 수치                       |
-| `mono-sm`    | 10px | JetBrains 400 | 1.4       | 상태바, 메타 정보                         |
-| `overline`   | 8px  | JetBrains 400 | 1.2       | 섹션 라벨 (letter-spacing 2px, uppercase) |
+| Token         | Size | Weight        | Line-height | CSS Utility        | 용도                                      |
+| ------------- | ---- | ------------- | ----------- | ------------------ | ----------------------------------------- |
+| `display-xl`  | 32px | Outfit 700    | 1.2         | `typo-display-xl`  | 브랜드 타이틀 (Welcome)                   |
+| `display-lg`  | 30px | Outfit 700    | 1.2         | `typo-display-lg`  | 학습 카드 — 영단어 (앞면)                 |
+| `display-md`  | 20px | Outfit 600    | 1.25        | `typo-display-md`  | 섹션 타이틀 (오늘의 복습)                 |
+| `stat-value`  | 18px | Outfit 700    | 1.2         | `typo-stat-value`  | 통계 수치 (StatBox)                       |
+| `body-lg`     | 14px | Outfit 400    | 1.6         | `typo-body-lg`     | 한글 뜻, 설명 텍스트                      |
+| `body-md`     | 13px | Outfit 400    | 1.5         | `typo-body-md`     | 일반 본문                                 |
+| `body-sm`     | 12px | Outfit 500    | 1.4         | `typo-body-sm`     | 버튼 레이블, 캡션                         |
+| `caption`     | 11px | Outfit 400    | 1.4         | `typo-caption`     | 보조 정보, 그리팅                         |
+| `mono-md`     | 12px | JetBrains 400 | 1.4         | `typo-mono-md`     | 발음기호, 통계 수치                       |
+| `mono-sm`     | 10px | JetBrains 400 | 1.4         | `typo-mono-sm`     | 상태바, 메타 정보                         |
+| `overline`    | 8px  | JetBrains 400 | 1.2         | `typo-overline`    | 섹션 라벨 (letter-spacing 2px, uppercase) |
+| `nav-label`   | 9px  | Outfit 500    | 1.2         | `typo-nav-label`   | 하단 네비게이션 라벨                      |
+
+> **`@utility` 클래스 사용법:** 각 `typo-*` 클래스는 font-family, font-size, font-weight, line-height(+ letter-spacing)를 한 번에 설정하는 composite utility다. `src/index.css`에 `@utility` 블록으로 정의되어 있다.
 
 ### 3.3 Typography 원칙
 
-- **영단어는 Outfit Medium.** 산세리프의 깔끔함으로 단어가 돋보인다.
+- **영단어는 Outfit Bold.** 산세리프의 깔끔함과 대담한 weight로 단어가 돋보인다.
 - **한글은 Pretendard Variable 400.** 가변폰트로 부드러운 렌더링.
 - **발음기호는 JetBrains Mono.** 모노스페이스가 IPA 기호의 정렬과 가독성을 보장한다.
 - **letter-spacing:** 본문은 기본값. overline/label에만 양수 letter-spacing 적용.
