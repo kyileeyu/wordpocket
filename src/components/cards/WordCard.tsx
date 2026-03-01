@@ -12,7 +12,7 @@ interface WordCardProps {
 export default function WordCard({ word, phonetic, meaning, example, flipped, onFlip }: WordCardProps) {
   return (
     <div
-      className="bg-bg-elevated border border-border rounded-[24px] p-[32px_24px] text-center shadow-md cursor-pointer w-full"
+      className="bg-bg-elevated rounded-[24px] p-[32px_24px] text-center shadow-[0_2px_16px_rgba(26,26,46,0.08)] cursor-pointer w-full h-[380px] flex flex-col items-center justify-center overflow-hidden"
       onClick={!flipped ? onFlip : undefined}
     >
       {/* Word */}
@@ -38,7 +38,7 @@ export default function WordCard({ word, phonetic, meaning, example, flipped, on
 
           {/* Example */}
           {example && (
-            <div className="typo-caption text-text-secondary mt-[10px] italic">
+            <div className="typo-caption text-text-secondary mt-[10px] italic line-clamp-3">
               "{example}"
             </div>
           )}

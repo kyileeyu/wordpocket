@@ -8,7 +8,7 @@
   /* ── Soft Focus v2.1 design tokens ── */
 
   /* Background */
-  --color-bg-primary: #F2F2F7;
+  --color-bg-primary: #FAFAFE;
   --color-bg-elevated: #FFFFFF;
   --color-bg-subtle: #F3F2FA;
 
@@ -93,7 +93,7 @@
 
 :root {
   --radius: 1rem;
-  --background: #F2F2F7;
+  --background: #FAFAFE;
   --foreground: #1A1A2E;
   --card: #FFFFFF;
   --card-foreground: #1A1A2E;
@@ -103,7 +103,7 @@
   --primary-foreground: #FFFFFF;
   --secondary: #F3F2FA;
   --secondary-foreground: #6E6B7B;
-  --muted: #F2F2F7;
+  --muted: #FAFAFE;
   --muted-foreground: #6E6B7B;
   --accent: #EDEAFC;
   --accent-foreground: #1A1A2E;
@@ -134,47 +134,24 @@ body {
   position: relative;
   background: linear-gradient(
     135deg,
-    rgba(229, 222, 248, 0.6) 0%,
-    rgba(250, 229, 242, 0.6) 100%
+    #EADFFD 0%,
+    #FDE0EF 100%
   );
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.8),
-    inset 0 -1px 2px rgba(124, 108, 231, 0.1),
-    0 8px 32px rgba(124, 108, 231, 0.15),
-    0 2px 8px rgba(124, 108, 231, 0.1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: none;
+  box-shadow: 0 1px 3px rgba(26, 26, 46, 0.05);
   overflow: hidden;
 }
 
-.btn-glass::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 50%;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.5) 0%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  border-radius: inherit;
-  pointer-events: none;
-}
 
 .btn-glass:hover {
   background: linear-gradient(
     135deg,
-    rgba(229, 222, 248, 0.75) 0%,
-    rgba(250, 229, 242, 0.75) 100%
+    #E0D4FA 0%,
+    #FAD4E8 100%
   );
-  box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.9),
-    inset 0 -1px 2px rgba(124, 108, 231, 0.15),
-    0 12px 40px rgba(124, 108, 231, 0.2),
-    0 4px 12px rgba(124, 108, 231, 0.15);
+  box-shadow: 0 2px 6px rgba(26, 26, 46, 0.07);
 }
 
 /* ── Typography Utility Classes ── */
