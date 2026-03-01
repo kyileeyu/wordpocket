@@ -42,7 +42,11 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   signUp: async (email, password) => {
     set({ loading: true });
-    const { error } = await supabase.auth.signUp({ email, password });
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { emailRedirectTo: window.location.origin },
+    });
     set({ loading: false });
     return { error: error?.message ?? null };
   },
@@ -64,6 +68,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     const { error } = await supabase.auth.resend({
       type: 'signup',
       email,
+      options: { emailRedirectTo: window.location.origin },
     });
     set({ loading: false });
     return { error: error?.message ?? null };
