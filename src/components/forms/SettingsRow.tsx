@@ -20,9 +20,9 @@ export default function SettingsRow({ label, description, value, toggle, toggleO
       onClick={onPress}
     >
       <div>
-        <div className={cn("text-[13px]", danger ? "text-danger" : "text-text-primary")}>{label}</div>
+        <div className={cn("typo-body-md", danger ? "text-danger" : "text-text-primary")}>{label}</div>
         {description && (
-          <div className="text-[10px] text-text-secondary">{description}</div>
+          <div className="typo-mono-sm text-text-secondary">{description}</div>
         )}
       </div>
       <div className="shrink-0">

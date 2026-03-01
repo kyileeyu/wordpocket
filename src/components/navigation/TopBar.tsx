@@ -25,7 +25,7 @@ export default function TopBar({ left, title, right, onLeftClick }: TopBarProps)
           </button>
         )}
       </div>
-      <div className="text-[13px] font-semibold text-text-primary truncate">{title}</div>
+      <div className="typo-body-md font-semibold text-text-primary truncate">{title}</div>
       <div className="w-11 flex justify-end">{right}</div>
     </div>
   )

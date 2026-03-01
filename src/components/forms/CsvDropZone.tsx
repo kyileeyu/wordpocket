@@ -17,7 +17,7 @@ export default function CsvDropZone({ onFileSelect }: CsvDropZoneProps) {
   return (
     <div className="border-[1.5px] border-dashed border-accent-lighter rounded-[14px] py-7 px-5 text-center">
       <div className="text-[28px] mb-2 opacity-50">📄</div>
-      <div className="text-[12px] text-text-secondary mb-2">CSV 파일을 선택하세요</div>
+      <div className="typo-body-sm text-text-secondary mb-2">CSV 파일을 선택하세요</div>
       <input
         ref={inputRef}
         type="file"

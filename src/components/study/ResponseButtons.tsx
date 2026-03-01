@@ -15,11 +15,11 @@ export default function ResponseButtons({ onResponse }: ResponseButtonsProps) {
       {responses.map(({ label, time, bg, text, border }) => (
         <button
           key={label}
-          className={`flex-1 rounded-[16px] py-[10px] px-1 text-center border-[1.5px] ${bg} ${text} ${border} cursor-pointer`}
+          className={`flex-1 rounded-[20px] py-[10px] px-1 text-center border-[1.5px] ${bg} ${text} ${border} cursor-pointer`}
           onClick={() => onResponse?.(label)}
         >
-          <div className="text-[10px] font-semibold">{label}</div>
-          <div className="text-[8px] font-normal opacity-70 mt-[2px]">{time}</div>
+          <div className="typo-mono-sm font-semibold">{label}</div>
+          <div className="text-[length:var(--font-size-overline)] font-normal opacity-70 mt-[2px]">{time}</div>
         </button>
       ))}
     </div>
