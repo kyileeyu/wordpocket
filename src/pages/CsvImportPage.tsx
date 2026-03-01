@@ -74,14 +74,12 @@ export default function CsvImportPage() {
   const navigate = useNavigate()
   const qc = useQueryClient()
   const [rows, setRows] = useState<CsvRow[]>([])
-  const [csvText, setCsvText] = useState("")
   const [loading, setLoading] = useState(false)
 
   const handleFileSelect = (file: File) => {
     const reader = new FileReader()
     reader.onload = (e) => {
       const text = e.target?.result as string
-      setCsvText(text)
       setRows(parseCsv(text))
     }
     reader.readAsText(file)
