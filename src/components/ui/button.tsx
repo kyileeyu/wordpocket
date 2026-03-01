@@ -16,9 +16,9 @@ const buttonVariants = cva(
         outline: "border border-border bg-transparent text-text-primary rounded-full hover:bg-bg-subtle",
       },
       size: {
-        default: "h-12 px-4 py-3 text-[12px]",
-        sm: "h-9 px-3 text-[11px]",
-        lg: "h-[52px] px-4 py-[14px] text-[14px]",
+        default: "h-12 px-4 py-3 text-[length:var(--font-size-body-sm)]",
+        sm: "h-9 px-3 text-[length:var(--font-size-caption)]",
+        lg: "h-[52px] px-4 py-[14px] text-[length:var(--font-size-body-lg)]",
         icon: "h-9 w-9",
       },
     },
