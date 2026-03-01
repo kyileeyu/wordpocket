@@ -88,13 +88,21 @@ export default function CsvImportPage() {
   }
 
   const handleImport = async () => {
-    if (!rows.length || !deckId || !csvText) return
+    if (!rows.length || !deckId) return
     setLoading(true)
     try {
-      const { error } = await supabase.functions.invoke("import-csv", {
-        body: { deck_id: deckId, csv_content: csvText },
-      })
+      const insertData = rows.map((row) => ({
+        deck_id: deckId,
+        word: row.word,
+        meaning: row.meaning,
+        example: row.example || "",
+        pronunciation: row.pronunciation || "",
+        tags: row.tags ? row.tags.split(";").map((t) => t.trim()) : [],
+      }))
+
+      const { error } = await supabase.from("cards").insert(insertData)
       if (error) throw error
+
       qc.invalidateQueries({ queryKey: ["cards", deckId] })
       qc.invalidateQueries({ queryKey: ["deck-progress"] })
       toast.success(`${rows.length}장 가져오기 완료`)

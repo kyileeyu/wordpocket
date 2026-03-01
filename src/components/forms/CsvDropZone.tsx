@@ -1,4 +1,4 @@
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 
 interface CsvDropZoneProps {
@@ -7,6 +7,7 @@ interface CsvDropZoneProps {
 
 export default function CsvDropZone({ onFileSelect }: CsvDropZoneProps) {
   const inputRef = useRef<HTMLInputElement>(null)
+  const [dragging, setDragging] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -14,10 +15,32 @@ export default function CsvDropZone({ onFileSelect }: CsvDropZoneProps) {
     e.target.value = ""
   }
 
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    setDragging(false)
+    const file = e.dataTransfer.files[0]
+    if (file?.name.endsWith(".csv")) onFileSelect?.(file)
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    setDragging(true)
+  }
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault()
+    setDragging(false)
+  }
+
   return (
-    <div className="border-[1.5px] border-dashed border-accent-lighter rounded-[14px] py-7 px-5 text-center">
+    <div
+      onDrop={handleDrop}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      className={`border-[1.5px] border-dashed rounded-[14px] py-7 px-5 text-center transition-colors ${dragging ? "border-accent bg-accent/5" : "border-accent-lighter"}`}
+    >
       <div className="text-[28px] mb-2 opacity-50">📄</div>
-      <div className="typo-body-sm text-text-secondary mb-2">CSV 파일을 선택하세요</div>
+      <div className="typo-body-sm text-text-secondary mb-2">{dragging ? "여기에 놓으세요" : "CSV 파일을 선택하세요"}</div>
       <input
         ref={inputRef}
         type="file"
