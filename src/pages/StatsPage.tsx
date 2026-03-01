@@ -24,7 +24,7 @@ export default function StatsPage() {
     <div>
       {/* Title */}
       <div className="px-5 pt-3">
-        <h1 className="font-display text-[20px] font-medium text-text-primary mb-4">학습 통계</h1>
+        <h1 className="typo-display-md text-text-primary mb-4">학습 통계</h1>
       </div>
 
       {/* Today Stats */}
@@ -76,7 +76,7 @@ export default function StatsPage() {
               )
             })
           ) : (
-            <p className="text-[12px] text-text-secondary py-4 text-center">덱이 없습니다.</p>
+            <p className="typo-body-sm text-text-secondary py-4 text-center">덱이 없습니다.</p>
           )}
         </div>
       </div>

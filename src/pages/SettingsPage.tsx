@@ -16,8 +16,8 @@ export default function SettingsPage() {
     <div>
       {/* Header */}
       <div className="px-5 pt-3">
-        <h1 className="font-display text-[20px] font-medium text-text-primary mb-1">설정</h1>
-        <p className="text-[11px] text-text-secondary mb-1">{user?.email ?? ""}</p>
+        <h1 className="typo-display-md text-text-primary mb-1">설정</h1>
+        <p className="typo-caption text-text-secondary mb-1">{user?.email ?? ""}</p>
       </div>
 
       {/* Learning Section */}

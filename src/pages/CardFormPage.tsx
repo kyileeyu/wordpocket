@@ -67,7 +67,7 @@ export default function CardFormPage() {
           <button
             type="submit"
             form="card-form"
-            className="text-[11px] text-accent font-semibold cursor-pointer"
+            className="typo-caption text-accent font-semibold cursor-pointer"
             disabled={loading}
           >
             {loading ? "저장 중..." : "저장"}

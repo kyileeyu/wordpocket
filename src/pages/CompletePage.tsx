@@ -23,8 +23,8 @@ export default function CompletePage() {
       <div className="flex-1 flex flex-col justify-center px-7">
         {/* Celebration */}
         <div className="text-[48px] text-center mb-2">🎉</div>
-        <h1 className="font-display text-[22px] text-center text-text-primary mb-1">학습 완료!</h1>
-        <p className="text-[12px] text-text-secondary text-center mb-5">오늘도 한 걸음 나아갔어요.</p>
+        <h1 className="typo-display-md text-center text-text-primary mb-1">학습 완료!</h1>
+        <p className="typo-body-sm text-text-secondary text-center mb-5">오늘도 한 걸음 나아갔어요.</p>
 
         {/* Stats */}
         <div className="flex gap-[6px] mb-5">
@@ -35,8 +35,8 @@ export default function CompletePage() {
 
         {/* Streak Card */}
         <div className="bg-bg-subtle border border-border rounded-[20px] p-4 text-center mb-5">
-          <div className="text-[11px] text-text-secondary mb-1">연속 학습</div>
-          <div className="text-[28px] font-bold text-accent">🔥 {streak}일</div>
+          <div className="typo-caption text-text-secondary mb-1">연속 학습</div>
+          <div className="typo-stat-value text-[28px] text-accent">🔥 {streak}일</div>
         </div>
 
         {/* CTA */}

@@ -143,7 +143,7 @@ export default function StudyPage() {
       <TopBar
         left="close"
         title={
-          <span className="font-mono text-[11px] text-text-secondary font-normal">
+          <span className="typo-mono-md text-text-secondary font-normal">
             {Math.min(index + 1, initialTotal)} / {initialTotal}
             {againCount > 0 && ` + 복습 ${againCount}`}
           </span>

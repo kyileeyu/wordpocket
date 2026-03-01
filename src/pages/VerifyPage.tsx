@@ -18,9 +18,9 @@ export default function VerifyPage() {
   return (
     <div className="flex-1 flex flex-col justify-center px-7 text-center">
       <div className="text-[48px] mb-4">✉️</div>
-      <h1 className="font-display text-[20px] font-medium text-text-primary mb-2">메일을 확인해주세요</h1>
-      <p className="text-[11px] text-text-secondary mb-[6px]">인증 링크를 보냈습니다.</p>
-      <p className="font-mono text-[12px] text-text-primary mb-8">{email || "your@email.com"}</p>
+      <h1 className="typo-display-md text-text-primary mb-2">메일을 확인해주세요</h1>
+      <p className="typo-caption text-text-secondary mb-[6px]">인증 링크를 보냈습니다.</p>
+      <p className="typo-mono-md text-text-primary mb-8">{email || "your@email.com"}</p>
 
       <Button
         variant="secondary"
@@ -30,7 +30,7 @@ export default function VerifyPage() {
       >
         {sent ? "메일을 확인해주세요" : "인증 메일 재전송"}
       </Button>
-      <Button asChild variant="ghost" className="w-full text-[11px]">
+      <Button asChild variant="ghost" className="w-full text-[length:var(--font-size-caption)]">
         <Link to="/signup">다른 이메일로 가입</Link>
       </Button>
 

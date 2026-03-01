@@ -72,12 +72,12 @@ export default function CsvImportPage() {
             <div className="mt-4">
               <Label>미리보기 (처음 3행)</Label>
               <div className="overflow-hidden rounded-[10px] border border-border mt-1 mb-4">
-                <table className="w-full text-[10px]">
+                <table className="w-full typo-mono-sm">
                   <thead>
                     <tr>
-                      <th className="font-mono text-[8px] tracking-[1px] uppercase text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary">단어</th>
-                      <th className="font-mono text-[8px] tracking-[1px] uppercase text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary">뜻</th>
-                      <th className="font-mono text-[8px] tracking-[1px] uppercase text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary">예문</th>
+                      <th className="typo-overline text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary">단어</th>
+                      <th className="typo-overline text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary">뜻</th>
+                      <th className="typo-overline text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary">예문</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -93,7 +93,7 @@ export default function CsvImportPage() {
               </div>
             </div>
 
-            <p className="text-[11px] text-text-secondary mb-4">
+            <p className="typo-caption text-text-secondary mb-4">
               총 <strong className="text-text-primary">{rows.length}</strong>장의 카드가 감지되었습니다.
             </p>
 
