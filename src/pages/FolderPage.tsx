@@ -87,7 +87,7 @@ export default function FolderPage() {
       />
 
       {/* Stats + CTA */}
-      <div className="px-5 pt-2">
+      <div className="px-6 pt-2">
         <div className="flex gap-[6px] flex-wrap mb-3">
           <StatPill emoji="📖" value={totalDue} label="복습 대기" />
           <StatPill emoji="📦" value={totalCards} label="전체 카드" />
@@ -100,7 +100,7 @@ export default function FolderPage() {
       </div>
 
       {/* Deck List */}
-      <div className="px-5">
+      <div className="px-6">
         {decksLoading ? (
           <div className="space-y-3 mt-2">
             <Skeleton className="h-[72px] rounded-[20px]" />

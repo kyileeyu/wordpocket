@@ -15,13 +15,13 @@ export default function SettingsPage() {
   return (
     <div>
       {/* Header */}
-      <div className="px-5 pt-3">
+      <div className="px-6 pt-3">
         <h1 className="typo-display-xl text-text-primary mb-1">설정</h1>
         <p className="typo-caption text-text-secondary mb-1">{user?.email ?? ""}</p>
       </div>
 
       {/* Learning Section */}
-      <div className="px-5 mt-4">
+      <div className="px-6 mt-4">
         <Label>학습</Label>
         <SettingsRow label="하루 새 카드 수" description="기본 20장" value={20} />
         <SettingsRow label="역방향 카드 자동 생성" toggle toggleOn />
@@ -30,13 +30,13 @@ export default function SettingsPage() {
       </div>
 
       {/* Notification Section */}
-      <div className="px-5 mt-4">
+      <div className="px-6 mt-4">
         <Label>알림</Label>
         <SettingsRow label="일일 복습 리마인더" value="09:00" />
       </div>
 
       {/* Account Section */}
-      <div className="px-5 mt-4">
+      <div className="px-6 mt-4">
         <Label>계정</Label>
         <SettingsRow label="비밀번호 변경" chevron />
         <SettingsRow label="로그아웃" danger noBorder onPress={handleSignOut} />

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 
 export default function WelcomePage() {
   return (
-    <div className="flex-1 flex flex-col justify-center px-7 bg-[linear-gradient(135deg,#7C6CE7_0%,#A99BF0_50%,#D4CEFA_100%)]">
+    <div className="flex-1 flex flex-col justify-center px-8 bg-[linear-gradient(135deg,#7C6CE7_0%,#A99BF0_50%,#D4CEFA_100%)]">
       <div className="text-center mb-12">
         <h1 className="typo-display-xl text-white mb-1">WordPocket</h1>
         <p className="typo-body-md text-white/80">

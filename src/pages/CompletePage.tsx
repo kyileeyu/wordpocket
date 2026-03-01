@@ -20,7 +20,7 @@ export default function CompletePage() {
 
   return (
     <>
-      <div className="flex-1 flex flex-col justify-center px-7">
+      <div className="flex-1 flex flex-col justify-center px-8">
         {/* Celebration */}
         <div className="text-[48px] text-center mb-2">🎉</div>
         <h1 className="typo-display-xl text-center text-text-primary mb-1">학습 완료!</h1>

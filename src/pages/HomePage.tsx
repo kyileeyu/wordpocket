@@ -55,13 +55,13 @@ export default function HomePage() {
   return (
     <div>
       {/* Greeting + Title */}
-      <div className="px-5 pt-3">
+      <div className="px-6 pt-3">
         <div className="typo-caption font-display text-text-secondary italic mb-[2px]">{getGreeting()}</div>
         <h1 className="typo-display-xl text-text-primary">오늘의 복습</h1>
       </div>
 
       {/* Stat Pills */}
-      <div className="px-5 mt-4">
+      <div className="px-6 mt-4">
         <div className="flex gap-[6px] flex-wrap">
           <StatPill emoji="📖" value={reviewedCount} label="복습" />
           <StatPill emoji="🆕" value={newLearnedCount} label="신규" />
@@ -72,7 +72,7 @@ export default function HomePage() {
 
       {/* Study CTA */}
       {totalDue > 0 && firstDueDeck && (
-        <div className="px-5 mt-4">
+        <div className="px-6 mt-4">
           <Button asChild size="lg" className="w-full">
             <Link to={`/study/${firstDueDeck.deck_id}`}>▶ 학습 시작 · {totalDue}장</Link>
           </Button>
@@ -80,7 +80,7 @@ export default function HomePage() {
       )}
 
       {/* Folder List */}
-      <div className="px-5 mt-4">
+      <div className="px-6 mt-4">
         <Label>단어장</Label>
 
         {foldersLoading ? (

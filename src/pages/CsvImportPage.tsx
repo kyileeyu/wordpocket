@@ -64,7 +64,7 @@ export default function CsvImportPage() {
   return (
     <>
       <TopBar left="back" title="CSV 가져오기" />
-      <div className="px-5 pt-4">
+      <div className="px-6 pt-4">
         <CsvDropZone onFileSelect={handleFileSelect} />
 
         {rows.length > 0 && (

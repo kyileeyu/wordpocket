@@ -14,7 +14,7 @@ export default function TopBar({ left, title, right, onLeftClick }: TopBarProps)
   const handleLeft = onLeftClick ?? (() => navigate(-1))
 
   return (
-    <div className="flex items-center justify-between px-5 pt-2 pb-1">
+    <div className="flex items-center justify-between px-6 pt-2 pb-1">
       <div className="w-11">
         {left && (
           <button
