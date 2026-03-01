@@ -8,7 +8,7 @@
   /* ── Soft Focus v2.1 design tokens ── */
 
   /* Background */
-  --color-bg-primary: #FAFAFE;
+  --color-bg-primary: #F2F2F7;
   --color-bg-elevated: #FFFFFF;
   --color-bg-subtle: #F3F2FA;
 
@@ -93,7 +93,7 @@
 
 :root {
   --radius: 1rem;
-  --background: #FAFAFE;
+  --background: #F2F2F7;
   --foreground: #1A1A2E;
   --card: #FFFFFF;
   --card-foreground: #1A1A2E;
@@ -103,7 +103,7 @@
   --primary-foreground: #FFFFFF;
   --secondary: #F3F2FA;
   --secondary-foreground: #6E6B7B;
-  --muted: #FAFAFE;
+  --muted: #F2F2F7;
   --muted-foreground: #6E6B7B;
   --accent: #EDEAFC;
   --accent-foreground: #1A1A2E;
