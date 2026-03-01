@@ -74,7 +74,7 @@ export default function DeckPage() {
       />
 
       {/* Stat Boxes */}
-      <div className="px-7 pt-2">
+      <div className="px-7 pt-7">
         <div className="flex gap-[6px] mb-2">
           <StatBox value={newCount} label="New" />
           <StatBox value={learningCount} label="Learning" />

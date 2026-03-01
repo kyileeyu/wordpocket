@@ -12,15 +12,60 @@ interface CsvRow {
   word: string
   meaning: string
   example?: string
+  pronunciation?: string
+  tags?: string
+}
+
+function parseCsvLine(line: string): string[] {
+  const result: string[] = []
+  let current = ""
+  let inQuotes = false
+
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i]
+    if (inQuotes) {
+      if (char === '"' && line[i + 1] === '"') {
+        current += '"'
+        i++
+      } else if (char === '"') {
+        inQuotes = false
+      } else {
+        current += char
+      }
+    } else {
+      if (char === '"') {
+        inQuotes = true
+      } else if (char === ",") {
+        result.push(current)
+        current = ""
+      } else {
+        current += char
+      }
+    }
+  }
+  result.push(current)
+  return result
 }
 
 function parseCsv(text: string): CsvRow[] {
   const lines = text.trim().split("\n")
   if (lines.length < 2) return []
 
+  const header = parseCsvLine(lines[0]).map((h) => h.trim().toLowerCase())
+
   return lines.slice(1).map((line) => {
-    const cols = line.split(",").map((c) => c.trim().replace(/^"|"$/g, ""))
-    return { word: cols[0] ?? "", meaning: cols[1] ?? "", example: cols[2] }
+    const values = parseCsvLine(line)
+    const row: Record<string, string> = {}
+    header.forEach((h, idx) => {
+      row[h] = values[idx]?.trim() ?? ""
+    })
+    return {
+      word: row.word ?? "",
+      meaning: row.meaning ?? "",
+      example: row.example || undefined,
+      pronunciation: row.pronunciation || undefined,
+      tags: row.tags || undefined,
+    }
   }).filter((r) => r.word && r.meaning)
 }
 
@@ -29,23 +74,25 @@ export default function CsvImportPage() {
   const navigate = useNavigate()
   const qc = useQueryClient()
   const [rows, setRows] = useState<CsvRow[]>([])
+  const [csvText, setCsvText] = useState("")
   const [loading, setLoading] = useState(false)
 
   const handleFileSelect = (file: File) => {
     const reader = new FileReader()
     reader.onload = (e) => {
       const text = e.target?.result as string
+      setCsvText(text)
       setRows(parseCsv(text))
     }
     reader.readAsText(file)
   }
 
   const handleImport = async () => {
-    if (!rows.length || !deckId) return
+    if (!rows.length || !deckId || !csvText) return
     setLoading(true)
     try {
       const { error } = await supabase.functions.invoke("import-csv", {
-        body: { deck_id: deckId, rows },
+        body: { deck_id: deckId, csv_content: csvText },
       })
       if (error) throw error
       qc.invalidateQueries({ queryKey: ["cards", deckId] })
@@ -64,20 +111,22 @@ export default function CsvImportPage() {
   return (
     <>
       <TopBar left="back" title="CSV 가져오기" />
-      <div className="px-7 pt-4">
+      <div className="px-7 pt-7">
         <CsvDropZone onFileSelect={handleFileSelect} />
 
         {rows.length > 0 && (
           <>
             <div className="mt-4">
               <Label>미리보기 (처음 3행)</Label>
-              <div className="overflow-hidden rounded-[10px] border border-border mt-1 mb-4">
+              <div className="overflow-x-auto rounded-[10px] border border-border mt-1 mb-4">
                 <table className="w-full typo-mono-sm">
                   <thead>
                     <tr>
-                      <th className="typo-overline text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary">단어</th>
-                      <th className="typo-overline text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary">뜻</th>
-                      <th className="typo-overline text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary">예문</th>
+                      <th className="typo-overline text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary whitespace-nowrap">단어</th>
+                      <th className="typo-overline text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary whitespace-nowrap">뜻</th>
+                      <th className="typo-overline text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary whitespace-nowrap">예문</th>
+                      <th className="typo-overline text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary whitespace-nowrap">발음</th>
+                      <th className="typo-overline text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary whitespace-nowrap">태그</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -86,6 +135,8 @@ export default function CsvImportPage() {
                         <td className={`p-[6px_8px] ${i < preview.length - 1 ? "border-b border-border" : ""}`}>{row.word}</td>
                         <td className={`p-[6px_8px] ${i < preview.length - 1 ? "border-b border-border" : ""}`}>{row.meaning}</td>
                         <td className={`p-[6px_8px] ${i < preview.length - 1 ? "border-b border-border" : ""}`}>{row.example ?? ""}</td>
+                        <td className={`p-[6px_8px] ${i < preview.length - 1 ? "border-b border-border" : ""}`}>{row.pronunciation ?? ""}</td>
+                        <td className={`p-[6px_8px] ${i < preview.length - 1 ? "border-b border-border" : ""}`}>{row.tags ?? ""}</td>
                       </tr>
                     ))}
                   </tbody>

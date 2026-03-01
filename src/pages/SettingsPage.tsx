@@ -15,7 +15,7 @@ export default function SettingsPage() {
   return (
     <div>
       {/* Header */}
-      <div className="px-7 pt-3">
+      <div className="px-7 pt-7">
         <h1 className="typo-display-xl text-text-primary mb-1">설정</h1>
         <p className="typo-caption text-text-secondary mb-1">{user?.email ?? ""}</p>
       </div>
