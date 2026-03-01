@@ -11,6 +11,8 @@ import InputDialog from "@/components/feedback/InputDialog";
 import { useFolders, useCreateFolder } from "@/hooks/useFolders";
 import { useDeckProgress } from "@/hooks/useDecks";
 import { useTodayStats, useStreak } from "@/hooks/useStats";
+import { usePwaInstall } from "@/hooks/usePwaInstall";
+import InstallBanner from "@/components/feedback/InstallBanner";
 
 function getGreeting() {
   const h = new Date().getHours();
@@ -24,6 +26,7 @@ export default function HomePage() {
   const { data: deckProgress } = useDeckProgress();
   const createFolder = useCreateFolder();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const { canShow, platform, triggerInstall, dismiss } = usePwaInstall();
 
   const { data: todayStats } = useTodayStats();
   const { data: streakData } = useStreak();
@@ -80,6 +83,17 @@ export default function HomePage() {
           <StatPill emoji="⏱" value={`${studyMin}m`} label="학습" />
         </div>
       </div>
+
+      {/* Install Banner */}
+      {canShow && (
+        <div className="px-7 mt-4">
+          <InstallBanner
+            platform={platform}
+            onInstall={triggerInstall}
+            onDismiss={dismiss}
+          />
+        </div>
+      )}
 
       {/* Study CTA */}
       {totalDue > 0 && firstDueDeck && (
