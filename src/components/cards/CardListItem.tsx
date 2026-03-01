@@ -16,8 +16,8 @@ export default function CardListItem({ word, meaning, status }: CardListItemProp
   return (
     <div className="flex items-center justify-between bg-bg-subtle rounded-[20px] p-[14px] mb-2">
       <div>
-        <div className="font-display text-[14px]">{word}</div>
-        <div className="text-[10px] text-text-secondary">{meaning}</div>
+        <div className="typo-body-lg font-display">{word}</div>
+        <div className="typo-mono-sm text-text-secondary">{meaning}</div>
       </div>
       <Badge variant={status}>{statusLabel[status]}</Badge>
     </div>

@@ -17,15 +17,15 @@ export default function WordCard({ word, phonetic, meaning, example, flipped, on
     >
       {/* Word */}
       <div className={cn(
-        "font-display text-text-primary mb-1 font-medium",
-        flipped ? "text-[26px]" : "text-[30px]"
+        "text-text-primary mb-1",
+        flipped ? "typo-display-lg text-[26px]" : "typo-display-lg"
       )}>
         {word}
       </div>
 
       {/* Phonetic */}
       {phonetic && (
-        <div className="font-mono text-[11px] text-text-secondary mb-[14px]">{phonetic}</div>
+        <div className="typo-mono-md text-text-secondary mb-[14px]">{phonetic}</div>
       )}
 
       {flipped ? (
@@ -34,18 +34,18 @@ export default function WordCard({ word, phonetic, meaning, example, flipped, on
           <div className="w-9 h-[3px] bg-accent-lighter mx-auto mb-[14px] rounded-full" />
 
           {/* Meaning */}
-          <div className="font-korean text-[14px] text-text-primary">{meaning}</div>
+          <div className="font-korean typo-body-lg text-text-primary">{meaning}</div>
 
           {/* Example */}
           {example && (
-            <div className="text-[11px] text-text-secondary mt-[10px] leading-relaxed italic">
+            <div className="typo-caption text-text-secondary mt-[10px] italic">
               "{example}"
             </div>
           )}
         </>
       ) : (
         /* Hint */
-        <div className="text-[10px] text-text-tertiary mt-4">탭하여 뜻 확인</div>
+        <div className="typo-mono-sm text-text-tertiary mt-4">탭하여 뜻 확인</div>
       )}
     </div>
   )
