@@ -29,7 +29,7 @@ export default function LoginPage() {
   return (
     <>
       <TopBar left="back" />
-      <form onSubmit={handleSubmit} className="px-6 pt-6">
+      <form onSubmit={handleSubmit} className="px-7 pt-6">
         <h1 className="typo-display-xl text-text-primary mb-[6px]">다시 만나서 반가워요</h1>
         <p className="typo-caption text-text-secondary mb-7">이메일과 비밀번호를 입력해주세요.</p>
 

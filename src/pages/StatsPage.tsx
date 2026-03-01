@@ -23,12 +23,12 @@ export default function StatsPage() {
   return (
     <div>
       {/* Title */}
-      <div className="px-6 pt-3">
+      <div className="px-7 pt-3">
         <h1 className="typo-display-xl text-text-primary mb-4">학습 통계</h1>
       </div>
 
       {/* Today Stats */}
-      <div className="px-6">
+      <div className="px-7">
         <Label>오늘</Label>
         {statsLoading ? (
           <Skeleton className="h-[72px] rounded-[20px] mb-4" />
@@ -42,7 +42,7 @@ export default function StatsPage() {
       </div>
 
       {/* Heatmap */}
-      <div className="px-6">
+      <div className="px-7">
         <Label>이번 달 · 🔥 {streak}일 연속</Label>
         <div className="mt-1">
           {heatmapLoading ? (
@@ -54,7 +54,7 @@ export default function StatsPage() {
       </div>
 
       {/* Deck Progress */}
-      <div className="px-6 mt-4">
+      <div className="px-7 mt-4">
         <Label>덱별 진행률</Label>
         <div className="mt-1">
           {progressLoading ? (

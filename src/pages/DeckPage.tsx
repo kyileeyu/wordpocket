@@ -74,7 +74,7 @@ export default function DeckPage() {
       />
 
       {/* Stat Boxes */}
-      <div className="px-6 pt-2">
+      <div className="px-7 pt-2">
         <div className="flex gap-[6px] mb-2">
           <StatBox value={newCount} label="New" />
           <StatBox value={learningCount} label="Learning" />
@@ -83,7 +83,7 @@ export default function DeckPage() {
       </div>
 
       {/* Segmented Progress */}
-      <div className="px-6 mb-4">
+      <div className="px-7 mb-4">
         <SegmentedProgress
           segments={[
             { value: newCount, color: "#D4CEFA" },
@@ -94,7 +94,7 @@ export default function DeckPage() {
       </div>
 
       {/* CTA Buttons */}
-      <div className="px-6 mb-4">
+      <div className="px-7 mb-4">
         {dueToday > 0 && (
           <Button asChild className="w-full mb-2">
             <Link to={`/study/${deckId}`}>▶ 학습 시작 · {dueToday}장</Link>
@@ -108,7 +108,7 @@ export default function DeckPage() {
       </div>
 
       {/* Card List */}
-      <div className="px-6">
+      <div className="px-7">
         {cardsLoading ? (
           <div className="space-y-2 mt-2">
             <Skeleton className="h-14 rounded-[20px]" />

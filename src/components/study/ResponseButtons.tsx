@@ -11,7 +11,7 @@ interface ResponseButtonsProps {
 
 export default function ResponseButtons({ onResponse }: ResponseButtonsProps) {
   return (
-    <div className="flex gap-[10px] px-6">
+    <div className="flex gap-[10px] px-7">
       {responses.map(({ label, time, bg, text, border }) => (
         <button
           key={label}
