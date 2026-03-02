@@ -9,6 +9,7 @@ export interface CardFormData {
   meaning: string
   example: string
   pronunciation: string
+  synonyms: string
   tags: string
 }
 
@@ -17,6 +18,7 @@ const empty: CardFormData = {
   meaning: "",
   example: "",
   pronunciation: "",
+  synonyms: "",
   tags: "",
 }
 
@@ -36,6 +38,7 @@ export default function CardForm({ initialData, onSubmit, loading }: CardFormPro
         meaning: initialData.meaning,
         example: initialData.example ?? "",
         pronunciation: initialData.pronunciation ?? "",
+        synonyms: initialData.synonyms?.join(", ") ?? "",
         tags: initialData.tags?.join(", ") ?? "",
       })
     } else {
@@ -100,15 +103,26 @@ export default function CardForm({ initialData, onSubmit, loading }: CardFormPro
           </div>
           <div className="flex-1">
             <Label>
-              태그 <span className="opacity-40">(선택)</span>
+              유의어 <span className="opacity-40">(선택)</span>
             </Label>
             <Input
-              placeholder="고급어휘"
-              value={form.tags}
-              onChange={set("tags")}
+              placeholder="쉼표로 구분"
+              value={form.synonyms}
+              onChange={set("synonyms")}
               disabled={loading}
             />
           </div>
+        </div>
+        <div>
+          <Label>
+            태그 <span className="opacity-40">(선택)</span>
+          </Label>
+          <Input
+            placeholder="고급어휘"
+            value={form.tags}
+            onChange={set("tags")}
+            disabled={loading}
+          />
         </div>
       </div>
     </form>

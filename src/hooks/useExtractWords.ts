@@ -6,6 +6,7 @@ export interface ExtractedWord {
   meaning: string
   example: string
   pronunciation: string
+  synonyms: string[]
 }
 
 export function useExtractWords() {

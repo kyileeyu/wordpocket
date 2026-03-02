@@ -8,6 +8,47 @@ import { Label } from "@/components/ui/label"
 import { supabase } from "@/lib/supabase"
 import { useExtractWords, type ExtractedWord } from "@/hooks/useExtractWords"
 
+/** HEIC → JPEG Blob 변환 (동적 import) */
+async function normalizeFile(file: File): Promise<Blob> {
+  const isHeic =
+    ["image/heic", "image/heif"].includes(file.type) ||
+    /\.heic$/i.test(file.name)
+  if (isHeic) {
+    const { default: heic2any } = await import("heic2any")
+    const result = await heic2any({ blob: file, toType: "image/jpeg", quality: 0.8 })
+    return Array.isArray(result) ? result[0] : result
+  }
+  return file
+}
+
+/** 이미지를 Canvas로 JPEG 변환 + 리사이즈 */
+function compressImage(blob: Blob, maxDim = 1600, quality = 0.8): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(blob)
+    const img = new Image()
+    img.onload = () => {
+      URL.revokeObjectURL(url)
+      let { width, height } = img
+      if (width > maxDim || height > maxDim) {
+        const ratio = Math.min(maxDim / width, maxDim / height)
+        width = Math.round(width * ratio)
+        height = Math.round(height * ratio)
+      }
+      const canvas = document.createElement("canvas")
+      canvas.width = width
+      canvas.height = height
+      const ctx = canvas.getContext("2d")!
+      ctx.drawImage(img, 0, 0, width, height)
+      resolve(canvas.toDataURL("image/jpeg", quality))
+    }
+    img.onerror = () => {
+      URL.revokeObjectURL(url)
+      reject(new Error("이미지를 읽을 수 없습니다."))
+    }
+    img.src = url
+  })
+}
+
 export default function PhotoImportPage() {
   const { id: deckId } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -20,22 +61,27 @@ export default function PhotoImportPage() {
 
   const extract = useExtractWords()
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const [converting, setConverting] = useState(false)
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
 
-    const reader = new FileReader()
-    reader.onload = () => {
-      const dataUrl = reader.result as string
+    try {
+      setConverting(true)
+      const normalized = await normalizeFile(file)
+      const dataUrl = await compressImage(normalized)
       setPreview(dataUrl)
       setWords([])
+    } catch {
+      toast.error("이미지를 읽을 수 없습니다.")
+    } finally {
+      setConverting(false)
     }
-    reader.readAsDataURL(file)
   }
 
   const handleExtract = () => {
     if (!preview) return
-    // Strip "data:image/...;base64," prefix
     const base64 = preview.split(",")[1]
     extract.mutate(base64, {
       onSuccess: (data) => {
@@ -69,6 +115,7 @@ export default function PhotoImportPage() {
         example: w.example || "",
         pronunciation: w.pronunciation || "",
         tags: [] as string[],
+        synonyms: w.synonyms ?? [],
       }))
 
       const { error } = await supabase.from("cards").insert(insertData)
@@ -102,8 +149,9 @@ export default function PhotoImportPage() {
           variant="outline"
           className="w-full"
           onClick={() => fileRef.current?.click()}
+          disabled={converting}
         >
-          사진 촬영 / 업로드
+          {converting ? "이미지 변환 중..." : "사진 촬영 / 업로드"}
         </Button>
 
         {/* Image preview */}
@@ -137,6 +185,7 @@ export default function PhotoImportPage() {
                       <th className="typo-overline text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary whitespace-nowrap">뜻</th>
                       <th className="typo-overline text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary whitespace-nowrap">예문</th>
                       <th className="typo-overline text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary whitespace-nowrap">발음</th>
+                      <th className="typo-overline text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary whitespace-nowrap">유의어</th>
                       <th className="typo-overline text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary whitespace-nowrap"></th>
                     </tr>
                   </thead>
@@ -169,6 +218,18 @@ export default function PhotoImportPage() {
                             className="w-full bg-transparent outline-none typo-mono-sm text-text-primary min-w-[60px]"
                             value={w.pronunciation}
                             onChange={(e) => updateWord(i, "pronunciation", e.target.value)}
+                          />
+                        </td>
+                        <td className={`p-[4px_6px] ${i < words.length - 1 ? "border-b border-border" : ""}`}>
+                          <input
+                            className="w-full bg-transparent outline-none typo-mono-sm text-text-primary min-w-[60px]"
+                            value={w.synonyms?.join(", ") ?? ""}
+                            onChange={(e) => {
+                              const val = e.target.value
+                              setWords((prev) => prev.map((word, idx) =>
+                                idx === i ? { ...word, synonyms: val ? val.split(",").map((s) => s.trim()) : [] } : word
+                              ))
+                            }}
                           />
                         </td>
                         <td className={`p-[4px_6px] ${i < words.length - 1 ? "border-b border-border" : ""}`}>

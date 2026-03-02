@@ -3,6 +3,7 @@ export interface CsvRow {
   meaning: string
   example?: string
   pronunciation?: string
+  synonyms?: string
   tags?: string
   deck?: string
 }
@@ -57,6 +58,7 @@ export function parseCsv(text: string): CsvRow[] {
         meaning: row.meaning ?? "",
         example: row.example || undefined,
         pronunciation: row.pronunciation || undefined,
+        synonyms: row.synonyms || undefined,
         tags: row.tags || undefined,
         deck: row.deck || undefined,
       }

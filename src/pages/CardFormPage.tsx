@@ -22,6 +22,10 @@ export default function CardFormPage() {
       .split(",")
       .map((t) => t.trim())
       .filter(Boolean)
+    const synonyms = data.synonyms
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean)
 
     if (isEdit) {
       updateCard.mutate(
@@ -33,6 +37,7 @@ export default function CardFormPage() {
           example: data.example || null,
           pronunciation: data.pronunciation || null,
           tags,
+          synonyms,
         },
         {
           onSuccess: () => navigate(-1),
@@ -47,6 +52,7 @@ export default function CardFormPage() {
           example: data.example || null,
           pronunciation: data.pronunciation || null,
           tags,
+          synonyms,
         },
         {
           onSuccess: () => {

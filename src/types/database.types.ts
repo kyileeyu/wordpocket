@@ -119,6 +119,7 @@ export type Database = {
           example: string | null;
           pronunciation: string | null;
           tags: string[];
+          synonyms: string[];
           created_at: string;
           updated_at: string;
         };
@@ -130,6 +131,7 @@ export type Database = {
           example?: string | null;
           pronunciation?: string | null;
           tags?: string[];
+          synonyms?: string[];
           created_at?: string;
           updated_at?: string;
         };
@@ -141,6 +143,7 @@ export type Database = {
           example?: string | null;
           pronunciation?: string | null;
           tags?: string[];
+          synonyms?: string[];
           created_at?: string;
           updated_at?: string;
         };
@@ -304,6 +307,7 @@ export type Database = {
           example: string | null;
           pronunciation: string | null;
           tags: string[];
+          synonyms: string[];
           status: string;
           ease_factor: number;
           interval: number;
