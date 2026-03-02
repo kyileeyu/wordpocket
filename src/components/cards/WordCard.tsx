@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils"
+import PronunciationButton from "./PronunciationButton"
 
 interface WordCardProps {
   word: string
@@ -15,12 +16,15 @@ export default function WordCard({ word, phonetic, meaning, example, flipped, on
       className="bg-bg-elevated rounded-[24px] p-[32px_24px] text-center shadow-[0_2px_16px_rgba(26,26,46,0.08)] cursor-pointer w-full h-[380px] flex flex-col items-center justify-center overflow-hidden"
       onClick={onFlip}
     >
-      {/* Word */}
-      <div className={cn(
-        "text-text-primary mb-1",
-        flipped ? "typo-display-xl text-[28px]" : "typo-display-xl"
-      )}>
-        {word}
+      {/* Word + Pronunciation */}
+      <div className="flex items-center justify-center gap-1 mb-1">
+        <div className={cn(
+          "text-text-primary",
+          flipped ? "typo-display-xl text-[28px]" : "typo-display-xl"
+        )}>
+          {word}
+        </div>
+        <PronunciationButton word={word} size="md" />
       </div>
 
       {/* Phonetic */}

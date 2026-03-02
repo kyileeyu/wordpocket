@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge"
+import PronunciationButton from "./PronunciationButton"
 
 interface CardListItemProps {
   word: string
@@ -17,7 +18,10 @@ export default function CardListItem({ word, meaning, status, tags }: CardListIt
   return (
     <div className="flex items-center justify-between bg-bg-elevated rounded-[20px] p-[14px] mb-2 shadow-[0_1px_4px_rgba(26,26,46,0.06)]">
       <div className="min-w-0 flex-1">
-        <div className="typo-body-lg font-display">{word}</div>
+        <div className="flex items-center gap-1">
+          <span className="typo-body-lg font-display">{word}</span>
+          <PronunciationButton word={word} size="sm" />
+        </div>
         <div className="typo-mono-sm text-text-secondary">{meaning}</div>
         {tags && tags.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-1">
