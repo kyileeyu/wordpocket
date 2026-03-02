@@ -8,6 +8,7 @@ import EmptyState from "@/components/feedback/EmptyState"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useStudyQueue, useAllCardsQueue, useSubmitReview } from "@/hooks/useStudy"
 import { RotateCcw, Pencil } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 interface StudyCard {
   card_id: string
@@ -15,6 +16,8 @@ interface StudyCard {
   meaning: string
   pronunciation: string | null
   example: string | null
+  synonyms?: string[]
+  tags?: string[]
   queue_type: string
 }
 
@@ -181,18 +184,16 @@ export default function StudyPage() {
           phonetic={card!.pronunciation ?? undefined}
           meaning={card!.meaning}
           example={card!.example ?? undefined}
+          synonyms={card!.synonyms ?? undefined}
+          tags={card!.tags ?? undefined}
           flipped={flipped}
           onFlip={() => setFlipped((f) => !f)}
         />
       </div>
 
-      {flipped ? (
-        <div className="mb-2">
-          <ResponseButtons onResponse={handleResponse} />
-        </div>
-      ) : (
-        <div className="h-10" />
-      )}
+      <div className={cn("mb-2", !flipped && "invisible")}>
+        <ResponseButtons onResponse={handleResponse} />
+      </div>
 
       <div className="h-5 shrink-0" />
     </>

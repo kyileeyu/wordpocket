@@ -22,7 +22,7 @@ export function useAllCardsQueue(deckId: string, enabled: boolean) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("cards")
-        .select("id, word, meaning, pronunciation, example, card_states(status)")
+        .select("id, word, meaning, pronunciation, example, synonyms, tags, card_states(status)")
         .eq("deck_id", deckId)
         .order("created_at", { ascending: true })
       if (error) throw error
@@ -37,6 +37,8 @@ export function useAllCardsQueue(deckId: string, enabled: boolean) {
           meaning: c.meaning,
           pronunciation: c.pronunciation,
           example: c.example,
+          synonyms: c.synonyms,
+          tags: c.tags,
           queue_type: "new" as const,
         }))
     },
