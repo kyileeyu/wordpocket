@@ -48,12 +48,13 @@ Return ONLY a JSON array. Each element must have these fields:
 - "meaning": the Korean meaning/definition
 - "example": an example sentence if visible (empty string if not)
 - "pronunciation": IPA pronunciation if visible (empty string if not)
-- "synonyms": an array of English synonym words (empty array [] if none visible or known)
+- "synonyms": an array of English synonym words visible in the image (empty array [] if none)
 
 Rules:
 - Extract ALL words visible in the image.
 - If the meaning is not in Korean, translate it to Korean.
-- For synonyms, include any visible in the image. If none are visible, provide 1-2 common synonyms if you know them.
+- Many vocabulary books show English synonyms/definitions next to the word (e.g. "mature - get older, grow up, age" or "pillar - column, post"). These English words are synonyms — put them in the "synonyms" array, NOT in "meaning". The "meaning" field should only contain the Korean translation.
+- Do NOT guess or generate synonyms on your own. Only extract what is visible in the image.
 - Do NOT wrap the JSON in markdown code fences.
 - Return [] if no words are found.`;
 

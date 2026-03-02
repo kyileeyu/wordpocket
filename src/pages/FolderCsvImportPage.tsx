@@ -66,7 +66,7 @@ export default function FolderCsvImportPage() {
 
       qc.invalidateQueries({ queryKey: ["decks", folderId] })
       qc.invalidateQueries({ queryKey: ["deck-progress"] })
-      toast.success(`${deckGroups.size}개 덱, ${rows.length}장 가져오기 완료`)
+      toast.success(`${deckGroups.size}개 카드뭉치, ${rows.length}장 가져오기 완료`)
       navigate(-1)
     } catch {
       toast.error("가져오기에 실패했습니다.")
@@ -97,7 +97,7 @@ export default function FolderCsvImportPage() {
                       <th className="typo-overline text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary whitespace-nowrap">발음</th>
                       <th className="typo-overline text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary whitespace-nowrap">태그</th>
                       {hasDeckColumn && (
-                        <th className="typo-overline text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary whitespace-nowrap">덱</th>
+                        <th className="typo-overline text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary whitespace-nowrap">카드뭉치</th>
                       )}
                     </tr>
                   </thead>
@@ -122,11 +122,11 @@ export default function FolderCsvImportPage() {
             {/* 덱 생성 예고 */}
             <div className="rounded-[10px] bg-bg-elevated p-3 mb-4">
               <div className="typo-body-sm text-text-primary font-medium mb-1">
-                {deckGroups.size}개 덱 생성 예정
+                {deckGroups.size}개 카드뭉치 생성 예정
               </div>
               {!hasDeckColumn && (
                 <p className="typo-caption text-text-secondary mb-2">
-                  deck 컬럼이 없습니다. 모든 카드가 "기본" 덱에 추가됩니다.
+                  deck 컬럼이 없습니다. 모든 카드가 "기본" 카드뭉치에 추가됩니다.
                 </p>
               )}
               <div className="flex flex-wrap gap-[6px]">
@@ -146,7 +146,7 @@ export default function FolderCsvImportPage() {
             </p>
 
             <Button className="w-full" onClick={handleImport} disabled={loading}>
-              {loading ? "가져오는 중..." : `${deckGroups.size}개 덱, ${rows.length}장 가져오기`}
+              {loading ? "가져오는 중..." : `${deckGroups.size}개 카드뭉치, ${rows.length}장 가져오기`}
             </Button>
           </>
         )}

@@ -177,8 +177,8 @@ export default function DeckPage() {
       <InputDialog
         open={renameOpen}
         onOpenChange={setRenameOpen}
-        title="덱 이름 편집"
-        placeholder="덱 이름"
+        title="카드뭉치 이름 편집"
+        placeholder="카드뭉치 이름"
         defaultValue={deck?.name}
         submitLabel="저장"
         onSubmit={handleRename}
@@ -188,8 +188,8 @@ export default function DeckPage() {
       <ConfirmDialog
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
-        title="덱 삭제"
-        description="이 덱과 포함된 모든 카드가 삭제됩니다. 되돌릴 수 없습니다."
+        title="카드뭉치 삭제"
+        description="이 카드뭉치와 포함된 모든 카드가 삭제됩니다. 되돌릴 수 없습니다."
         onConfirm={handleDelete}
         loading={deleteDeck.isPending}
       />

@@ -104,7 +104,7 @@ export default function FolderPage() {
           </div>
         ) : decks && decks.length > 0 ? (
           <>
-            <Label>{decks.length}개의 덱</Label>
+            <Label>{decks.length}개의 카드뭉치</Label>
             {decks.map((deck) => (
               <DeckCard
                 key={deck.id}
@@ -119,8 +119,8 @@ export default function FolderPage() {
         ) : (
           <EmptyState
             icon="📚"
-            text="아직 덱이 없습니다. 첫 덱을 만들어보세요!"
-            actionLabel="덱 만들기"
+            text="아직 카드뭉치가 없습니다. 첫 카드뭉치를 만들어보세요!"
+            actionLabel="카드뭉치 만들기"
             onAction={() => setDeckDialogOpen(true)}
           />
         )}
@@ -131,8 +131,8 @@ export default function FolderPage() {
       <InputDialog
         open={deckDialogOpen}
         onOpenChange={setDeckDialogOpen}
-        title="새 덱"
-        placeholder="덱 이름"
+        title="새 카드뭉치"
+        placeholder="카드뭉치 이름"
         submitLabel="만들기"
         onSubmit={handleCreateDeck}
         loading={createDeck.isPending}
@@ -153,7 +153,7 @@ export default function FolderPage() {
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
         title="단어장 삭제"
-        description="이 단어장과 포함된 모든 덱/카드가 삭제됩니다. 되돌릴 수 없습니다."
+        description="이 단어장과 포함된 모든 카드뭉치/카드가 삭제됩니다. 되돌릴 수 없습니다."
         onConfirm={handleDelete}
         loading={deleteFolder.isPending}
       />

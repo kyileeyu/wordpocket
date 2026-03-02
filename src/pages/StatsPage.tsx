@@ -70,7 +70,7 @@ export default function StatsPage() {
 
       {/* Deck Progress */}
       <div className="px-7 mt-4">
-        <Label>덱별 진행률</Label>
+        <Label>카드뭉치별 진행률</Label>
         <div className="mt-1">
           {progressLoading ? (
             <div className="space-y-2">
@@ -91,7 +91,7 @@ export default function StatsPage() {
               )
             })
           ) : (
-            <p className="typo-body-sm text-text-secondary py-4 text-center">덱이 없습니다.</p>
+            <p className="typo-body-sm text-text-secondary py-4 text-center">카드뭉치가 없습니다.</p>
           )}
         </div>
       </div>

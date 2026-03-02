@@ -66,8 +66,8 @@
   /* Gradient tokens */
   --gradient-brand-soft: linear-gradient(135deg, #EDEAFC 0%, #F3F2FA 100%);
   --gradient-brand-vivid: linear-gradient(135deg, #7C6CE7 0%, #A99BF0 50%, #D4CEFA 100%);
-  --gradient-progress: linear-gradient(to right, #E55B7A, #D4CEFA);
-  --gradient-divider: linear-gradient(to right, #D4A0C0, #D4CEFA);
+  --gradient-progress: linear-gradient(to right, #EF74BB, #AC89F6);
+  --gradient-divider: linear-gradient(to right, #EF74BB, #AC89F6);
 
   /* shadcn theme mappings */
   --color-background: var(--background);

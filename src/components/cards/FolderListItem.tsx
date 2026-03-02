@@ -24,7 +24,7 @@ export default function FolderListItem({ id, emoji, name, deckCount, reviewCount
       </div>
       <div className="flex-1 min-w-0">
         <div className="typo-body-md font-semibold text-text-primary">{name}</div>
-        <div className="typo-mono-sm text-text-secondary mt-[1px]">{deckCount}개 덱 · 복습 {reviewCount}장</div>
+        <div className="typo-mono-sm text-text-secondary mt-[1px]">{deckCount}개 카드뭉치 · 복습 {reviewCount}장</div>
       </div>
       {reviewCount > 0 && (
         <div className="bg-accent-bg text-accent typo-mono-sm font-semibold px-2 py-[3px] rounded-full shrink-0">
