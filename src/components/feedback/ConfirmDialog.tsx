@@ -14,6 +14,7 @@ interface ConfirmDialogProps {
   description?: string
   onConfirm: () => void
   loading?: boolean
+  confirmLabel?: string
 }
 
 export default function ConfirmDialog({
@@ -23,6 +24,7 @@ export default function ConfirmDialog({
   description,
   onConfirm,
   loading,
+  confirmLabel = "삭제",
 }: ConfirmDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -46,7 +48,7 @@ export default function ConfirmDialog({
             onClick={onConfirm}
             disabled={loading}
           >
-            {loading ? "삭제 중..." : "삭제"}
+            {loading ? `${confirmLabel} 중...` : confirmLabel}
           </Button>
         </div>
       </DialogContent>
