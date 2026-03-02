@@ -7,7 +7,7 @@ export function buildHeatmapCells(
   const countByDate = new Map<string, number>()
   heatmapData?.forEach((d) => countByDate.set(d.date, d.review_count))
 
-  for (let i = 27; i >= 0; i--) {
+  for (let i = 20; i >= 0; i--) {
     const date = new Date(today)
     date.setDate(today.getDate() - i)
     const key = date.toISOString().slice(0, 10)

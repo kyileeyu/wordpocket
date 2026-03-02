@@ -15,7 +15,7 @@ import { MoreHorizontal } from "lucide-react"
 import { useFolders, useUpdateFolder, useDeleteFolder } from "@/hooks/useFolders"
 import { useDecksByFolder, useDeckProgress, useCreateDeck } from "@/hooks/useDecks"
 
-const STRIPE_COLORS = ["#7C6CE7", "#A99BF0", "#6E6B7B", "#E55B7A", "#D4CEFA"]
+const STRIPE_COLOR = "#7C6CE7"
 
 export default function FolderPage() {
   const { id: folderId } = useParams<{ id: string }>()
@@ -105,14 +105,14 @@ export default function FolderPage() {
         ) : decks && decks.length > 0 ? (
           <>
             <Label>{decks.length}개의 덱</Label>
-            {decks.map((deck, i) => (
+            {decks.map((deck) => (
               <DeckCard
                 key={deck.id}
                 id={deck.id}
                 name={deck.name}
                 cardCount={deckTotalMap.get(deck.id) ?? 0}
                 reviewCount={deckDueMap.get(deck.id) ?? 0}
-                stripeColor={STRIPE_COLORS[i % STRIPE_COLORS.length]}
+                stripeColor={STRIPE_COLOR}
               />
             ))}
           </>
