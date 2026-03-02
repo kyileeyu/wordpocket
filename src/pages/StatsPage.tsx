@@ -1,4 +1,4 @@
-import { StatBox, Heatmap, DeckProgressRow } from "@/components/stats"
+import { StatBox, Heatmap, DeckProgressRow, WordsLearnedCard } from "@/components/stats"
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useTodayStats, useHeatmapData, useStreak } from "@/hooks/useStats"
@@ -7,12 +7,18 @@ import { buildHeatmapCells } from "@/lib/heatmap"
 
 export default function StatsPage() {
   const { data: todayStats, isLoading: statsLoading } = useTodayStats()
-  const { data: heatmapData, isLoading: heatmapLoading } = useHeatmapData(28)
+  const { data: heatmapData, isLoading: heatmapLoading } = useHeatmapData(21)
   const { data: streakData } = useStreak()
   const { data: deckProgress, isLoading: progressLoading } = useDeckProgress()
 
   const streak = streakData?.current_streak ?? 0
   const cells = buildHeatmapCells(heatmapData)
+
+  const totalCards = deckProgress?.reduce((sum, d) => sum + d.total_cards, 0) ?? 0
+  const mastered = deckProgress?.reduce(
+    (sum, d) => sum + (d.total_cards - d.new_count - d.learning_count),
+    0,
+  ) ?? 0
 
   const reviewedCount = todayStats?.reviewed_count ?? 0
   const newLearnedCount = todayStats?.new_learned_count ?? 0
@@ -38,6 +44,15 @@ export default function StatsPage() {
             <StatBox value={reviewOnly} label="복습" />
             <StatBox value={avgTime} label="평균" />
           </div>
+        )}
+      </div>
+
+      {/* Words Learned */}
+      <div className="px-7 mb-4">
+        {progressLoading ? (
+          <Skeleton className="h-[200px] rounded-[20px]" />
+        ) : (
+          <WordsLearnedCard mastered={mastered} total={totalCards} />
         )}
       </div>
 

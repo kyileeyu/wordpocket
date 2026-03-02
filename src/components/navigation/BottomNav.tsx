@@ -9,7 +9,7 @@ const tabs = [
 
 export default function BottomNav() {
   return (
-    <nav className="absolute bottom-0 left-0 right-0 border-t border-border bg-bg-elevated pb-[env(safe-area-inset-bottom)]">
+    <nav className="sticky bottom-0 left-0 right-0 border-t border-border bg-bg-elevated pb-[env(safe-area-inset-bottom)]">
       <div className="flex h-14">
         {tabs.map(({ to, icon: Icon, label }) => (
           <NavLink
