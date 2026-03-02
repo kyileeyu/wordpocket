@@ -79,6 +79,7 @@ export default function FolderPage() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => navigate(`/folder/${folderId}/import`)}>CSV 가져오기</DropdownMenuItem>
               <DropdownMenuItem onClick={() => setRenameOpen(true)}>이름 편집</DropdownMenuItem>
               <DropdownMenuItem className="text-danger" onClick={() => setDeleteOpen(true)}>삭제</DropdownMenuItem>
             </DropdownMenuContent>

@@ -1,11 +1,11 @@
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { Link, useParams, useNavigate } from "react-router"
 import TopBar from "@/components/navigation/TopBar"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
 import { StatBox, SegmentedProgress } from "@/components/stats"
-import { CardListItem } from "@/components/cards"
+import { CardListItem, TagFilterBar } from "@/components/cards"
 import FAB from "@/components/feedback/FAB"
 import EmptyState from "@/components/feedback/EmptyState"
 import InputDialog from "@/components/feedback/InputDialog"
@@ -32,6 +32,27 @@ export default function DeckPage() {
 
   const [renameOpen, setRenameOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
+  const [selectedTag, setSelectedTag] = useState<string | null>(null)
+
+  const allTags = useMemo(() => {
+    if (!cards) return []
+    const tagSet = new Set<string>()
+    cards.forEach((c) => c.tags?.forEach((t: string) => tagSet.add(t)))
+    return [...tagSet].sort((a, b) => {
+      const dayA = a.match(/^Day (\d+)$/)
+      const dayB = b.match(/^Day (\d+)$/)
+      if (dayA && dayB) return Number(dayA[1]) - Number(dayB[1])
+      if (dayA) return -1
+      if (dayB) return 1
+      return a.localeCompare(b)
+    })
+  }, [cards])
+
+  const filteredCards = useMemo(() => {
+    if (!cards) return []
+    if (!selectedTag) return cards
+    return cards.filter((c) => c.tags?.includes(selectedTag))
+  }, [cards, selectedTag])
 
   const progress = deckProgress?.find((d) => d.deck_id === deckId)
   const newCount = progress?.new_count ?? 0
@@ -66,6 +87,7 @@ export default function DeckPage() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
+              <DropdownMenuItem onClick={() => navigate(`/deck/${deckId}/import`)}>CSV 가져오기</DropdownMenuItem>
               <DropdownMenuItem onClick={() => setRenameOpen(true)}>이름 편집</DropdownMenuItem>
               <DropdownMenuItem className="text-danger" onClick={() => setDeleteOpen(true)}>삭제</DropdownMenuItem>
             </DropdownMenuContent>
@@ -100,12 +122,14 @@ export default function DeckPage() {
             <Link to={`/study/${deckId}`}>▶ 학습 시작 · {dueToday}장</Link>
           </Button>
         )}
-        <div className="flex gap-2">
-          <Button asChild variant="secondary" size="sm" className="flex-1">
-            <Link to={`/deck/${deckId}/import`}>📤 CSV 가져오기</Link>
-          </Button>
-        </div>
       </div>
+
+      {/* Tag Filter */}
+      {allTags.length > 0 && (
+        <div className="px-7 mb-3">
+          <TagFilterBar tags={allTags} selected={selectedTag} onSelect={setSelectedTag} />
+        </div>
+      )}
 
       {/* Card List */}
       <div className="px-7">
@@ -117,8 +141,12 @@ export default function DeckPage() {
           </div>
         ) : cards && cards.length > 0 ? (
           <>
-            <Label>카드 {totalCards}장</Label>
-            {cards.map((card) => {
+            <Label>
+              {selectedTag
+                ? `${filteredCards.length}/${totalCards}장 · ${selectedTag}`
+                : `카드 ${totalCards}장`}
+            </Label>
+            {filteredCards.map((card) => {
               const state = card.card_states?.[0]
               return (
                 <Link key={card.id} to={`/deck/${deckId}/edit/${card.id}`}>
@@ -126,6 +154,7 @@ export default function DeckPage() {
                     word={card.word}
                     meaning={card.meaning}
                     status={mapStatus(state?.status)}
+                    tags={card.tags}
                   />
                 </Link>
               )

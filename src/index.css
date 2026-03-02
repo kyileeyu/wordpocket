@@ -241,3 +241,9 @@ body {
   font-weight: 500;
   line-height: 1.2;
 }
+
+@utility scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
