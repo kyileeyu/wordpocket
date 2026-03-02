@@ -16,6 +16,35 @@ export function useStudyQueue(deckId: string) {
   })
 }
 
+export function useAllCardsQueue(deckId: string, enabled: boolean) {
+  return useQuery({
+    queryKey: ["all-cards-queue", deckId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("cards")
+        .select("id, word, meaning, pronunciation, example, card_states(status)")
+        .eq("deck_id", deckId)
+        .order("created_at", { ascending: true })
+      if (error) throw error
+      return data
+        .filter((c) => {
+          const status = (c.card_states as { status: string }[] | null)?.[0]?.status
+          return status !== "review"
+        })
+        .map((c) => ({
+          card_id: c.id,
+          word: c.word,
+          meaning: c.meaning,
+          pronunciation: c.pronunciation,
+          example: c.example,
+          queue_type: "new" as const,
+        }))
+    },
+    staleTime: 0,
+    enabled,
+  })
+}
+
 export function useSubmitReview() {
   const qc = useQueryClient()
   return useMutation({

@@ -36,12 +36,9 @@ export default function HomePage() {
   const studySeconds = todayStats?.study_seconds ?? 0;
   const studyMin = Math.round(studySeconds / 60);
 
-  const totalNew = deckProgress?.reduce((sum, d) => sum + d.new_count, 0) ?? 0;
   const totalDue =
-    (deckProgress?.reduce((sum, d) => sum + d.due_today, 0) ?? 0) + totalNew;
-  const firstDueDeck = deckProgress?.find(
-    (d) => d.due_today > 0 || d.new_count > 0,
-  );
+    deckProgress?.reduce((sum, d) => sum + d.due_today, 0) ?? 0;
+  const firstDueDeck = deckProgress?.find((d) => d.due_today > 0);
 
   // Aggregate due_today per folder
   const folderDueMap = new Map<string, number>();

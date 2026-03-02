@@ -1,7 +1,7 @@
 import { useState } from "react"
-import { Link, useParams, useNavigate } from "react-router"
+import { useParams, useNavigate } from "react-router"
 import TopBar from "@/components/navigation/TopBar"
-import { Button } from "@/components/ui/button"
+
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
 import { StatPill } from "@/components/stats"
@@ -93,11 +93,6 @@ export default function FolderPage() {
           <StatPill emoji="📖" value={totalDue} label="복습 대기" />
           <StatPill emoji="📦" value={totalCards} label="전체 카드" />
         </div>
-        {totalDue > 0 && (
-          <Button asChild className="w-full mb-4">
-            <Link to={`/study/${folderId}`}>▶ 전체 학습 시작</Link>
-          </Button>
-        )}
       </div>
 
       {/* Deck List */}

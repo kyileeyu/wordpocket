@@ -1,21 +1,35 @@
 import { useState, useRef, useEffect, useCallback } from "react"
-import { useParams, useNavigate } from "react-router"
+import { useParams, useNavigate, useSearchParams } from "react-router"
 import TopBar from "@/components/navigation/TopBar"
 import StudyProgress from "@/components/study/StudyProgress"
 import { WordCard } from "@/components/cards"
 import ResponseButtons from "@/components/study/ResponseButtons"
 import EmptyState from "@/components/feedback/EmptyState"
 import { Skeleton } from "@/components/ui/skeleton"
-import { useStudyQueue, useSubmitReview } from "@/hooks/useStudy"
+import { useStudyQueue, useAllCardsQueue, useSubmitReview } from "@/hooks/useStudy"
 import { RotateCcw, Pencil } from "lucide-react"
+
+interface StudyCard {
+  card_id: string
+  word: string
+  meaning: string
+  pronunciation: string | null
+  example: string | null
+  queue_type: string
+}
 
 export default function StudyPage() {
   const { deckId } = useParams<{ deckId: string }>()
   const navigate = useNavigate()
-  const { data: queue, isLoading, refetch } = useStudyQueue(deckId!)
+  const [searchParams] = useSearchParams()
+  const isAllMode = searchParams.get("mode") === "all"
+  const { data: srsQueue, isLoading: srsLoading, refetch } = useStudyQueue(deckId!)
+  const { data: allQueue, isLoading: allLoading } = useAllCardsQueue(deckId!, isAllMode)
+  const queue: StudyCard[] | undefined = isAllMode ? allQueue : srsQueue
+  const isLoading = isAllMode ? allLoading : srsLoading
   const submitReview = useSubmitReview()
 
-  const [workingQueue, setWorkingQueue] = useState<NonNullable<typeof queue>>([])
+  const [workingQueue, setWorkingQueue] = useState<StudyCard[]>([])
   const [index, setIndex] = useState(0)
   const [flipped, setFlipped] = useState(false)
   const [reviewedCount, setReviewedCount] = useState(0)
@@ -72,15 +86,19 @@ export default function StudyPage() {
 
           const nextIndex = index + 1
           if (nextIndex >= nextQueue.length) {
-            refetch().then(({ data: serverQueue }) => {
-              if (serverQueue && serverQueue.length > 0) {
-                setWorkingQueue(serverQueue)
-                setIndex(0)
-                setFlipped(false)
-              } else {
-                goToComplete(nextReviewed, nextCorrect, newCount)
-              }
-            })
+            if (isAllMode) {
+              goToComplete(nextReviewed, nextCorrect, newCount)
+            } else {
+              refetch().then(({ data: serverQueue }) => {
+                if (serverQueue && serverQueue.length > 0) {
+                  setWorkingQueue(serverQueue)
+                  setIndex(0)
+                  setFlipped(false)
+                } else {
+                  goToComplete(nextReviewed, nextCorrect, newCount)
+                }
+              })
+            }
           } else {
             setWorkingQueue(nextQueue)
             setIndex(nextIndex)
@@ -164,7 +182,7 @@ export default function StudyPage() {
           meaning={card!.meaning}
           example={card!.example ?? undefined}
           flipped={flipped}
-          onFlip={() => setFlipped(true)}
+          onFlip={() => setFlipped((f) => !f)}
         />
       </div>
 

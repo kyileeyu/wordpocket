@@ -14,6 +14,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { MoreHorizontal } from "lucide-react"
 import { useDeck, useDeckProgress, useUpdateDeck, useDeleteDeck } from "@/hooks/useDecks"
 import { useCardsByDeck } from "@/hooks/useCards"
+import { useAllCardsQueue } from "@/hooks/useStudy"
 
 function mapStatus(status: string | undefined): "new" | "learning" | "mature" {
   if (status === "review") return "mature"
@@ -26,6 +27,7 @@ export default function DeckPage() {
   const navigate = useNavigate()
   const { data: deck } = useDeck(deckId!)
   const { data: cards, isLoading: cardsLoading } = useCardsByDeck(deckId!)
+  const { data: studyQueue } = useAllCardsQueue(deckId!, true)
   const { data: deckProgress } = useDeckProgress()
   const updateDeck = useUpdateDeck()
   const deleteDeck = useDeleteDeck()
@@ -59,7 +61,8 @@ export default function DeckPage() {
   const learningCount = progress?.learning_count ?? 0
   const reviewCount = progress?.review_count ?? 0
   const totalCards = progress?.total_cards ?? 0
-  const dueToday = (progress?.due_today ?? 0) + newCount
+
+  const studyableCount = studyQueue?.length ?? 0
 
   const handleRename = (name: string) => {
     updateDeck.mutate(
@@ -115,14 +118,14 @@ export default function DeckPage() {
         />
       </div>
 
-      {/* CTA Buttons */}
-      <div className="px-7 mb-4">
-        {dueToday > 0 && (
-          <Button asChild className="w-full mb-2">
-            <Link to={`/study/${deckId}`}>▶ 학습 시작 · {dueToday}장</Link>
+      {/* CTA Button */}
+      {studyableCount > 0 && (
+        <div className="px-7 mb-4">
+          <Button asChild className="w-full">
+            <Link to={`/study/${deckId}?mode=all`}>▶ 학습 시작 · {studyableCount}장</Link>
           </Button>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Tag Filter */}
       {allTags.length > 0 && (
