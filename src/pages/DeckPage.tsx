@@ -91,6 +91,7 @@ export default function DeckPage() {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem onClick={() => navigate(`/deck/${deckId}/import`)}>CSV 가져오기</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate(`/deck/${deckId}/photo-import`)}>사진으로 가져오기</DropdownMenuItem>
               <DropdownMenuItem onClick={() => setRenameOpen(true)}>이름 편집</DropdownMenuItem>
               <DropdownMenuItem className="text-danger" onClick={() => setDeleteOpen(true)}>삭제</DropdownMenuItem>
             </DropdownMenuContent>
