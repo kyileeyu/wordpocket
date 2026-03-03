@@ -1,25 +1,23 @@
 import SegmentedProgress from "./SegmentedProgress"
 import SegmentedLegend from "./SegmentedLegend"
 
-interface DeckProgressRowProps {
-  name: string
+interface OverallProgressCardProps {
   totalCards: number
   newCount: number
   learningCount: number
   matureCount: number
 }
 
-export default function DeckProgressRow({
-  name,
+export default function OverallProgressCard({
   totalCards,
   newCount,
   learningCount,
   matureCount,
-}: DeckProgressRowProps) {
+}: OverallProgressCardProps) {
   return (
-    <div className="bg-bg-subtle rounded-[20px] p-[14px] mb-2">
+    <div className="bg-bg-subtle rounded-[20px] p-[14px]">
       <div className="flex justify-between mb-[6px]">
-        <span className="typo-body-sm font-semibold">{name}</span>
+        <span className="typo-body-sm font-semibold">전체 진행</span>
         <span className="typo-caption text-text-secondary">{totalCards}장</span>
       </div>
       <SegmentedProgress

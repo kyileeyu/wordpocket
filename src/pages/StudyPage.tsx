@@ -7,7 +7,6 @@ import ResponseButtons from "@/components/study/ResponseButtons"
 import EmptyState from "@/components/feedback/EmptyState"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useStudyQueue, useAllCardsQueue, useSubmitReview } from "@/hooks/useStudy"
-import { RotateCcw, Pencil } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface StudyCard {
@@ -168,11 +167,6 @@ export default function StudyPage() {
             {Math.min(index + 1, initialTotal)} / {initialTotal}
             {againCount > 0 && ` + 복습 ${againCount}`}
           </span>
-        }
-        right={
-          <button className="w-11 h-11 rounded-full bg-bg-subtle flex items-center justify-center text-text-secondary">
-            {flipped ? <Pencil className="w-4 h-4" /> : <RotateCcw className="w-4 h-4" />}
-          </button>
         }
       />
 

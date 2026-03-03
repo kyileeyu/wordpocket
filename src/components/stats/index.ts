@@ -1,5 +1,7 @@
 export { default as DeckProgressRow } from "./DeckProgressRow"
 export { default as Heatmap } from "./Heatmap"
+export { default as OverallProgressCard } from "./OverallProgressCard"
+export { default as SegmentedLegend } from "./SegmentedLegend"
 export { default as SegmentedProgress } from "./SegmentedProgress"
 export { default as StatBox } from "./StatBox"
 export { default as StatPill } from "./StatPill"

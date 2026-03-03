@@ -22,14 +22,24 @@ export function useAllCardsQueue(deckId: string, enabled: boolean) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("cards")
-        .select("id, word, meaning, pronunciation, example, synonyms, tags, card_states(status)")
+        .select("id, word, meaning, pronunciation, example, synonyms, tags, card_states(status, due_date)")
         .eq("deck_id", deckId)
         .order("created_at", { ascending: true })
       if (error) throw error
+      const STATUS_PRIORITY: Record<string, number> = { new: 0, learning: 1 }
       return data
         .filter((c) => {
           const status = (c.card_states as { status: string }[] | null)?.[0]?.status
           return status !== "review"
+        })
+        .sort((a, b) => {
+          const stateA = (a.card_states as { status: string; due_date: string | null }[] | null)?.[0]
+          const stateB = (b.card_states as { status: string; due_date: string | null }[] | null)?.[0]
+          const sp = (STATUS_PRIORITY[stateA?.status ?? "new"] ?? 0) - (STATUS_PRIORITY[stateB?.status ?? "new"] ?? 0)
+          if (sp !== 0) return sp
+          const da = stateA?.due_date ? new Date(stateA.due_date).getTime() : Infinity
+          const db = stateB?.due_date ? new Date(stateB.due_date).getTime() : Infinity
+          return da - db
         })
         .map((c) => ({
           card_id: c.id,
