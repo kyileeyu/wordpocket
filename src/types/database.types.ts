@@ -356,6 +356,20 @@ export type Database = {
           due_today: number;
         }[];
       };
+      search_cards: {
+        Args: {
+          p_query: string;
+        };
+        Returns: {
+          card_id: string;
+          deck_id: string;
+          word: string;
+          meaning: string;
+          deck_name: string;
+          folder_name: string | null;
+          status: string;
+        }[];
+      };
     };
     Enums: {
       [_ in never]: never;
