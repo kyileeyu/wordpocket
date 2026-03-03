@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router";
+import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatPill } from "@/components/stats";
 import { FolderListItem } from "@/components/cards";
+import { SearchOverlay } from "@/components/search";
 import EmptyState from "@/components/feedback/EmptyState";
 import FAB from "@/components/feedback/FAB";
 import InputDialog from "@/components/feedback/InputDialog";
@@ -26,6 +28,7 @@ export default function HomePage() {
   const { data: deckProgress } = useDeckProgress();
   const createFolder = useCreateFolder();
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const { canShow, platform, triggerInstall, dismiss } = usePwaInstall();
 
   const { data: todayStats } = useTodayStats();
@@ -64,11 +67,20 @@ export default function HomePage() {
   return (
     <div>
       {/* Greeting + Title */}
-      <div className="px-7 pt-7">
-        <div className="typo-display-l font-display text-text-secondary italic mb-[2px]">
-          {getGreeting()}
+      <div className="px-7 pt-7 flex items-start justify-between">
+        <div>
+          <div className="typo-display-l font-display text-text-secondary italic mb-[2px]">
+            {getGreeting()}
+          </div>
+          <h1 className="typo-display-xl text-text-primary">오늘의 복습</h1>
         </div>
-        <h1 className="typo-display-xl text-text-primary">오늘의 복습</h1>
+        <button
+          type="button"
+          onClick={() => setSearchOpen(true)}
+          className="mt-1 p-2 -mr-2 rounded-full active:bg-bg-subtle transition-colors"
+        >
+          <Search className="w-6 h-6 text-text-secondary" />
+        </button>
       </div>
 
       {/* Stat Pills */}
@@ -144,6 +156,8 @@ export default function HomePage() {
         onSubmit={handleCreate}
         loading={createFolder.isPending}
       />
+
+      <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
     </div>
   );
 }
