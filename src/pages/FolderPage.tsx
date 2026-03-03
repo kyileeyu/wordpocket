@@ -79,7 +79,6 @@ export default function FolderPage() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => navigate(`/folder/${folderId}/import`)}>CSV 가져오기</DropdownMenuItem>
               <DropdownMenuItem onClick={() => setRenameOpen(true)}>이름 편집</DropdownMenuItem>
               <DropdownMenuItem className="text-danger" onClick={() => setDeleteOpen(true)}>삭제</DropdownMenuItem>
             </DropdownMenuContent>
@@ -122,6 +121,8 @@ export default function FolderPage() {
             text="아직 카드뭉치가 없습니다. 첫 카드뭉치를 만들어보세요!"
             actionLabel="카드뭉치 만들기"
             onAction={() => setDeckDialogOpen(true)}
+            secondaryActionLabel="CSV 가져오기"
+            onSecondaryAction={() => navigate(`/folder/${folderId}/import`)}
           />
         )}
       </div>

@@ -4,7 +4,8 @@ import { toast } from "sonner"
 import TopBar from "@/components/navigation/TopBar"
 import CardForm from "@/components/forms/CardForm"
 import type { CardFormData } from "@/components/forms/CardForm"
-import { useCard, useCreateCard, useUpdateCard } from "@/hooks/useCards"
+import ConfirmDialog from "@/components/feedback/ConfirmDialog"
+import { useCard, useCreateCard, useUpdateCard, useDeleteCard } from "@/hooks/useCards"
 
 export default function CardFormPage() {
   const { id: deckId, cardId } = useParams<{ id: string; cardId: string }>()
@@ -13,7 +14,9 @@ export default function CardFormPage() {
   const { data: card } = useCard(cardId)
   const createCard = useCreateCard()
   const updateCard = useUpdateCard()
+  const deleteCard = useDeleteCard()
   const [key, setKey] = useState(0)
+  const [deleteOpen, setDeleteOpen] = useState(false)
 
   const loading = createCard.isPending || updateCard.isPending
 
@@ -86,6 +89,33 @@ export default function CardFormPage() {
         onSubmit={handleSubmit}
         loading={loading}
       />
+
+      {isEdit && (
+        <>
+          <div className="px-7 mt-6 pb-10">
+            <button
+              className="w-full py-3 rounded-[14px] typo-body-md text-danger font-semibold transition-colors active:bg-danger/10"
+              onClick={() => setDeleteOpen(true)}
+            >
+              카드 삭제
+            </button>
+          </div>
+
+          <ConfirmDialog
+            open={deleteOpen}
+            onOpenChange={setDeleteOpen}
+            title="카드 삭제"
+            description="이 카드를 삭제합니다. 되돌릴 수 없습니다."
+            onConfirm={() => {
+              deleteCard.mutate(
+                { id: cardId!, deckId: deckId! },
+                { onSuccess: () => navigate(-1) },
+              )
+            }}
+            loading={deleteCard.isPending}
+          />
+        </>
+      )}
     </>
   )
 }

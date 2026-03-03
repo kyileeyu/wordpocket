@@ -64,6 +64,7 @@ export default function CardForm({ initialData, onSubmit, loading }: CardFormPro
           <Input
             placeholder="ubiquitous"
             className="font-display text-[16px] py-[14px]"
+            autoCapitalize="none"
             value={form.word}
             onChange={set("word")}
             disabled={loading}

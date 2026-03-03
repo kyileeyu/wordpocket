@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, useRef, useCallback } from "react"
 import { Link, useParams, useNavigate } from "react-router"
 import TopBar from "@/components/navigation/TopBar"
 import { Button } from "@/components/ui/button"
@@ -10,11 +10,13 @@ import FAB from "@/components/feedback/FAB"
 import EmptyState from "@/components/feedback/EmptyState"
 import InputDialog from "@/components/feedback/InputDialog"
 import ConfirmDialog from "@/components/feedback/ConfirmDialog"
+import ActionSheet from "@/components/feedback/ActionSheet"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal } from "lucide-react"
+import { MoreHorizontal, Plus, FileText, Camera, Trash2 } from "lucide-react"
 import { useDeck, useDeckProgress, useUpdateDeck, useDeleteDeck } from "@/hooks/useDecks"
-import { useCardsByDeck } from "@/hooks/useCards"
+import { useCardsByDeck, useDeleteCard } from "@/hooks/useCards"
 import { useAllCardsQueue } from "@/hooks/useStudy"
+import { cn } from "@/lib/utils"
 
 function mapStatus(status: string | undefined): "new" | "learning" | "mature" {
   if (status === "review") return "mature"
@@ -22,6 +24,133 @@ function mapStatus(status: string | undefined): "new" | "learning" | "mature" {
   return "new"
 }
 
+// --- SwipeableCard ---
+const SNAP_OPEN = -72 // delete button width exposed on snap
+const SWIPE_THRESHOLD = 40 // min drag to snap open
+
+function SwipeableCard({
+  card,
+  deckId,
+  onNavigate,
+}: {
+  card: { id: string; word: string; meaning: string; tags?: string[]; card_states?: { status?: string }[] }
+  deckId: string
+  onNavigate: (path: string) => void
+}) {
+  const [translateX, setTranslateX] = useState(0)
+  const [isSwiping, setIsSwiping] = useState(false)
+  const [snapped, setSnapped] = useState(false)
+  const touchStartRef = useRef({ x: 0, y: 0 })
+  const isHorizontalRef = useRef<boolean | null>(null)
+  const didSwipeRef = useRef(false)
+  const deleteCard = useDeleteCard()
+
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent) => {
+      touchStartRef.current = {
+        x: e.touches[0].clientX,
+        y: e.touches[0].clientY,
+      }
+      isHorizontalRef.current = null
+      didSwipeRef.current = false
+      setIsSwiping(false)
+    },
+    [],
+  )
+
+  const handleTouchMove = useCallback(
+    (e: React.TouchEvent) => {
+      const dx = e.touches[0].clientX - touchStartRef.current.x
+      const dy = e.touches[0].clientY - touchStartRef.current.y
+
+      if (isHorizontalRef.current === null) {
+        if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
+          isHorizontalRef.current = Math.abs(dx) > Math.abs(dy)
+        }
+        return
+      }
+
+      if (!isHorizontalRef.current) return
+
+      e.preventDefault()
+      setIsSwiping(true)
+      didSwipeRef.current = true
+      // If already snapped open, offset from snap position
+      const base = snapped ? SNAP_OPEN : 0
+      setTranslateX(Math.min(0, Math.max(SNAP_OPEN * 2, base + dx)))
+    },
+    [snapped],
+  )
+
+  const handleTouchEnd = useCallback(() => {
+    if (translateX < -SWIPE_THRESHOLD) {
+      // Snap open — reveal delete button
+      setTranslateX(SNAP_OPEN)
+      setSnapped(true)
+    } else {
+      // Snap closed
+      setTranslateX(0)
+      setSnapped(false)
+    }
+    setIsSwiping(false)
+  }, [translateX])
+
+  const handleDelete = () => {
+    setTranslateX(-400)
+    setTimeout(() => {
+      deleteCard.mutate({ id: card.id, deckId })
+    }, 200)
+  }
+
+  const handleClick = () => {
+    if (didSwipeRef.current) return
+    if (snapped) {
+      // Tap card while open → close
+      setTranslateX(0)
+      setSnapped(false)
+      return
+    }
+    onNavigate(`/deck/${deckId}/edit/${card.id}`)
+  }
+
+  const state = card.card_states?.[0]
+
+  return (
+    <div className="relative overflow-hidden rounded-[20px] mb-2">
+      {/* Delete button behind card — only rendered when swiped */}
+      {translateX < 0 && (
+      <button
+        className="absolute right-0 top-0 bottom-0 w-[72px] bg-danger flex items-center justify-center rounded-r-[20px]"
+        onClick={handleDelete}
+      >
+        <Trash2 className="w-5 h-5 text-white" />
+      </button>
+      )}
+
+      {/* Sliding card */}
+      <div
+        className={cn(
+          "relative bg-bg-elevated rounded-[20px] transition-transform",
+          !isSwiping && "duration-200",
+        )}
+        style={{ transform: `translateX(${translateX}px)` }}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onClick={handleClick}
+      >
+        <CardListItem
+          word={card.word}
+          meaning={card.meaning}
+          status={mapStatus(state?.status)}
+          tags={card.tags}
+        />
+      </div>
+    </div>
+  )
+}
+
+// --- DeckPage ---
 export default function DeckPage() {
   const { id: deckId } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -35,6 +164,7 @@ export default function DeckPage() {
   const [renameOpen, setRenameOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
+  const [actionSheetOpen, setActionSheetOpen] = useState(false)
 
   const allTags = useMemo(() => {
     if (!cards) return []
@@ -77,6 +207,27 @@ export default function DeckPage() {
     })
   }
 
+  const actionSheetItems = useMemo(
+    () => [
+      {
+        label: "단어 개별추가",
+        icon: Plus,
+        onClick: () => navigate(`/deck/${deckId}/add`),
+      },
+      {
+        label: "CSV 가져오기",
+        icon: FileText,
+        onClick: () => navigate(`/deck/${deckId}/import`),
+      },
+      {
+        label: "사진으로 가져오기",
+        icon: Camera,
+        onClick: () => navigate(`/deck/${deckId}/photo-import`),
+      },
+    ],
+    [deckId, navigate],
+  )
+
   return (
     <>
       <TopBar
@@ -90,8 +241,6 @@ export default function DeckPage() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => navigate(`/deck/${deckId}/import`)}>CSV 가져오기</DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate(`/deck/${deckId}/photo-import`)}>사진으로 가져오기</DropdownMenuItem>
               <DropdownMenuItem onClick={() => setRenameOpen(true)}>이름 편집</DropdownMenuItem>
               <DropdownMenuItem className="text-danger" onClick={() => setDeleteOpen(true)}>삭제</DropdownMenuItem>
             </DropdownMenuContent>
@@ -150,19 +299,14 @@ export default function DeckPage() {
                 ? `${filteredCards.length}/${totalCards}장 · ${selectedTag}`
                 : `카드 ${totalCards}장`}
             </Label>
-            {filteredCards.map((card) => {
-              const state = card.card_states?.[0]
-              return (
-                <Link key={card.id} to={`/deck/${deckId}/edit/${card.id}`}>
-                  <CardListItem
-                    word={card.word}
-                    meaning={card.meaning}
-                    status={mapStatus(state?.status)}
-                    tags={card.tags}
-                  />
-                </Link>
-              )
-            })}
+            {filteredCards.map((card) => (
+              <SwipeableCard
+                key={card.id}
+                card={card}
+                deckId={deckId!}
+                onNavigate={navigate}
+              />
+            ))}
           </>
         ) : (
           <EmptyState
@@ -172,7 +316,13 @@ export default function DeckPage() {
         )}
       </div>
 
-      <FAB to={`/deck/${deckId}/add`} />
+      <FAB onClick={() => setActionSheetOpen((v) => !v)} isOpen={actionSheetOpen} />
+
+      <ActionSheet
+        open={actionSheetOpen}
+        onClose={() => setActionSheetOpen(false)}
+        items={actionSheetItems}
+      />
 
       <InputDialog
         open={renameOpen}
