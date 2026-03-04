@@ -1,7 +1,7 @@
 const responses = [
-  { label: "Again", display: "모르겠어요", time: "< 1분", bg: "bg-again-bg", text: "text-again", border: "border-again/30" },
-  { label: "Hard", display: "애매해요", time: "6분", bg: "bg-bg-subtle", text: "text-text-secondary", border: "border-border" },
-  { label: "Good", display: "알아요", time: "10분", bg: "bg-accent-bg", text: "text-accent", border: "border-accent/30" },
+  { label: "Again", display: "모르겠어요", time: "1분", bg: "bg-again-bg", text: "text-again", border: "border-again/30" },
+  { label: "Hard", display: "애매해요", time: "10분", bg: "bg-bg-subtle", text: "text-text-secondary", border: "border-border" },
+  { label: "Good", display: "외웠어요", time: "1일", bg: "bg-accent-bg", text: "text-accent", border: "border-accent/30" },
   { label: "Easy", display: "안외워도 돼요", time: "4일", bg: "bg-accent-bg-soft", text: "text-accent-light", border: "border-accent-lighter" },
 ] as const
 
