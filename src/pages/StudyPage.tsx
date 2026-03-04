@@ -7,7 +7,7 @@ import ResponseButtons from "@/components/study/ResponseButtons"
 import EmptyState from "@/components/feedback/EmptyState"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useStudyQueue, useAllCardsQueue, useReviewOnlyQueue, useSubmitReview } from "@/hooks/useStudy"
-import { cn } from "@/lib/utils"
+import { cn, timeAgo } from "@/lib/utils"
 
 interface StudyCard {
   card_id: string
@@ -18,6 +18,7 @@ interface StudyCard {
   synonyms?: string[]
   tags?: string[]
   queue_type: string
+  last_reviewed_at?: string | null
 }
 
 export default function StudyPage() {
@@ -41,8 +42,10 @@ export default function StudyPage() {
   const [reviewedCount, setReviewedCount] = useState(0)
   const [correctCount, setCorrectCount] = useState(0)
   const [newCount, setNewCount] = useState(0)
-  const [againCount, setAgainCount] = useState(0)
+  const [lapCount, setLapCount] = useState(0)
+  const [masteredCount, setMasteredCount] = useState(0)
   const initialTotalRef = useRef(0)
+  const lapEndIndexRef = useRef(0)
 
   const reviewStartRef = useRef(Date.now())
   const newCountTrackedRef = useRef(false)
@@ -52,6 +55,7 @@ export default function StudyPage() {
       setWorkingQueue(queue)
       setNewCount(queue.filter((c) => c.queue_type === "new").length)
       initialTotalRef.current = queue.length
+      lapEndIndexRef.current = queue.length
       newCountTrackedRef.current = true
     }
   }, [queue])
@@ -84,13 +88,22 @@ export default function StudyPage() {
       { cardId: card.card_id, rating, reviewDuration },
       {
         onSuccess: () => {
+          if (rating === "good" || rating === "easy") {
+            setMasteredCount((c) => c + 1)
+          }
+
           let nextQueue = [...workingQueue]
-          if (rating === "again") {
+          if (rating === "again" || rating === "hard") {
             nextQueue = [...nextQueue, card]
-            setAgainCount((c) => c + 1)
           }
 
           const nextIndex = index + 1
+
+          if (nextIndex >= lapEndIndexRef.current && nextIndex < nextQueue.length) {
+            setLapCount((c) => c + 1)
+            lapEndIndexRef.current = nextQueue.length
+          }
+
           if (nextIndex >= nextQueue.length) {
             if (isAllMode) {
               goToComplete(nextReviewed, nextCorrect, newCount)
@@ -100,6 +113,7 @@ export default function StudyPage() {
                   setWorkingQueue(serverQueue)
                   setIndex(0)
                   setFlipped(false)
+                  lapEndIndexRef.current = serverQueue.length
                 } else {
                   goToComplete(nextReviewed, nextCorrect, newCount)
                 }
@@ -168,15 +182,22 @@ export default function StudyPage() {
         left="close"
         title={
           <span className="typo-mono-md text-text-secondary font-normal">
-            {Math.min(index + 1, initialTotal)} / {initialTotal}
-            {againCount > 0 && ` + 복습 ${againCount}`}
+            {masteredCount} / {initialTotal}
+            {lapCount > 0 && ` + 복습 ${["한", "두", "세", "네", "다섯"][lapCount - 1] ?? lapCount}바퀴`}
           </span>
         }
       />
 
-      <StudyProgress current={Math.min(index + 1, initialTotal)} total={initialTotal} />
+      <StudyProgress current={masteredCount} total={initialTotal} />
 
-      <div className="flex-1 flex items-center justify-center px-7">
+      <div className="flex-1 flex flex-col items-center justify-center px-7">
+        {card.last_reviewed_at && (
+          <div className="w-full text-right mb-1 pr-3">
+            <span className="typo-caption text-text-tertiary">
+              {timeAgo(card.last_reviewed_at)}
+            </span>
+          </div>
+        )}
         <WordCard
           word={card!.word}
           phonetic={card!.pronunciation ?? undefined}

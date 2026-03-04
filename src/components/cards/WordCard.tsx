@@ -19,14 +19,18 @@ export default function WordCard({ word, phonetic, meaning, example, synonyms, t
       onClick={onFlip}
     >
       {/* Word + Pronunciation */}
-      <div className="flex items-center justify-center gap-1 mb-1">
-        <div className={cn(
-          "text-text-primary",
-          flipped ? "typo-display-xl text-[28px]" : "typo-display-xl"
-        )}>
-          {word}
+      <div className="flex items-center justify-center mb-1">
+        <div className="relative inline-flex items-end">
+          <div className={cn(
+            "text-text-primary",
+            flipped ? "typo-display-xl text-[28px]" : "typo-display-xl"
+          )}>
+            {word}
+          </div>
+          <div className="absolute left-full ml-1">
+            <PronunciationButton word={word} size="sm" />
+          </div>
         </div>
-        <PronunciationButton word={word} size="md" />
       </div>
 
       {/* Phonetic */}

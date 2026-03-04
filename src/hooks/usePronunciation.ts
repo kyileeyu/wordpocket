@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query"
-import { useCallback, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import {
   fetchPronunciation,
   playAudioUrl,
@@ -10,9 +10,24 @@ export function usePronunciation(word: string) {
   const queryClient = useQueryClient()
   const [isPlaying, setIsPlaying] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const abortRef = useRef<AbortController | null>(null)
+
+  // Cancel playback and reset state when word changes
+  useEffect(() => {
+    return () => {
+      abortRef.current?.abort()
+      abortRef.current = null
+      setIsPlaying(false)
+      setError(null)
+    }
+  }, [word])
 
   const play = useCallback(async () => {
     if (isPlaying || !word) return
+
+    abortRef.current?.abort()
+    const controller = new AbortController()
+    abortRef.current = controller
 
     setIsPlaying(true)
     setError(null)
@@ -24,20 +39,29 @@ export function usePronunciation(word: string) {
         staleTime: Infinity,
       })
 
+      if (controller.signal.aborted) return
+
       if (data?.audioUrl) {
         try {
-          await playAudioUrl(data.audioUrl)
+          await playAudioUrl(data.audioUrl, controller.signal)
           return
-        } catch {
+        } catch (e) {
+          if (e instanceof DOMException && e.name === "AbortError") return
           // MP3 failed, fall through to TTS
         }
       }
 
-      await speakWord(word)
-    } catch {
-      setError("발음을 재생할 수 없습니다")
+      if (controller.signal.aborted) return
+      await speakWord(word, controller.signal)
+    } catch (e) {
+      if (e instanceof DOMException && e.name === "AbortError") return
+      if (!controller.signal.aborted) {
+        setError("발음을 재생할 수 없습니다")
+      }
     } finally {
-      setIsPlaying(false)
+      if (!controller.signal.aborted) {
+        setIsPlaying(false)
+      }
     }
   }, [isPlaying, word, queryClient])
 

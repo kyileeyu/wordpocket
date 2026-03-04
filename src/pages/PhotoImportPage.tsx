@@ -100,12 +100,14 @@ export default function PhotoImportPage() {
     onProgress: (current, total) =>
       dispatch({ type: "UPDATE_EXTRACTION_PROGRESS", current, total }),
     onComplete: (cards) => {
-      // Mark duplicates
-      const markedCards = cards.map((c) => ({
-        ...c,
-        isDuplicate: existingWords.includes(c.word.toLowerCase().trim()),
-        isChecked: !existingWords.includes(c.word.toLowerCase().trim()),
-      }))
+      // Mark duplicates (existing in deck + within-batch)
+      const seen = new Set<string>()
+      const markedCards = cards.map((c) => {
+        const key = c.word.toLowerCase().trim()
+        const isDup = existingWords.includes(key) || seen.has(key)
+        seen.add(key)
+        return { ...c, isDuplicate: isDup, isChecked: !isDup }
+      })
       dispatch({ type: "EXTRACTION_COMPLETE", cards: markedCards })
     },
     onError: (error) => dispatch({ type: "EXTRACTION_ERROR", error }),

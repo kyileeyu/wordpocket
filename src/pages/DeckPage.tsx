@@ -232,7 +232,7 @@ export default function DeckPage() {
                 <ChevronDown className="w-3.5 h-3.5" />
               </button>
             </div>
-            <div className="rounded-[20px] bg-bg-elevated overflow-hidden">
+            <div className="rounded-[20px] bg-bg-elevated overflow-hidden mb-6">
               {filteredCards.map((card, i) => {
                 const state = card.card_states?.[0]
                 return (
