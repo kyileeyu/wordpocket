@@ -93,7 +93,7 @@ export default function StudyPage() {
           }
 
           let nextQueue = [...workingQueue]
-          if (rating === "again") {
+          if (rating === "again" || rating === "hard") {
             nextQueue = [...nextQueue, card]
           }
 
@@ -183,7 +183,7 @@ export default function StudyPage() {
         title={
           <span className="typo-mono-md text-text-secondary font-normal">
             {masteredCount} / {initialTotal}
-            {lapCount > 0 && ` + 복습 ${lapCount}바퀴`}
+            {lapCount > 0 && ` + 복습 ${["한", "두", "세", "네", "다섯"][lapCount - 1] ?? lapCount}바퀴`}
           </span>
         }
       />
