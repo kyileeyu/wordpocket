@@ -342,6 +342,13 @@ export type Database = {
         Args: Record<string, never>;
         Returns: Json;
       };
+      get_memorized_weekly: {
+        Args: Record<string, never>;
+        Returns: {
+          date: string;
+          memorized_count: number;
+        }[];
+      };
       get_deck_progress: {
         Args: Record<string, never>;
         Returns: {

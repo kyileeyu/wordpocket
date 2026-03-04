@@ -11,6 +11,7 @@ export function useTodayStats() {
         reviewed_count: number
         new_learned_count: number
         study_seconds: number
+        memorized_today: number
       }
     },
   })
@@ -36,6 +37,17 @@ export function useStreak() {
       const { data, error } = await supabase.rpc("get_streak")
       if (error) throw error
       return data as { current_streak: number }
+    },
+  })
+}
+
+export function useMemorizedWeekly() {
+  return useQuery({
+    queryKey: ["memorized-weekly"],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("get_memorized_weekly")
+      if (error) throw error
+      return data as { date: string; memorized_count: number }[]
     },
   })
 }

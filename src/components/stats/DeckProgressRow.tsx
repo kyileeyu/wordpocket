@@ -24,9 +24,9 @@ export default function DeckProgressRow({
       </div>
       <SegmentedProgress
         segments={[
-          { value: newCount, color: "#D4CEFA" },
-          { value: learningCount, color: "#A99BF0" },
           { value: matureCount, color: "#7C6CE7" },
+          { value: learningCount, color: "#A99BF0" },
+          { value: newCount, color: "#D4CEFA" },
         ]}
       />
       <div className="mt-[6px]">
