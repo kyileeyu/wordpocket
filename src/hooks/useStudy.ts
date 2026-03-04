@@ -57,6 +57,26 @@ export function useAllCardsQueue(deckId: string, enabled: boolean) {
   })
 }
 
+export function useReviewOnlyQueue(deckId: string, enabled: boolean) {
+  return useQuery({
+    queryKey: ["review-only-queue", deckId],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("get_study_queue", {
+        p_deck_id: deckId,
+        p_limit: 100,
+      })
+      if (error) throw error
+      const now = new Date()
+      return (data ?? []).filter(
+        (c: { queue_type: string; due_date: string | null }) =>
+          c.queue_type !== "new" && (!c.due_date || new Date(c.due_date) <= now)
+      )
+    },
+    staleTime: 0,
+    enabled,
+  })
+}
+
 export function useSubmitReview() {
   const qc = useQueryClient()
   return useMutation({

@@ -15,7 +15,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { MoreHorizontal, Plus, FileText, Camera, ChevronDown } from "lucide-react"
 import { useDeck, useDeckProgress, useUpdateDeck, useDeleteDeck } from "@/hooks/useDecks"
 import { useCardsByDeck } from "@/hooks/useCards"
-import { useAllCardsQueue } from "@/hooks/useStudy"
+import { useAllCardsQueue, useReviewOnlyQueue } from "@/hooks/useStudy"
 
 function mapStatus(status: string | undefined): "new" | "learning" | "mature" {
   if (status === "review") return "mature"
@@ -40,6 +40,7 @@ export default function DeckPage() {
   const { data: deck } = useDeck(deckId!)
   const { data: cards, isLoading: cardsLoading } = useCardsByDeck(deckId!)
   const { data: studyQueue } = useAllCardsQueue(deckId!, true)
+  const { data: reviewQueue } = useReviewOnlyQueue(deckId!, true)
   const { data: deckProgress } = useDeckProgress()
   const updateDeck = useUpdateDeck()
   const deleteDeck = useDeleteDeck()
@@ -106,6 +107,7 @@ export default function DeckPage() {
   const totalCards = progress?.total_cards ?? 0
 
   const studyableCount = studyQueue?.length ?? 0
+  const reviewableCount = reviewQueue?.length ?? 0
 
   const handleRename = (name: string) => {
     updateDeck.mutate(
@@ -183,12 +185,19 @@ export default function DeckPage() {
         />
       </div>
 
-      {/* CTA Button */}
-      {studyableCount > 0 && (
-        <div className="px-7 mb-4">
-          <Button asChild className="w-full">
-            <Link to={`/study/${deckId}?mode=all`}>▶ 학습 시작 · {studyableCount}장</Link>
-          </Button>
+      {/* CTA Buttons */}
+      {(studyableCount > 0 || reviewableCount > 0) && (
+        <div className="px-7 mb-4 flex gap-2">
+          {reviewableCount > 0 && (
+            <Button asChild variant="outline" className="flex-1">
+              <Link to={`/study/${deckId}?mode=review`}>▶ 복습 · {reviewableCount}장</Link>
+            </Button>
+          )}
+          {studyableCount > 0 && (
+            <Button asChild className="flex-1">
+              <Link to={`/study/${deckId}?mode=all`}>▶ 학습 · {studyableCount}장</Link>
+            </Button>
+          )}
         </div>
       )}
 

@@ -6,7 +6,7 @@ import { WordCard } from "@/components/cards"
 import ResponseButtons from "@/components/study/ResponseButtons"
 import EmptyState from "@/components/feedback/EmptyState"
 import { Skeleton } from "@/components/ui/skeleton"
-import { useStudyQueue, useAllCardsQueue, useSubmitReview } from "@/hooks/useStudy"
+import { useStudyQueue, useAllCardsQueue, useReviewOnlyQueue, useSubmitReview } from "@/hooks/useStudy"
 import { cn } from "@/lib/utils"
 
 interface StudyCard {
@@ -24,11 +24,15 @@ export default function StudyPage() {
   const { deckId } = useParams<{ deckId: string }>()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const isAllMode = searchParams.get("mode") === "all"
-  const { data: srsQueue, isLoading: srsLoading, refetch } = useStudyQueue(deckId!)
+  const mode = searchParams.get("mode")
+  const isAllMode = mode === "all"
+  const isReviewMode = mode === "review"
+  const { data: srsQueue, isLoading: srsLoading, refetch: srsRefetch } = useStudyQueue(deckId!)
   const { data: allQueue, isLoading: allLoading } = useAllCardsQueue(deckId!, isAllMode)
-  const queue: StudyCard[] | undefined = isAllMode ? allQueue : srsQueue
-  const isLoading = isAllMode ? allLoading : srsLoading
+  const { data: reviewQueue, isLoading: reviewLoading, refetch: reviewRefetch } = useReviewOnlyQueue(deckId!, isReviewMode)
+  const queue: StudyCard[] | undefined = isReviewMode ? reviewQueue : isAllMode ? allQueue : srsQueue
+  const isLoading = isReviewMode ? reviewLoading : isAllMode ? allLoading : srsLoading
+  const refetch = isReviewMode ? reviewRefetch : srsRefetch
   const submitReview = useSubmitReview()
 
   const [workingQueue, setWorkingQueue] = useState<StudyCard[]>([])
