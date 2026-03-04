@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { useParams, useNavigate } from "react-router"
 import TopBar from "@/components/navigation/TopBar"
 
@@ -7,11 +7,12 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { StatPill } from "@/components/stats"
 import { DeckCard } from "@/components/cards"
 import FAB from "@/components/feedback/FAB"
+import ActionSheet from "@/components/feedback/ActionSheet"
 import EmptyState from "@/components/feedback/EmptyState"
 import InputDialog from "@/components/feedback/InputDialog"
 import ConfirmDialog from "@/components/feedback/ConfirmDialog"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal } from "lucide-react"
+import { FileText, MoreHorizontal, Plus } from "lucide-react"
 import { useFolders, useUpdateFolder, useDeleteFolder } from "@/hooks/useFolders"
 import { useDecksByFolder, useDeckProgress, useCreateDeck } from "@/hooks/useDecks"
 
@@ -28,6 +29,7 @@ export default function FolderPage() {
   const deleteFolder = useDeleteFolder()
 
   const [deckDialogOpen, setDeckDialogOpen] = useState(false)
+  const [actionSheetOpen, setActionSheetOpen] = useState(false)
   const [renameOpen, setRenameOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
 
@@ -45,6 +47,19 @@ export default function FolderPage() {
     deckDueMap.set(d.deck_id, d.due_today)
     deckTotalMap.set(d.deck_id, d.total_cards)
   })
+
+  const actionSheetItems = useMemo(() => [
+    {
+      label: "카드뭉치 만들기",
+      icon: Plus,
+      onClick: () => setDeckDialogOpen(true),
+    },
+    {
+      label: "CSV 가져오기",
+      icon: FileText,
+      onClick: () => navigate(`/folder/${folderId}/import`),
+    },
+  ], [folderId, navigate])
 
   const handleCreateDeck = (name: string) => {
     createDeck.mutate(
@@ -127,7 +142,8 @@ export default function FolderPage() {
         )}
       </div>
 
-      <FAB onClick={() => setDeckDialogOpen(true)} />
+      <FAB onClick={() => setActionSheetOpen((v) => !v)} isOpen={actionSheetOpen} />
+      <ActionSheet open={actionSheetOpen} onClose={() => setActionSheetOpen(false)} items={actionSheetItems} />
 
       <InputDialog
         open={deckDialogOpen}

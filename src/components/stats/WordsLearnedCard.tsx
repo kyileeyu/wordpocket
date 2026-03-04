@@ -1,11 +1,20 @@
 interface WordsLearnedCardProps {
   mastered: number
   total: number
+  memorizedToday: number
+  weeklyData: { date: string; memorized_count: number }[]
 }
 
-export default function WordsLearnedCard({ mastered, total }: WordsLearnedCardProps) {
+const DAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"]
+
+export default function WordsLearnedCard({
+  mastered,
+  total,
+  memorizedToday,
+  weeklyData,
+}: WordsLearnedCardProps) {
   const percent = total > 0 ? Math.round((mastered / total) * 100) : 0
-  const filledCells = Math.min(7, Math.max(0, Math.round((mastered / Math.max(total, 1)) * 7)))
+  const maxCount = Math.max(1, ...weeklyData.map((d) => d.memorized_count))
 
   return (
     <div
@@ -33,22 +42,52 @@ export default function WordsLearnedCard({ mastered, total }: WordsLearnedCardPr
         <span className="text-[20px] text-text-tertiary">/{total}</span>
       </div>
 
-      {/* Cell visualization */}
-      <div className="grid grid-cols-7 gap-[6px]">
-        {Array.from({ length: 7 }, (_, i) =>
-          i < filledCells ? (
-            <div
-              key={i}
-              className="aspect-square rounded-[12px]"
-              style={{ background: "linear-gradient(135deg, #D45FA0, #9B6CE7)" }}
-            />
-          ) : (
-            <div
-              key={i}
-              className="aspect-square rounded-[12px] border-2 border-dashed border-border"
-            />
-          ),
-        )}
+      {/* Today's memorized label */}
+      <div className="mb-2">
+        <span className="typo-body-xs text-text-secondary">
+          오늘 외운 단어 {memorizedToday}개
+        </span>
+      </div>
+
+      {/* Weekly bar chart */}
+      <div className="flex items-end gap-[6px]" style={{ height: 56 }}>
+        {weeklyData.map((day) => {
+          const ratio = day.memorized_count / maxCount
+          const minHeight = 8
+          const barHeight = day.memorized_count > 0
+            ? minHeight + ratio * (56 - minHeight)
+            : minHeight
+
+          return (
+            <div key={day.date} className="flex-1 flex flex-col items-center gap-1">
+              <div
+                className="w-full rounded-[8px]"
+                style={{
+                  height: barHeight,
+                  background:
+                    day.memorized_count > 0
+                      ? "linear-gradient(135deg, #D45FA0, #9B6CE7)"
+                      : undefined,
+                  border: day.memorized_count === 0 ? "2px dashed var(--color-border)" : undefined,
+                }}
+              />
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Day labels */}
+      <div className="flex gap-[6px] mt-1">
+        {weeklyData.map((day) => {
+          const d = new Date(day.date + "T00:00:00")
+          return (
+            <div key={day.date} className="flex-1 text-center">
+              <span className="text-[10px] text-text-tertiary">
+                {DAY_LABELS[d.getDay()]}
+              </span>
+            </div>
+          )
+        })}
       </div>
     </div>
   )
