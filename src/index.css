@@ -33,6 +33,10 @@
   --color-again: #E55B7A;
   --color-again-bg: #FDE8EE;
 
+  /* Success (sage green) */
+  --color-success: #4BA882;
+  --color-success-bg: #E8F5EE;
+
   /* Border */
   --color-border: #E8E6F0;
   --color-border-subtle: #F0EEF6;

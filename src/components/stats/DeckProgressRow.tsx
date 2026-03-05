@@ -6,7 +6,7 @@ interface DeckProgressRowProps {
   totalCards: number
   newCount: number
   learningCount: number
-  matureCount: number
+  memorizedCount: number
 }
 
 export default function DeckProgressRow({
@@ -14,7 +14,7 @@ export default function DeckProgressRow({
   totalCards,
   newCount,
   learningCount,
-  matureCount,
+  memorizedCount,
 }: DeckProgressRowProps) {
   return (
     <div className="bg-bg-subtle rounded-[20px] p-[14px] mb-2">
@@ -24,7 +24,7 @@ export default function DeckProgressRow({
       </div>
       <SegmentedProgress
         segments={[
-          { value: matureCount, color: "#7C6CE7" },
+          { value: memorizedCount, color: "#7C6CE7" },
           { value: learningCount, color: "#A99BF0" },
           { value: newCount, color: "#D4CEFA" },
         ]}
@@ -33,7 +33,7 @@ export default function DeckProgressRow({
         <SegmentedLegend
           newCount={newCount}
           learningCount={learningCount}
-          matureCount={matureCount}
+          memorizedCount={memorizedCount}
         />
       </div>
     </div>

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react"
+import { useState, useRef, useEffect, useCallback, useMemo } from "react"
 import { useParams, useNavigate, useSearchParams } from "react-router"
 import TopBar from "@/components/navigation/TopBar"
 import StudyProgress from "@/components/study/StudyProgress"
@@ -6,8 +6,10 @@ import { WordCard } from "@/components/cards"
 import ResponseButtons from "@/components/study/ResponseButtons"
 import EmptyState from "@/components/feedback/EmptyState"
 import { Skeleton } from "@/components/ui/skeleton"
-import { useStudyQueue, useAllCardsQueue, useReviewOnlyQueue, useSubmitReview } from "@/hooks/useStudy"
-import { cn, timeAgo } from "@/lib/utils"
+import PageContent from "@/components/layouts/PageContent"
+import { useStudyQueue, useReviewOnlyQueue, useFolderReviewQueue, useReviewBatch } from "@/hooks/useStudy"
+import ConfirmDialog from "@/components/feedback/ConfirmDialog"
+import { cn, timeAgo, computeIntervals } from "@/lib/utils"
 
 interface StudyCard {
   card_id: string
@@ -19,22 +21,26 @@ interface StudyCard {
   tags?: string[]
   queue_type: string
   last_reviewed_at?: string | null
+  status: string
+  ease_factor: number
+  interval: number
+  step_index: number
 }
 
 export default function StudyPage() {
-  const { deckId } = useParams<{ deckId: string }>()
+  const { deckId, folderId } = useParams<{ deckId?: string; folderId?: string }>()
+  const isFolderMode = !!folderId
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const mode = searchParams.get("mode")
-  const isAllMode = mode === "all"
   const isReviewMode = mode === "review"
-  const { data: srsQueue, isLoading: srsLoading, refetch: srsRefetch } = useStudyQueue(deckId!)
-  const { data: allQueue, isLoading: allLoading } = useAllCardsQueue(deckId!, isAllMode)
-  const { data: reviewQueue, isLoading: reviewLoading, refetch: reviewRefetch } = useReviewOnlyQueue(deckId!, isReviewMode)
-  const queue: StudyCard[] | undefined = isReviewMode ? reviewQueue : isAllMode ? allQueue : srsQueue
-  const isLoading = isReviewMode ? reviewLoading : isAllMode ? allLoading : srsLoading
-  const refetch = isReviewMode ? reviewRefetch : srsRefetch
-  const submitReview = useSubmitReview()
+  const { data: srsQueue, isLoading: srsLoading, refetch: srsRefetch } = useStudyQueue(deckId ?? "", !isFolderMode)
+  const { data: reviewQueue, isLoading: reviewLoading, refetch: reviewRefetch } = useReviewOnlyQueue(deckId ?? "", isReviewMode && !isFolderMode)
+  const { data: folderQueue, isLoading: folderLoading, refetch: folderRefetch } = useFolderReviewQueue(folderId ?? "", isFolderMode)
+  const queue: StudyCard[] | undefined = isFolderMode ? folderQueue : isReviewMode ? reviewQueue : srsQueue
+  const isLoading = isFolderMode ? folderLoading : isReviewMode ? reviewLoading : srsLoading
+  const refetch = isFolderMode ? folderRefetch : isReviewMode ? reviewRefetch : srsRefetch
+  const batch = useReviewBatch()
 
   const [workingQueue, setWorkingQueue] = useState<StudyCard[]>([])
   const [index, setIndex] = useState(0)
@@ -44,6 +50,8 @@ export default function StudyPage() {
   const [newCount, setNewCount] = useState(0)
   const [lapCount, setLapCount] = useState(0)
   const [masteredCount, setMasteredCount] = useState(0)
+  const [showExitDialog, setShowExitDialog] = useState(false)
+  const [exitLoading, setExitLoading] = useState(false)
   const initialTotalRef = useRef(0)
   const lapEndIndexRef = useRef(0)
 
@@ -67,13 +75,41 @@ export default function StudyPage() {
   const initialTotal = initialTotalRef.current || (queue?.length ?? 0)
   const card = workingQueue[index]
 
+  const intervals = useMemo(() => {
+    if (!card) return undefined
+    return computeIntervals({
+      status: card.status,
+      ease_factor: card.ease_factor,
+      interval: card.interval,
+      step_index: card.step_index,
+    })
+  }, [card?.card_id, card?.status, card?.ease_factor, card?.interval, card?.step_index])
+
   const goToComplete = useCallback((reviewed: number, correct: number, newCards: number) => {
     navigate("/study/complete", {
-      state: { reviewed, correct, newCount: newCards, deckId },
+      state: { reviewed, correct, newCount: newCards, deckId, folderId },
     })
-  }, [navigate, deckId])
+  }, [navigate, deckId, folderId])
 
-  const handleResponse = (label: string) => {
+  const handleExit = useCallback(async () => {
+    if (batch.getPendingCount() === 0) {
+      navigate(-1)
+      return
+    }
+    setShowExitDialog(true)
+  }, [batch, navigate])
+
+  const handleExitConfirm = useCallback(async () => {
+    setExitLoading(true)
+    try {
+      await batch.flush()
+    } catch {
+      // 실패해도 나가기
+    }
+    navigate(-1)
+  }, [batch, navigate])
+
+  const handleResponse = async (label: string) => {
     if (!card) return
 
     const rating = label.toLowerCase()
@@ -84,68 +120,54 @@ export default function StudyPage() {
     setReviewedCount(nextReviewed)
     setCorrectCount(nextCorrect)
 
-    submitReview.mutate(
-      { cardId: card.card_id, rating, reviewDuration },
-      {
-        onSuccess: () => {
-          if (rating === "good" || rating === "easy") {
-            setMasteredCount((c) => c + 1)
-          }
+    batch.addReview(card.card_id, rating, reviewDuration)
 
-          let nextQueue = [...workingQueue]
-          if (rating === "again" || rating === "hard") {
-            nextQueue = [...nextQueue, card]
-          }
+    if (rating === "good" || rating === "easy") {
+      setMasteredCount((c) => c + 1)
+    }
 
-          const nextIndex = index + 1
+    let nextQueue = [...workingQueue]
+    if (rating === "again" || rating === "hard") {
+      nextQueue = [...nextQueue, card]
+    }
 
-          if (nextIndex >= lapEndIndexRef.current && nextIndex < nextQueue.length) {
-            setLapCount((c) => c + 1)
-            lapEndIndexRef.current = nextQueue.length
-          }
+    const nextIndex = index + 1
 
-          if (nextIndex >= nextQueue.length) {
-            if (isAllMode) {
-              goToComplete(nextReviewed, nextCorrect, newCount)
-            } else {
-              refetch().then(({ data: serverQueue }) => {
-                if (serverQueue && serverQueue.length > 0) {
-                  setWorkingQueue(serverQueue)
-                  setIndex(0)
-                  setFlipped(false)
-                  lapEndIndexRef.current = serverQueue.length
-                } else {
-                  goToComplete(nextReviewed, nextCorrect, newCount)
-                }
-              })
-            }
-          } else {
-            setWorkingQueue(nextQueue)
-            setIndex(nextIndex)
-            setFlipped(false)
-          }
-        },
-        onError: () => {
-          const nextIndex = index + 1
-          if (nextIndex >= workingQueue.length) {
-            goToComplete(nextReviewed, nextCorrect, newCount)
-          } else {
-            setFlipped(false)
-            setIndex(nextIndex)
-          }
-        },
-      },
-    )
+    if (nextIndex >= lapEndIndexRef.current && nextIndex < nextQueue.length) {
+      setLapCount((c) => c + 1)
+      lapEndIndexRef.current = nextQueue.length
+    }
+
+    if (nextIndex >= nextQueue.length) {
+      try {
+        await batch.flush()
+      } catch {
+        // flush 실패해도 계속 진행
+      }
+      const { data: serverQueue } = await refetch()
+      if (serverQueue && serverQueue.length > 0) {
+        setWorkingQueue(serverQueue)
+        setIndex(0)
+        setFlipped(false)
+        lapEndIndexRef.current = serverQueue.length
+      } else {
+        goToComplete(nextReviewed, nextCorrect, newCount)
+      }
+    } else {
+      setWorkingQueue(nextQueue)
+      setIndex(nextIndex)
+      setFlipped(false)
+    }
   }
 
   if (isLoading) {
     return (
       <>
         <TopBar left="close" />
-        <div className="px-7 space-y-4 mt-4">
+        <PageContent className="space-y-4">
           <Skeleton className="h-2 rounded-full" />
           <Skeleton className="h-[280px] rounded-[24px]" />
-        </div>
+        </PageContent>
       </>
     )
   }
@@ -168,10 +190,10 @@ export default function StudyPage() {
     return (
       <>
         <TopBar left="close" />
-        <div className="px-7 space-y-4 mt-4">
+        <PageContent className="space-y-4">
           <Skeleton className="h-2 rounded-full" />
           <Skeleton className="h-[280px] rounded-[24px]" />
-        </div>
+        </PageContent>
       </>
     )
   }
@@ -180,6 +202,7 @@ export default function StudyPage() {
     <>
       <TopBar
         left="close"
+        onLeftClick={handleExit}
         title={
           <span className="typo-mono-md text-text-secondary font-normal">
             {masteredCount} / {initialTotal}
@@ -190,7 +213,7 @@ export default function StudyPage() {
 
       <StudyProgress current={masteredCount} total={initialTotal} />
 
-      <div className="flex-1 flex flex-col items-center justify-center px-7">
+      <PageContent className="flex-1 flex flex-col items-center justify-center pt-0">
         {card.last_reviewed_at && (
           <div className="w-full text-right mb-1 pr-3">
             <span className="typo-caption text-text-tertiary">
@@ -208,13 +231,23 @@ export default function StudyPage() {
           flipped={flipped}
           onFlip={() => setFlipped((f) => !f)}
         />
-      </div>
+      </PageContent>
 
       <div className={cn("mb-2", !flipped && "invisible")}>
-        <ResponseButtons onResponse={handleResponse} />
+        <ResponseButtons onResponse={handleResponse} intervals={intervals} />
       </div>
 
       <div className="h-5 shrink-0" />
+
+      <ConfirmDialog
+        open={showExitDialog}
+        onOpenChange={setShowExitDialog}
+        title="학습을 종료하시겠습니까?"
+        description="지금까지의 학습 내용이 저장됩니다."
+        onConfirm={handleExitConfirm}
+        loading={exitLoading}
+        confirmLabel="종료"
+      />
     </>
   )
 }

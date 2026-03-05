@@ -33,21 +33,25 @@ export function usePronunciation(word: string) {
     setError(null)
 
     try {
-      const data = await queryClient.fetchQuery({
-        queryKey: ["pronunciation", word],
-        queryFn: () => fetchPronunciation(word),
-        staleTime: Infinity,
-      })
+      const isPhrase = word.includes(" ")
 
-      if (controller.signal.aborted) return
+      if (!isPhrase) {
+        const data = await queryClient.fetchQuery({
+          queryKey: ["pronunciation", word],
+          queryFn: () => fetchPronunciation(word),
+          staleTime: Infinity,
+        })
 
-      if (data?.audioUrl) {
-        try {
-          await playAudioUrl(data.audioUrl, controller.signal)
-          return
-        } catch (e) {
-          if (e instanceof DOMException && e.name === "AbortError") return
-          // MP3 failed, fall through to TTS
+        if (controller.signal.aborted) return
+
+        if (data?.audioUrl) {
+          try {
+            await playAudioUrl(data.audioUrl, controller.signal)
+            return
+          } catch (e) {
+            if (e instanceof DOMException && e.name === "AbortError") return
+            // MP3 failed, fall through to TTS
+          }
         }
       }
 

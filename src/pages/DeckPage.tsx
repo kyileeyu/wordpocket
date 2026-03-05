@@ -1,126 +1,142 @@
-import { useState, useMemo } from "react"
-import { Link, useParams, useNavigate } from "react-router"
-import TopBar from "@/components/navigation/TopBar"
-import { Button } from "@/components/ui/button"
-import { Skeleton } from "@/components/ui/skeleton"
-import { StatBox, SegmentedProgress } from "@/components/stats"
-import { CardListItem, TagFilterBar } from "@/components/cards"
-import FAB from "@/components/feedback/FAB"
-import EmptyState from "@/components/feedback/EmptyState"
-import InputDialog from "@/components/feedback/InputDialog"
-import ConfirmDialog from "@/components/feedback/ConfirmDialog"
-import ActionSheet from "@/components/feedback/ActionSheet"
-import SortSheet from "@/components/feedback/SortSheet"
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, Plus, FileText, Camera, ChevronDown } from "lucide-react"
-import { useDeck, useDeckProgress, useUpdateDeck, useDeleteDeck } from "@/hooks/useDecks"
-import { useCardsByDeck } from "@/hooks/useCards"
-import { useAllCardsQueue, useReviewOnlyQueue } from "@/hooks/useStudy"
+import { useState, useMemo } from "react";
+import { Link, useParams, useNavigate } from "react-router";
+import TopBar from "@/components/navigation/TopBar";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { StatBox, SegmentedProgress } from "@/components/stats";
+import { CardListItem, TagFilterBar } from "@/components/cards";
+import FAB from "@/components/feedback/FAB";
+import EmptyState from "@/components/feedback/EmptyState";
+import InputDialog from "@/components/feedback/InputDialog";
+import ConfirmDialog from "@/components/feedback/ConfirmDialog";
+import ActionSheet from "@/components/feedback/ActionSheet";
+import SortSheet from "@/components/feedback/SortSheet";
+import PageContent from "@/components/layouts/PageContent";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import {
+  MoreHorizontal,
+  Plus,
+  FileText,
+  Camera,
+  ChevronDown,
+} from "lucide-react";
+import {
+  useDeck,
+  useDeckProgress,
+  useUpdateDeck,
+  useDeleteDeck,
+} from "@/hooks/useDecks";
+import { useCardsByDeck } from "@/hooks/useCards";
+import { useStudyQueue, useReviewOnlyQueue } from "@/hooks/useStudy";
+import { mapCardStatus } from "@/lib/utils";
 
-function mapStatus(status: string | undefined): "new" | "learning" | "mature" {
-  if (status === "review") return "mature"
-  if (status === "learning") return "learning"
-  return "new"
-}
-
-const STATUS_ORDER: Record<string, number> = { new: 0, learning: 1, review: 2 }
+const STATUS_ORDER: Record<string, number> = { new: 0, learning: 1, review: 2 };
 
 const SORT_OPTIONS = [
   { value: "created", label: "추가일순", description: "최신 먼저" },
-  { value: "status", label: "상태순", description: "New → Learning → Mature" },
+  {
+    value: "status",
+    label: "상태순",
+    description: "새 단어 → 학습중 → 암기 완료",
+  },
   { value: "alpha", label: "알파벳순", description: "A → Z" },
   { value: "due", label: "복습일순", description: "오래된 먼저" },
-] as const
+] as const;
 
-type SortKey = (typeof SORT_OPTIONS)[number]["value"]
+type SortKey = (typeof SORT_OPTIONS)[number]["value"];
 
 export default function DeckPage() {
-  const { id: deckId } = useParams<{ id: string }>()
-  const navigate = useNavigate()
-  const { data: deck } = useDeck(deckId!)
-  const { data: cards, isLoading: cardsLoading } = useCardsByDeck(deckId!)
-  const { data: studyQueue } = useAllCardsQueue(deckId!, true)
-  const { data: reviewQueue } = useReviewOnlyQueue(deckId!, true)
-  const { data: deckProgress } = useDeckProgress()
-  const updateDeck = useUpdateDeck()
-  const deleteDeck = useDeleteDeck()
+  const { id: deckId } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { data: deck } = useDeck(deckId!);
+  const { data: cards, isLoading: cardsLoading } = useCardsByDeck(deckId!);
+  const { data: studyQueue } = useStudyQueue(deckId!);
+  const { data: reviewQueue } = useReviewOnlyQueue(deckId!, true);
+  const { data: deckProgress } = useDeckProgress();
+  const updateDeck = useUpdateDeck();
+  const deleteDeck = useDeleteDeck();
 
-  const [renameOpen, setRenameOpen] = useState(false)
-  const [deleteOpen, setDeleteOpen] = useState(false)
-  const [selectedTag, setSelectedTag] = useState<string | null>(null)
-  const [actionSheetOpen, setActionSheetOpen] = useState(false)
-  const [sortKey, setSortKey] = useState<SortKey>("created")
-  const [sortSheetOpen, setSortSheetOpen] = useState(false)
+  const [renameOpen, setRenameOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [actionSheetOpen, setActionSheetOpen] = useState(false);
+  const [sortKey, setSortKey] = useState<SortKey>("created");
+  const [sortSheetOpen, setSortSheetOpen] = useState(false);
 
   const allTags = useMemo(() => {
-    if (!cards) return []
-    const tagSet = new Set<string>()
-    cards.forEach((c) => c.tags?.forEach((t: string) => tagSet.add(t)))
+    if (!cards) return [];
+    const tagSet = new Set<string>();
+    cards.forEach((c) => c.tags?.forEach((t: string) => tagSet.add(t)));
     return [...tagSet].sort((a, b) => {
-      const dayA = a.match(/^Day (\d+)$/)
-      const dayB = b.match(/^Day (\d+)$/)
-      if (dayA && dayB) return Number(dayA[1]) - Number(dayB[1])
-      if (dayA) return -1
-      if (dayB) return 1
-      return a.localeCompare(b)
-    })
-  }, [cards])
+      const dayA = a.match(/^Day (\d+)$/);
+      const dayB = b.match(/^Day (\d+)$/);
+      if (dayA && dayB) return Number(dayA[1]) - Number(dayB[1]);
+      if (dayA) return -1;
+      if (dayB) return 1;
+      return a.localeCompare(b);
+    });
+  }, [cards]);
 
   const filteredCards = useMemo(() => {
-    if (!cards) return []
+    if (!cards) return [];
     const base = selectedTag
       ? cards.filter((c) => c.tags?.includes(selectedTag))
-      : [...cards]
+      : [...cards];
 
     switch (sortKey) {
       case "status":
         return base.sort(
           (a, b) =>
             (STATUS_ORDER[a.card_states?.[0]?.status ?? "new"] ?? 0) -
-            (STATUS_ORDER[b.card_states?.[0]?.status ?? "new"] ?? 0)
-        )
+            (STATUS_ORDER[b.card_states?.[0]?.status ?? "new"] ?? 0),
+        );
       case "alpha":
-        return base.sort((a, b) => a.word.localeCompare(b.word))
+        return base.sort((a, b) => a.word.localeCompare(b.word));
       case "created":
         return base.sort(
           (a, b) =>
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-        )
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+        );
       case "due":
         return base.sort((a, b) => {
-          const da = a.card_states?.[0]?.due_date
-          const db = b.card_states?.[0]?.due_date
-          if (!da && !db) return 0
-          if (!da) return 1
-          if (!db) return -1
-          return new Date(da).getTime() - new Date(db).getTime()
-        })
+          const da = a.card_states?.[0]?.due_date;
+          const db = b.card_states?.[0]?.due_date;
+          if (!da && !db) return 0;
+          if (!da) return 1;
+          if (!db) return -1;
+          return new Date(da).getTime() - new Date(db).getTime();
+        });
       default:
-        return base
+        return base;
     }
-  }, [cards, selectedTag, sortKey])
+  }, [cards, selectedTag, sortKey]);
 
-  const progress = deckProgress?.find((d) => d.deck_id === deckId)
-  const newCount = progress?.new_count ?? 0
-  const learningCount = progress?.learning_count ?? 0
-  const reviewCount = progress?.review_count ?? 0
-  const totalCards = progress?.total_cards ?? 0
+  const progress = deckProgress?.find((d) => d.deck_id === deckId);
+  const newCount = progress?.new_count ?? 0;
+  const learningCount = progress?.learning_count ?? 0;
+  const memorizedCount = progress?.memorized_count ?? 0;
+  const totalCards = progress?.total_cards ?? 0;
 
-  const studyableCount = studyQueue?.length ?? 0
-  const reviewableCount = reviewQueue?.length ?? 0
+  const studyableCount = studyQueue?.length ?? 0;
+  const reviewableCount = reviewQueue?.length ?? 0;
 
   const handleRename = (name: string) => {
     updateDeck.mutate(
       { id: deckId!, name },
       { onSuccess: () => setRenameOpen(false) },
-    )
-  }
+    );
+  };
 
   const handleDelete = () => {
     deleteDeck.mutate(deckId!, {
       onSuccess: () => navigate(-1),
-    })
-  }
+    });
+  };
 
   const actionSheetItems = useMemo(
     () => [
@@ -141,9 +157,9 @@ export default function DeckPage() {
       },
     ],
     [deckId, navigate],
-  )
+  );
 
-  const currentSortLabel = SORT_OPTIONS.find((o) => o.value === sortKey)!.label
+  const currentSortLabel = SORT_OPTIONS.find((o) => o.value === sortKey)!.label;
 
   return (
     <>
@@ -158,66 +174,81 @@ export default function DeckPage() {
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => setRenameOpen(true)}>이름 편집</DropdownMenuItem>
-              <DropdownMenuItem className="text-danger" onClick={() => setDeleteOpen(true)}>삭제</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setRenameOpen(true)}>
+                이름 편집
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="text-danger"
+                onClick={() => setDeleteOpen(true)}
+              >
+                삭제
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         }
       />
 
-      {/* Stat Boxes */}
-      <div className="px-7 pt-7">
-        <div className="flex gap-[6px] mb-2">
-          <StatBox value={newCount} label="New" />
-          <StatBox value={learningCount} label="Learning" />
-          <StatBox value={reviewCount} label="Mature" />
+      <PageContent>
+        {/* Stat Boxes */}
+        <div className="flex gap-[6px]">
+          <StatBox value={newCount} label="새 단어" />
+          <StatBox value={learningCount} label="학습중" />
+          <StatBox value={memorizedCount} label="암기 완료" />
         </div>
-      </div>
 
-      {/* Segmented Progress */}
-      <div className="px-7 mb-4">
+        {/* Segmented Progress */}
         <SegmentedProgress
           segments={[
             { value: newCount, color: "#D4CEFA" },
             { value: learningCount, color: "#A99BF0" },
-            { value: reviewCount, color: "#7C6CE7" },
+            { value: memorizedCount, color: "#7C6CE7" },
           ]}
         />
-      </div>
 
-      {/* CTA Buttons */}
-      {(studyableCount > 0 || reviewableCount > 0) && (
-        <div className="px-7 mb-4 flex gap-2">
-          {reviewableCount > 0 && (
-            <Button asChild variant="outline" className="flex-1">
-              <Link to={`/study/${deckId}?mode=review`}>▶ 복습 · {reviewableCount}장</Link>
-            </Button>
-          )}
-          {studyableCount > 0 && (
-            <Button asChild className="flex-1">
-              <Link to={`/study/${deckId}?mode=all`}>▶ 학습 · {studyableCount}장</Link>
-            </Button>
-          )}
-        </div>
-      )}
+        {/* CTA Buttons */}
+        {studyableCount > 0 || reviewableCount > 0 ? (
+          <div className="flex gap-2">
+            {reviewableCount > 0 && (
+              <Button asChild variant="outline" className="flex-1">
+                <Link to={`/study/${deckId}?mode=review`}>
+                  ▶ 오늘 복습 · {reviewableCount}장
+                </Link>
+              </Button>
+            )}
+            {studyableCount > 0 && (
+              <Button asChild className="flex-1">
+                <Link to={`/study/${deckId}`}>
+                  ▶ 전체 학습 · {studyableCount}장
+                </Link>
+              </Button>
+            )}
+          </div>
+        ) : totalCards > 0 ? (
+          <div className="rounded-2xl bg-bg-elevated px-4 py-3 text-center">
+            <span className="typo-body-sm text-text-secondary">
+              오늘의 학습을 끝냈어요!
+            </span>
+          </div>
+        ) : null}
 
-      {/* Tag Filter */}
-      {allTags.length > 0 && (
-        <div className="px-7 mb-3">
-          <TagFilterBar tags={allTags} selected={selectedTag} onSelect={setSelectedTag} />
-        </div>
-      )}
+        {/* Tag Filter */}
+        {allTags.length > 0 && (
+          <TagFilterBar
+            tags={allTags}
+            selected={selectedTag}
+            onSelect={setSelectedTag}
+          />
+        )}
 
-      {/* Card List */}
-      <div className="px-7">
+        {/* Card List */}
         {cardsLoading ? (
-          <div className="space-y-2 mt-2">
+          <div className="space-y-2">
             <Skeleton className="h-14 rounded-[20px]" />
             <Skeleton className="h-14 rounded-[20px]" />
             <Skeleton className="h-14 rounded-[20px]" />
           </div>
         ) : cards && cards.length > 0 ? (
-          <>
+          <div>
             <div className="flex items-center justify-between mb-3">
               <span className="typo-body-sm text-text-secondary">
                 {selectedTag
@@ -234,7 +265,7 @@ export default function DeckPage() {
             </div>
             <div className="rounded-[20px] bg-bg-elevated overflow-hidden mb-6">
               {filteredCards.map((card, i) => {
-                const state = card.card_states?.[0]
+                const state = card.card_states?.[0];
                 return (
                   <Link
                     key={card.id}
@@ -244,22 +275,25 @@ export default function DeckPage() {
                     <CardListItem
                       word={card.word}
                       meaning={card.meaning}
-                      status={mapStatus(state?.status)}
+                      status={mapCardStatus(state?.status, state?.interval)}
                     />
                   </Link>
-                )
+                );
               })}
             </div>
-          </>
+          </div>
         ) : (
           <EmptyState
             icon="🃏"
             text="아직 카드가 없습니다. 첫 카드를 추가해보세요!"
           />
         )}
-      </div>
+      </PageContent>
 
-      <FAB onClick={() => setActionSheetOpen((v) => !v)} isOpen={actionSheetOpen} />
+      <FAB
+        onClick={() => setActionSheetOpen((v) => !v)}
+        isOpen={actionSheetOpen}
+      />
 
       <ActionSheet
         open={actionSheetOpen}
@@ -295,5 +329,5 @@ export default function DeckPage() {
         loading={deleteDeck.isPending}
       />
     </>
-  )
+  );
 }

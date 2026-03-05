@@ -5,6 +5,59 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+const MEMORIZED_INTERVAL_THRESHOLD = 21
+
+export function mapCardStatus(
+  dbStatus: string | undefined,
+  interval: number | undefined,
+): "new" | "learning" | "memorized" {
+  if (dbStatus === "review" && (interval ?? 0) >= MEMORIZED_INTERVAL_THRESHOLD) return "memorized"
+  if (dbStatus === "learning" || dbStatus === "review") return "learning"
+  return "new"
+}
+
+export function formatInterval(days: number): string {
+  if (days < 1) {
+    const minutes = Math.round(days * 24 * 60)
+    return minutes <= 0 ? "1분" : `${minutes}분`
+  }
+  if (days < 30) return `${Math.round(days)}일`
+  if (days < 365) return `${Math.round(days / 30)}개월`
+  return `${+(days / 365).toFixed(1)}년`
+}
+
+interface CardForInterval {
+  status: string
+  ease_factor: number
+  interval: number
+  step_index: number
+}
+
+export function computeIntervals(card: CardForInterval): {
+  again: string
+  hard: string
+  good: string
+  easy: string
+} {
+  if (card.status === "new" || card.status === "learning") {
+    return { again: "1분", hard: "10분", good: "1일", easy: "4일" }
+  }
+
+  const ef = card.ease_factor || 2.5
+  const iv = card.interval || 1
+
+  const hardDays = Math.max(1, Math.round(iv * 1.2))
+  const goodDays = Math.max(1, Math.round(iv * ef))
+  const easyDays = Math.max(1, Math.round(iv * ef * 1.3))
+
+  return {
+    again: "1분",
+    hard: formatInterval(hardDays),
+    good: formatInterval(goodDays),
+    easy: formatInterval(easyDays),
+  }
+}
+
 const rtf = new Intl.RelativeTimeFormat("ko", { numeric: "always" })
 
 export function timeAgo(date: string | Date): string {

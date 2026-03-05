@@ -60,6 +60,7 @@ export const router = createBrowserRouter([
           { path: "/deck/:id/import", element: <CsvImportPage /> },
           { path: "/deck/:id/photo-import", element: <PhotoImportPage /> },
           { path: "/folder/:id/import", element: <FolderCsvImportPage /> },
+          { path: "/study/folder/:folderId", element: <StudyPage /> },
           { path: "/study/:deckId", element: <StudyPage /> },
           { path: "/study/complete", element: <CompletePage /> },
         ],

@@ -97,3 +97,32 @@ export function useDeleteDeck() {
     },
   })
 }
+
+export function useReorderDecks(folderId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async (reorderedDecks: any[]) => {
+      const { error } = await supabase.from("decks").upsert(
+        reorderedDecks.map((d, i) => ({ ...d, sort_order: i })),
+      )
+      if (error) throw error
+    },
+    onMutate: async (reorderedDecks) => {
+      await qc.cancelQueries({ queryKey: ["decks", folderId] })
+      const previous = qc.getQueryData<any[]>(["decks", folderId])
+      qc.setQueryData(
+        ["decks", folderId],
+        reorderedDecks.map((d, i) => ({ ...d, sort_order: i })),
+      )
+      return { previous }
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previous) {
+        qc.setQueryData(["decks", folderId], context.previous)
+      }
+    },
+    onSettled: () => {
+      qc.invalidateQueries({ queryKey: ["decks", folderId] })
+    },
+  })
+}

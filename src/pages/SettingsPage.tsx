@@ -2,6 +2,7 @@ import { useNavigate } from "react-router"
 import { Label } from "@/components/ui/label"
 import { SettingsRow } from "@/components/forms"
 import { useAuthStore } from "@/stores/authStore"
+import PageContent from "@/components/layouts/PageContent"
 
 export default function SettingsPage() {
   const navigate = useNavigate()
@@ -13,15 +14,15 @@ export default function SettingsPage() {
   }
 
   return (
-    <div>
+    <PageContent>
       {/* Header */}
-      <div className="px-7 pt-7">
+      <div>
         <h1 className="typo-display-xl text-text-primary mb-1">설정</h1>
         <p className="typo-caption text-text-secondary mb-1">{user?.email ?? ""}</p>
       </div>
 
       {/* Learning Section */}
-      <div className="px-7 mt-4">
+      <div>
         <Label>학습</Label>
         <SettingsRow label="하루 새 카드 수" description="기본 20장" value={20} />
         <SettingsRow label="역방향 카드 자동 생성" toggle toggleOn />
@@ -30,17 +31,17 @@ export default function SettingsPage() {
       </div>
 
       {/* Notification Section */}
-      <div className="px-7 mt-4">
+      <div>
         <Label>알림</Label>
         <SettingsRow label="일일 복습 리마인더" value="09:00" />
       </div>
 
       {/* Account Section */}
-      <div className="px-7 mt-4">
+      <div>
         <Label>계정</Label>
         <SettingsRow label="비밀번호 변경" chevron />
         <SettingsRow label="로그아웃" danger noBorder onPress={handleSignOut} />
       </div>
-    </div>
+    </PageContent>
   )
 }

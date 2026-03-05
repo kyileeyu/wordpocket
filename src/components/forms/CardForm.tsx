@@ -60,9 +60,9 @@ export default function CardForm({ initialData, onSubmit, loading }: CardFormPro
     <form id="card-form" onSubmit={handleSubmit} className="px-7 pt-4">
       <div className="space-y-[10px]">
         <div>
-          <Label>단어 *</Label>
+          <Label>앞(단어/표현) *</Label>
           <Input
-            placeholder="ubiquitous"
+            placeholder="ubiquitous 또는 I'll have..."
             className="font-display text-[16px] py-[14px]"
             autoCapitalize="none"
             value={form.word}
@@ -71,7 +71,7 @@ export default function CardForm({ initialData, onSubmit, loading }: CardFormPro
           />
         </div>
         <div>
-          <Label>뜻 *</Label>
+          <Label>뒤(의미) *</Label>
           <Input
             placeholder="어디에나 있는, 아주 흔한"
             value={form.meaning}

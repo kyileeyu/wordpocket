@@ -10,6 +10,7 @@ import { SearchOverlay } from "@/components/search";
 import EmptyState from "@/components/feedback/EmptyState";
 import FAB from "@/components/feedback/FAB";
 import InputDialog from "@/components/feedback/InputDialog";
+import PageContent from "@/components/layouts/PageContent";
 import { useFolders, useCreateFolder } from "@/hooks/useFolders";
 import { useDeckProgress } from "@/hooks/useDecks";
 import { useTodayStats, useStreak } from "@/hooks/useStats";
@@ -65,9 +66,9 @@ export default function HomePage() {
   };
 
   return (
-    <div>
+    <PageContent>
       {/* Greeting + Title */}
-      <div className="px-7 pt-7 flex items-start justify-between">
+      <div className="flex items-start justify-between">
         <div>
           <div className="typo-display-l font-display text-text-secondary italic mb-[2px]">
             {getGreeting()}
@@ -84,39 +85,33 @@ export default function HomePage() {
       </div>
 
       {/* Stat Pills */}
-      <div className="px-7 mt-4">
-        <div className="flex gap-[6px] flex-wrap">
-          <StatPill emoji="📖" value={reviewedCount} label="복습" />
-          <StatPill emoji="🆕" value={newLearnedCount} label="신규" />
-          <StatPill emoji="🔥" value={streak} label="일 연속" />
-          <StatPill emoji="⏱" value={`${studyMin}m`} label="학습" />
-        </div>
+      <div className="flex gap-[6px] flex-wrap">
+        <StatPill emoji="📖" value={reviewedCount} label="복습" />
+        <StatPill emoji="🆕" value={newLearnedCount} label="신규" />
+        <StatPill emoji="🔥" value={streak} label="일 연속" />
+        <StatPill emoji="⏱" value={`${studyMin}m`} label="학습" />
       </div>
 
       {/* Install Banner */}
       {canShow && (
-        <div className="px-7 mt-4">
-          <InstallBanner
-            platform={platform}
-            onInstall={triggerInstall}
-            onDismiss={dismiss}
-          />
-        </div>
+        <InstallBanner
+          platform={platform}
+          onInstall={triggerInstall}
+          onDismiss={dismiss}
+        />
       )}
 
       {/* Study CTA */}
       {totalDue > 0 && firstDueDeck && (
-        <div className="px-7 mt-4">
-          <Button asChild size="lg" className="w-full">
-            <Link to={`/study/${firstDueDeck.deck_id}`}>
-              ▶ 학습 시작 · {totalDue}장
-            </Link>
-          </Button>
-        </div>
+        <Button asChild size="lg" className="w-full">
+          <Link to={`/study/${firstDueDeck.deck_id}`}>
+            ▶ 학습 시작 · {totalDue}장
+          </Link>
+        </Button>
       )}
 
       {/* Folder List */}
-      <div className="px-7 mt-4">
+      <div>
         <Label>단어장</Label>
 
         {foldersLoading ? (
@@ -158,6 +153,6 @@ export default function HomePage() {
       />
 
       <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
-    </div>
+    </PageContent>
   );
 }

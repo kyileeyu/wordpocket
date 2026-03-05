@@ -6,6 +6,7 @@ import { useHeatmapData, useStreak, useTodayStats, useMemorizedWeekly } from "@/
 import { useDeckProgress } from "@/hooks/useDecks"
 import { useFolders } from "@/hooks/useFolders"
 import { buildHeatmapCells } from "@/lib/heatmap"
+import PageContent from "@/components/layouts/PageContent"
 
 export default function StatsPage() {
   const { data: heatmapData, isLoading: heatmapLoading } = useHeatmapData(21)
@@ -20,7 +21,7 @@ export default function StatsPage() {
 
   const totalCards = deckProgress?.reduce((sum, d) => sum + d.total_cards, 0) ?? 0
   const mastered = deckProgress?.reduce(
-    (sum, d) => sum + (d.total_cards - d.new_count - d.learning_count),
+    (sum, d) => sum + (d.memorized_count ?? 0),
     0,
   ) ?? 0
 
@@ -47,14 +48,12 @@ export default function StatsPage() {
   }, [deckProgress, folders])
 
   return (
-    <div>
+    <PageContent>
       {/* Title */}
-      <div className="px-7 pt-7">
-        <h1 className="typo-display-xl text-text-primary mb-4">학습 통계</h1>
-      </div>
+      <h1 className="typo-display-xl text-text-primary">학습 통계</h1>
 
       {/* Words Learned */}
-      <div className="px-7 mb-4">
+      <div>
         {progressLoading ? (
           <Skeleton className="h-[200px] rounded-[20px]" />
         ) : (
@@ -68,7 +67,7 @@ export default function StatsPage() {
       </div>
 
       {/* Heatmap */}
-      <div className="px-7">
+      <div>
         <Label>이번 달 · 🔥 {streak}일 연속</Label>
         <div className="mt-1">
           {heatmapLoading ? (
@@ -80,7 +79,7 @@ export default function StatsPage() {
       </div>
 
       {/* Deck Progress grouped by Folder */}
-      <div className="px-7 mt-4">
+      <div>
         <Label>단어장별 진행률</Label>
         <div className="mt-1">
           {progressLoading ? (
@@ -101,6 +100,6 @@ export default function StatsPage() {
           )}
         </div>
       </div>
-    </div>
+    </PageContent>
   )
 }

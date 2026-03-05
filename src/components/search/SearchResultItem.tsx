@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge"
+import { mapCardStatus } from "@/lib/utils"
 
 interface SearchResultItemProps {
   word: string
@@ -6,20 +7,15 @@ interface SearchResultItemProps {
   deckName: string
   folderName: string | null
   status: "new" | "learning" | "review"
+  interval?: number
   query: string
   onClick: () => void
 }
 
 const statusLabel = {
-  new: "New",
-  learning: "Learning",
-  review: "Mature",
-} as const
-
-const statusVariant = {
-  new: "new",
-  learning: "learning",
-  review: "mature",
+  new: "새 단어",
+  learning: "학습중",
+  memorized: "암기 완료",
 } as const
 
 function highlightMatch(text: string, query: string) {
@@ -44,10 +40,12 @@ export default function SearchResultItem({
   deckName,
   folderName,
   status,
+  interval,
   query,
   onClick,
 }: SearchResultItemProps) {
   const location = folderName ? `${folderName} · ${deckName}` : deckName
+  const mappedStatus = mapCardStatus(status, interval)
 
   return (
     <button
@@ -68,8 +66,8 @@ export default function SearchResultItem({
           {location}
         </div>
       </div>
-      <Badge variant={statusVariant[status]} className="shrink-0">
-        {statusLabel[status]}
+      <Badge variant={mappedStatus} className="shrink-0">
+        {statusLabel[mappedStatus]}
       </Badge>
     </button>
   )
