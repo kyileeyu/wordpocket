@@ -1,6 +1,11 @@
 import { useState, useMemo } from "react"
 import { useParams, useNavigate } from "react-router"
+import { DndContext, closestCenter, DragOverlay, PointerSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core"
+import type { DragStartEvent, DragEndEvent } from "@dnd-kit/core"
+import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
 import TopBar from "@/components/navigation/TopBar"
+import PageContent from "@/components/layouts/PageContent"
 
 import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -12,11 +17,34 @@ import EmptyState from "@/components/feedback/EmptyState"
 import InputDialog from "@/components/feedback/InputDialog"
 import ConfirmDialog from "@/components/feedback/ConfirmDialog"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu"
-import { FileText, MoreHorizontal, Plus } from "lucide-react"
+import { ArrowDownUp, Check, FileText, MoreHorizontal, Plus } from "lucide-react"
 import { useFolders, useUpdateFolder, useDeleteFolder } from "@/hooks/useFolders"
-import { useDecksByFolder, useDeckProgress, useCreateDeck } from "@/hooks/useDecks"
+import { useDecksByFolder, useDeckProgress, useCreateDeck, useReorderDecks } from "@/hooks/useDecks"
 
 const STRIPE_COLOR = "#7C6CE7"
+
+function SortableDeckCard({ deck, cardCount, reviewCount }: { deck: any; cardCount: number; reviewCount: number }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: deck.id })
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : undefined,
+    touchAction: "none" as const,
+    cursor: "grab",
+  }
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      <DeckCard
+        id={deck.id}
+        name={deck.name}
+        cardCount={cardCount}
+        reviewCount={reviewCount}
+        stripeColor={STRIPE_COLOR}
+        disableLink
+      />
+    </div>
+  )
+}
 
 export default function FolderPage() {
   const { id: folderId } = useParams<{ id: string }>()
@@ -27,11 +55,14 @@ export default function FolderPage() {
   const createDeck = useCreateDeck()
   const updateFolder = useUpdateFolder()
   const deleteFolder = useDeleteFolder()
+  const reorderDecks = useReorderDecks(folderId!)
 
   const [deckDialogOpen, setDeckDialogOpen] = useState(false)
   const [actionSheetOpen, setActionSheetOpen] = useState(false)
   const [renameOpen, setRenameOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
+  const [reorderMode, setReorderMode] = useState(false)
+  const [activeDeckId, setActiveDeckId] = useState<string | null>(null)
 
   const folder = folders?.find((f) => f.id === folderId)
 
@@ -47,6 +78,11 @@ export default function FolderPage() {
     deckDueMap.set(d.deck_id, d.due_today)
     deckTotalMap.set(d.deck_id, d.total_cards)
   })
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } }),
+  )
 
   const actionSheetItems = useMemo(() => [
     {
@@ -81,55 +117,119 @@ export default function FolderPage() {
     })
   }
 
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveDeckId(event.active.id as string)
+  }
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    setActiveDeckId(null)
+    const { active, over } = event
+    if (!over || active.id === over.id || !decks) return
+
+    const oldIndex = decks.findIndex((d) => d.id === active.id)
+    const newIndex = decks.findIndex((d) => d.id === over.id)
+    if (oldIndex === -1 || newIndex === -1) return
+
+    const reordered = arrayMove(decks, oldIndex, newIndex)
+    reorderDecks.mutate(reordered)
+  }
+
+  const activeDeck = activeDeckId ? decks?.find((d) => d.id === activeDeckId) : null
+
   return (
     <>
       <TopBar
         left="back"
         title={folder ? `📁 ${folder.name}` : ""}
         right={
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="w-11 h-11 rounded-full bg-bg-subtle flex items-center justify-center text-text-secondary">
-                <MoreHorizontal className="w-[18px] h-[18px]" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => setRenameOpen(true)}>이름 편집</DropdownMenuItem>
-              <DropdownMenuItem className="text-danger" onClick={() => setDeleteOpen(true)}>삭제</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          reorderMode ? (
+            <button
+              onClick={() => setReorderMode(false)}
+              className="w-11 h-11 rounded-full bg-accent text-white flex items-center justify-center"
+            >
+              <Check className="w-[18px] h-[18px]" />
+            </button>
+          ) : (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="w-11 h-11 rounded-full bg-bg-subtle flex items-center justify-center text-text-secondary">
+                  <MoreHorizontal className="w-[18px] h-[18px]" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {decks && decks.length > 1 && (
+                  <DropdownMenuItem onClick={() => setReorderMode(true)}>
+                    <ArrowDownUp className="w-4 h-4 mr-2" />
+                    순서 변경
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuItem onClick={() => setRenameOpen(true)}>이름 편집</DropdownMenuItem>
+                <DropdownMenuItem className="text-danger" onClick={() => setDeleteOpen(true)}>삭제</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )
         }
       />
 
-      {/* Stats + CTA */}
-      <div className="px-7 pt-7">
-        <div className="flex gap-[6px] flex-wrap mb-3">
+      <PageContent>
+        {/* Stats */}
+        <div className="flex gap-[6px] flex-wrap">
           <StatPill emoji="📖" value={totalDue} label="복습 대기" />
           <StatPill emoji="📦" value={totalCards} label="전체 카드" />
         </div>
-      </div>
 
-      {/* Deck List */}
-      <div className="px-7">
+        {/* Deck List */}
         {decksLoading ? (
-          <div className="space-y-3 mt-2">
+          <div className="space-y-3">
             <Skeleton className="h-[72px] rounded-[20px]" />
             <Skeleton className="h-[72px] rounded-[20px]" />
           </div>
         ) : decks && decks.length > 0 ? (
-          <>
-            <Label>{decks.length}개의 카드뭉치</Label>
-            {decks.map((deck) => (
-              <DeckCard
-                key={deck.id}
-                id={deck.id}
-                name={deck.name}
-                cardCount={deckTotalMap.get(deck.id) ?? 0}
-                reviewCount={deckDueMap.get(deck.id) ?? 0}
-                stripeColor={STRIPE_COLOR}
-              />
-            ))}
-          </>
+          <div>
+            <Label>{reorderMode ? "드래그하여 순서를 변경하세요" : `${decks.length}개의 카드뭉치`}</Label>
+            {reorderMode ? (
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext items={decks.map((d) => d.id)} strategy={verticalListSortingStrategy}>
+                  {decks.map((deck) => (
+                    <SortableDeckCard
+                      key={deck.id}
+                      deck={deck}
+                      cardCount={deckTotalMap.get(deck.id) ?? 0}
+                      reviewCount={deckDueMap.get(deck.id) ?? 0}
+                    />
+                  ))}
+                </SortableContext>
+                <DragOverlay>
+                  {activeDeck && (
+                    <DeckCard
+                      id={activeDeck.id}
+                      name={activeDeck.name}
+                      cardCount={deckTotalMap.get(activeDeck.id) ?? 0}
+                      reviewCount={deckDueMap.get(activeDeck.id) ?? 0}
+                      stripeColor={STRIPE_COLOR}
+                      disableLink
+                    />
+                  )}
+                </DragOverlay>
+              </DndContext>
+            ) : (
+              decks.map((deck) => (
+                <DeckCard
+                  key={deck.id}
+                  id={deck.id}
+                  name={deck.name}
+                  cardCount={deckTotalMap.get(deck.id) ?? 0}
+                  reviewCount={deckDueMap.get(deck.id) ?? 0}
+                  stripeColor={STRIPE_COLOR}
+                />
+              ))
+            )}
+          </div>
         ) : (
           <EmptyState
             icon="📚"
@@ -140,10 +240,14 @@ export default function FolderPage() {
             onSecondaryAction={() => navigate(`/folder/${folderId}/import`)}
           />
         )}
-      </div>
+      </PageContent>
 
-      <FAB onClick={() => setActionSheetOpen((v) => !v)} isOpen={actionSheetOpen} />
-      <ActionSheet open={actionSheetOpen} onClose={() => setActionSheetOpen(false)} items={actionSheetItems} />
+      {!reorderMode && (
+        <>
+          <FAB onClick={() => setActionSheetOpen((v) => !v)} isOpen={actionSheetOpen} />
+          <ActionSheet open={actionSheetOpen} onClose={() => setActionSheetOpen(false)} items={actionSheetItems} />
+        </>
+      )}
 
       <InputDialog
         open={deckDialogOpen}

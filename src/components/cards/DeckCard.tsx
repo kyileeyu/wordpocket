@@ -7,14 +7,14 @@ interface DeckCardProps {
   cardCount: number
   reviewCount: number
   stripeColor: string
+  disableLink?: boolean
 }
 
-export default function DeckCard({ id, name, cardCount, reviewCount, stripeColor }: DeckCardProps) {
-  return (
-    <Link
-      to={`/deck/${id}`}
-      className="flex items-center gap-3 bg-bg-elevated border border-border rounded-[20px] p-4 mb-[10px] shadow-soft hover:shadow-md transition-shadow"
-    >
+export default function DeckCard({ id, name, cardCount, reviewCount, stripeColor, disableLink }: DeckCardProps) {
+  const className = "flex items-center gap-3 bg-bg-elevated border border-border rounded-[20px] p-4 mb-[10px] shadow-soft hover:shadow-md transition-shadow"
+
+  const content = (
+    <>
       <div
         className="w-1 h-9 rounded-[2px] shrink-0"
         style={{ backgroundColor: stripeColor }}
@@ -31,6 +31,16 @@ export default function DeckCard({ id, name, cardCount, reviewCount, stripeColor
         </div>
       )}
       <ChevronRight className="w-[14px] h-[14px] text-text-tertiary shrink-0" />
+    </>
+  )
+
+  if (disableLink) {
+    return <div className={className}>{content}</div>
+  }
+
+  return (
+    <Link to={`/deck/${id}`} className={className}>
+      {content}
     </Link>
   )
 }
