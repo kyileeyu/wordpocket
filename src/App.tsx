@@ -24,9 +24,9 @@ export default function App() {
         position="bottom-center"
         toastOptions={{
           style: {
-            background: 'var(--color-accent-bg)',
-            color: 'var(--color-text-primary)',
-            border: '1px solid var(--color-accent-lighter)',
+            background: 'var(--color-success-bg)',
+            color: 'var(--color-success)',
+            border: '1px solid var(--color-success)',
             borderRadius: '9999px',
             fontFamily: 'var(--font-body)',
             fontSize: 'var(--font-size-body-md)',
