@@ -1,17 +1,25 @@
-import { Link } from "react-router"
-import { ChevronRight } from "lucide-react"
+import { Link } from "react-router";
+import { ChevronRight } from "lucide-react";
 
 interface DeckCardProps {
-  id: string
-  name: string
-  cardCount: number
-  reviewCount: number
-  stripeColor: string
-  disableLink?: boolean
+  id: string;
+  name: string;
+  cardCount: number;
+  reviewCount: number;
+  stripeColor: string;
+  disableLink?: boolean;
 }
 
-export default function DeckCard({ id, name, cardCount, reviewCount, stripeColor, disableLink }: DeckCardProps) {
-  const className = "flex items-center gap-3 bg-bg-elevated border border-border rounded-[20px] p-4 mb-[10px] shadow-soft hover:shadow-md transition-shadow"
+export default function DeckCard({
+  id,
+  name,
+  cardCount,
+  reviewCount,
+  stripeColor,
+  disableLink,
+}: DeckCardProps) {
+  const className =
+    "flex items-center gap-3 bg-bg-elevated border border-border rounded-[20px] p-4 mb-[10px] shadow-soft hover:shadow-md transition-shadow";
 
   const content = (
     <>
@@ -20,9 +28,11 @@ export default function DeckCard({ id, name, cardCount, reviewCount, stripeColor
         style={{ backgroundColor: stripeColor }}
       />
       <div className="flex-1 min-w-0">
-        <div className="typo-body-md font-semibold text-text-primary">{name}</div>
+        <div className="typo-body-md font-semibold text-text-primary">
+          {name}
+        </div>
         <div className="typo-mono-sm text-text-secondary mt-[1px]">
-          {cardCount}장{reviewCount > 0 ? ` · 복습 ${reviewCount}장` : " · 복습 없음"}
+          {cardCount}장
         </div>
       </div>
       {reviewCount > 0 && (
@@ -32,15 +42,15 @@ export default function DeckCard({ id, name, cardCount, reviewCount, stripeColor
       )}
       <ChevronRight className="w-[14px] h-[14px] text-text-tertiary shrink-0" />
     </>
-  )
+  );
 
   if (disableLink) {
-    return <div className={className}>{content}</div>
+    return <div className={className}>{content}</div>;
   }
 
   return (
     <Link to={`/deck/${id}`} className={className}>
       {content}
     </Link>
-  )
+  );
 }

@@ -1,38 +1,87 @@
-import { useState, useMemo } from "react"
-import { useParams, useNavigate } from "react-router"
-import { DndContext, closestCenter, DragOverlay, PointerSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core"
-import type { DragStartEvent, DragEndEvent } from "@dnd-kit/core"
-import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
-import TopBar from "@/components/navigation/TopBar"
-import PageContent from "@/components/layouts/PageContent"
+import { useState, useMemo } from "react";
+import { useParams, useNavigate } from "react-router";
+import {
+  DndContext,
+  closestCenter,
+  DragOverlay,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import type { DragStartEvent, DragEndEvent } from "@dnd-kit/core";
+import {
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+  arrayMove,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import TopBar from "@/components/navigation/TopBar";
+import PageContent from "@/components/layouts/PageContent";
 
-import { Label } from "@/components/ui/label"
-import { Skeleton } from "@/components/ui/skeleton"
-import { StatPill } from "@/components/stats"
-import { DeckCard } from "@/components/cards"
-import FAB from "@/components/feedback/FAB"
-import ActionSheet from "@/components/feedback/ActionSheet"
-import EmptyState from "@/components/feedback/EmptyState"
-import InputDialog from "@/components/feedback/InputDialog"
-import ConfirmDialog from "@/components/feedback/ConfirmDialog"
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button"
-import { ArrowDownUp, Check, FileText, MoreHorizontal, Play, Plus } from "lucide-react"
-import { useFolders, useUpdateFolder, useDeleteFolder } from "@/hooks/useFolders"
-import { useDecksByFolder, useDeckProgress, useCreateDeck, useReorderDecks } from "@/hooks/useDecks"
+import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
+import { StatPill } from "@/components/stats";
+import { DeckCard } from "@/components/cards";
+import FAB from "@/components/feedback/FAB";
+import ActionSheet from "@/components/feedback/ActionSheet";
+import EmptyState from "@/components/feedback/EmptyState";
+import InputDialog from "@/components/feedback/InputDialog";
+import ConfirmDialog from "@/components/feedback/ConfirmDialog";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import {
+  ArrowDownUp,
+  Check,
+  FileText,
+  MoreHorizontal,
+  Play,
+  Plus,
+} from "lucide-react";
+import {
+  useFolders,
+  useUpdateFolder,
+  useDeleteFolder,
+} from "@/hooks/useFolders";
+import {
+  useDecksByFolder,
+  useDeckProgress,
+  useCreateDeck,
+  useReorderDecks,
+} from "@/hooks/useDecks";
 
-const STRIPE_COLOR = "#7C6CE7"
+const STRIPE_COLOR = "#7C6CE7";
 
-function SortableDeckCard({ deck, cardCount, reviewCount }: { deck: any; cardCount: number; reviewCount: number }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: deck.id })
+function SortableDeckCard({
+  deck,
+  cardCount,
+  reviewCount,
+}: {
+  deck: any;
+  cardCount: number;
+  reviewCount: number;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: deck.id });
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
     opacity: isDragging ? 0.5 : undefined,
     touchAction: "none" as const,
     cursor: "grab",
-  }
+  };
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <DeckCard
@@ -44,98 +93,107 @@ function SortableDeckCard({ deck, cardCount, reviewCount }: { deck: any; cardCou
         disableLink
       />
     </div>
-  )
+  );
 }
 
 export default function FolderPage() {
-  const { id: folderId } = useParams<{ id: string }>()
-  const navigate = useNavigate()
-  const { data: folders } = useFolders()
-  const { data: decks, isLoading: decksLoading } = useDecksByFolder(folderId!)
-  const { data: deckProgress } = useDeckProgress()
-  const createDeck = useCreateDeck()
-  const updateFolder = useUpdateFolder()
-  const deleteFolder = useDeleteFolder()
-  const reorderDecks = useReorderDecks(folderId!)
+  const { id: folderId } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { data: folders } = useFolders();
+  const { data: decks, isLoading: decksLoading } = useDecksByFolder(folderId!);
+  const { data: deckProgress } = useDeckProgress();
+  const createDeck = useCreateDeck();
+  const updateFolder = useUpdateFolder();
+  const deleteFolder = useDeleteFolder();
+  const reorderDecks = useReorderDecks(folderId!);
 
-  const [deckDialogOpen, setDeckDialogOpen] = useState(false)
-  const [actionSheetOpen, setActionSheetOpen] = useState(false)
-  const [renameOpen, setRenameOpen] = useState(false)
-  const [deleteOpen, setDeleteOpen] = useState(false)
-  const [reorderMode, setReorderMode] = useState(false)
-  const [activeDeckId, setActiveDeckId] = useState<string | null>(null)
+  const [deckDialogOpen, setDeckDialogOpen] = useState(false);
+  const [actionSheetOpen, setActionSheetOpen] = useState(false);
+  const [renameOpen, setRenameOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [reorderMode, setReorderMode] = useState(false);
+  const [activeDeckId, setActiveDeckId] = useState<string | null>(null);
 
-  const folder = folders?.find((f) => f.id === folderId)
+  const folder = folders?.find((f) => f.id === folderId);
 
   // Stats for this folder
-  const folderProgress = deckProgress?.filter((d) => d.folder_id === folderId)
-  const totalDue = folderProgress?.reduce((sum, d) => sum + d.due_today, 0) ?? 0
-  const totalCards = folderProgress?.reduce((sum, d) => sum + d.total_cards, 0) ?? 0
+  const folderProgress = deckProgress?.filter((d) => d.folder_id === folderId);
+  const totalDue =
+    folderProgress?.reduce((sum, d) => sum + d.due_today, 0) ?? 0;
+  const totalCards =
+    folderProgress?.reduce((sum, d) => sum + d.total_cards, 0) ?? 0;
 
   // Map deck progress for review counts
-  const deckDueMap = new Map<string, number>()
-  const deckTotalMap = new Map<string, number>()
+  const deckDueMap = new Map<string, number>();
+  const deckTotalMap = new Map<string, number>();
   folderProgress?.forEach((d) => {
-    deckDueMap.set(d.deck_id, d.due_today)
-    deckTotalMap.set(d.deck_id, d.total_cards)
-  })
+    deckDueMap.set(d.deck_id, d.due_today);
+    deckTotalMap.set(d.deck_id, d.total_cards);
+  });
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 200, tolerance: 5 } }),
-  )
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 200, tolerance: 5 },
+    }),
+  );
 
-  const actionSheetItems = useMemo(() => [
-    {
-      label: "카드뭉치 만들기",
-      icon: Plus,
-      onClick: () => setDeckDialogOpen(true),
-    },
-    {
-      label: "CSV 가져오기",
-      icon: FileText,
-      onClick: () => navigate(`/folder/${folderId}/import`),
-    },
-  ], [folderId, navigate])
+  const actionSheetItems = useMemo(
+    () => [
+      {
+        label: "카드뭉치 만들기",
+        icon: Plus,
+        onClick: () => setDeckDialogOpen(true),
+      },
+      {
+        label: "CSV 가져오기",
+        icon: FileText,
+        onClick: () => navigate(`/folder/${folderId}/import`),
+      },
+    ],
+    [folderId, navigate],
+  );
 
   const handleCreateDeck = (name: string) => {
     createDeck.mutate(
       { folderId: folderId!, name },
       { onSuccess: () => setDeckDialogOpen(false) },
-    )
-  }
+    );
+  };
 
   const handleRename = (name: string) => {
     updateFolder.mutate(
       { id: folderId!, name },
       { onSuccess: () => setRenameOpen(false) },
-    )
-  }
+    );
+  };
 
   const handleDelete = () => {
     deleteFolder.mutate(folderId!, {
       onSuccess: () => navigate("/", { replace: true }),
-    })
-  }
+    });
+  };
 
   const handleDragStart = (event: DragStartEvent) => {
-    setActiveDeckId(event.active.id as string)
-  }
+    setActiveDeckId(event.active.id as string);
+  };
 
   const handleDragEnd = (event: DragEndEvent) => {
-    setActiveDeckId(null)
-    const { active, over } = event
-    if (!over || active.id === over.id || !decks) return
+    setActiveDeckId(null);
+    const { active, over } = event;
+    if (!over || active.id === over.id || !decks) return;
 
-    const oldIndex = decks.findIndex((d) => d.id === active.id)
-    const newIndex = decks.findIndex((d) => d.id === over.id)
-    if (oldIndex === -1 || newIndex === -1) return
+    const oldIndex = decks.findIndex((d) => d.id === active.id);
+    const newIndex = decks.findIndex((d) => d.id === over.id);
+    if (oldIndex === -1 || newIndex === -1) return;
 
-    const reordered = arrayMove(decks, oldIndex, newIndex)
-    reorderDecks.mutate(reordered)
-  }
+    const reordered = arrayMove(decks, oldIndex, newIndex);
+    reorderDecks.mutate(reordered);
+  };
 
-  const activeDeck = activeDeckId ? decks?.find((d) => d.id === activeDeckId) : null
+  const activeDeck = activeDeckId
+    ? decks?.find((d) => d.id === activeDeckId)
+    : null;
 
   return (
     <>
@@ -166,8 +224,15 @@ export default function FolderPage() {
                       순서 변경
                     </DropdownMenuItem>
                   )}
-                  <DropdownMenuItem onClick={() => setRenameOpen(true)}>이름 편집</DropdownMenuItem>
-                  <DropdownMenuItem className="text-danger" onClick={() => setDeleteOpen(true)}>삭제</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setRenameOpen(true)}>
+                    이름 편집
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="text-danger"
+                    onClick={() => setDeleteOpen(true)}
+                  >
+                    삭제
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             )
@@ -180,21 +245,21 @@ export default function FolderPage() {
         </div>
 
         {/* Review CTA */}
-        {totalCards > 0 && (
-          totalDue > 0 ? (
+        {totalCards > 0 &&
+          (totalDue > 0 ? (
             <Button
               className="w-full"
               onClick={() => navigate(`/study/folder/${folderId}`)}
             >
-              <Play className="w-4 h-4 mr-1" />
-              단어장 전체 복습 · {totalDue}장
+              ▶ 단어장 전체 복습 · {totalDue}장
             </Button>
           ) : (
             <div className="text-center py-3">
-              <span className="typo-body-sm text-text-secondary">오늘의 학습을 끝냈어요!</span>
+              <span className="typo-body-sm text-text-secondary">
+                오늘의 학습을 끝냈어요!
+              </span>
             </div>
-          )
-        )}
+          ))}
 
         {/* Deck List */}
         {decksLoading ? (
@@ -204,7 +269,11 @@ export default function FolderPage() {
           </div>
         ) : decks && decks.length > 0 ? (
           <div>
-            <Label>{reorderMode ? "드래그하여 순서를 변경하세요" : `${decks.length}개의 카드뭉치`}</Label>
+            <Label>
+              {reorderMode
+                ? "드래그하여 순서를 변경하세요"
+                : `${decks.length}개의 카드뭉치`}
+            </Label>
             {reorderMode ? (
               <DndContext
                 sensors={sensors}
@@ -212,7 +281,10 @@ export default function FolderPage() {
                 onDragStart={handleDragStart}
                 onDragEnd={handleDragEnd}
               >
-                <SortableContext items={decks.map((d) => d.id)} strategy={verticalListSortingStrategy}>
+                <SortableContext
+                  items={decks.map((d) => d.id)}
+                  strategy={verticalListSortingStrategy}
+                >
                   {decks.map((deck) => (
                     <SortableDeckCard
                       key={deck.id}
@@ -262,8 +334,15 @@ export default function FolderPage() {
 
       {!reorderMode && (
         <>
-          <FAB onClick={() => setActionSheetOpen((v) => !v)} isOpen={actionSheetOpen} />
-          <ActionSheet open={actionSheetOpen} onClose={() => setActionSheetOpen(false)} items={actionSheetItems} />
+          <FAB
+            onClick={() => setActionSheetOpen((v) => !v)}
+            isOpen={actionSheetOpen}
+          />
+          <ActionSheet
+            open={actionSheetOpen}
+            onClose={() => setActionSheetOpen(false)}
+            items={actionSheetItems}
+          />
         </>
       )}
 
@@ -297,5 +376,5 @@ export default function FolderPage() {
         loading={deleteFolder.isPending}
       />
     </>
-  )
+  );
 }
