@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router"
 import { ArrowLeft, X } from "lucide-react"
+import { cn } from "@/lib/utils"
 import type { ReactNode } from "react"
 
 interface TopBarProps {
@@ -7,14 +8,15 @@ interface TopBarProps {
   title?: ReactNode
   right?: ReactNode
   onLeftClick?: () => void
+  noPadding?: boolean
 }
 
-export default function TopBar({ left, title, right, onLeftClick }: TopBarProps) {
+export default function TopBar({ left, title, right, onLeftClick, noPadding }: TopBarProps) {
   const navigate = useNavigate()
   const handleLeft = onLeftClick ?? (() => navigate(-1))
 
   return (
-    <div className="flex items-center justify-between px-7 pt-2 pb-1">
+    <div className={cn("flex items-center justify-between", !noPadding && "px-7 pt-2 pb-1")}>
       <div className="w-11">
         {left && (
           <button

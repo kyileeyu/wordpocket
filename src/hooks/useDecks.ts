@@ -98,6 +98,23 @@ export function useDeleteDeck() {
   })
 }
 
+export function useMoveDeck() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ deckId, targetFolderId }: { deckId: string; targetFolderId: string }) => {
+      const { error } = await supabase
+        .from("decks")
+        .update({ folder_id: targetFolderId })
+        .eq("id", deckId)
+      if (error) throw error
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["decks"] })
+      qc.invalidateQueries({ queryKey: ["deck-progress"] })
+    },
+  })
+}
+
 export function useReorderDecks(folderId: string) {
   const qc = useQueryClient()
   return useMutation({
