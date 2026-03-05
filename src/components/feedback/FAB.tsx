@@ -10,7 +10,7 @@ interface FABProps {
 
 export default function FAB({ to, onClick, isOpen }: FABProps) {
   const base =
-    "fixed bottom-[72px] right-5 z-30 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-200"
+    "fixed bottom-[calc(env(safe-area-inset-bottom)+80px)] right-5 z-30 w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-200"
 
   if (to) {
     return (
