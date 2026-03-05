@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from "react"
+import { useState, useRef, useEffect, useCallback, useMemo } from "react"
 import { useParams, useNavigate, useSearchParams } from "react-router"
 import TopBar from "@/components/navigation/TopBar"
 import StudyProgress from "@/components/study/StudyProgress"
@@ -7,8 +7,8 @@ import ResponseButtons from "@/components/study/ResponseButtons"
 import EmptyState from "@/components/feedback/EmptyState"
 import { Skeleton } from "@/components/ui/skeleton"
 import PageContent from "@/components/layouts/PageContent"
-import { useStudyQueue, useAllCardsQueue, useReviewOnlyQueue, useSubmitReview } from "@/hooks/useStudy"
-import { cn, timeAgo } from "@/lib/utils"
+import { useStudyQueue, useReviewOnlyQueue, useSubmitReview } from "@/hooks/useStudy"
+import { cn, timeAgo, computeIntervals } from "@/lib/utils"
 
 interface StudyCard {
   card_id: string
@@ -20,6 +20,10 @@ interface StudyCard {
   tags?: string[]
   queue_type: string
   last_reviewed_at?: string | null
+  status: string
+  ease_factor: number
+  interval: number
+  step_index: number
 }
 
 export default function StudyPage() {
@@ -27,13 +31,11 @@ export default function StudyPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const mode = searchParams.get("mode")
-  const isAllMode = mode === "all"
   const isReviewMode = mode === "review"
   const { data: srsQueue, isLoading: srsLoading, refetch: srsRefetch } = useStudyQueue(deckId!)
-  const { data: allQueue, isLoading: allLoading } = useAllCardsQueue(deckId!, isAllMode)
   const { data: reviewQueue, isLoading: reviewLoading, refetch: reviewRefetch } = useReviewOnlyQueue(deckId!, isReviewMode)
-  const queue: StudyCard[] | undefined = isReviewMode ? reviewQueue : isAllMode ? allQueue : srsQueue
-  const isLoading = isReviewMode ? reviewLoading : isAllMode ? allLoading : srsLoading
+  const queue: StudyCard[] | undefined = isReviewMode ? reviewQueue : srsQueue
+  const isLoading = isReviewMode ? reviewLoading : srsLoading
   const refetch = isReviewMode ? reviewRefetch : srsRefetch
   const submitReview = useSubmitReview()
 
@@ -67,6 +69,16 @@ export default function StudyPage() {
 
   const initialTotal = initialTotalRef.current || (queue?.length ?? 0)
   const card = workingQueue[index]
+
+  const intervals = useMemo(() => {
+    if (!card) return undefined
+    return computeIntervals({
+      status: card.status,
+      ease_factor: card.ease_factor,
+      interval: card.interval,
+      step_index: card.step_index,
+    })
+  }, [card?.card_id, card?.status, card?.ease_factor, card?.interval, card?.step_index])
 
   const goToComplete = useCallback((reviewed: number, correct: number, newCards: number) => {
     navigate("/study/complete", {
@@ -106,20 +118,16 @@ export default function StudyPage() {
           }
 
           if (nextIndex >= nextQueue.length) {
-            if (isAllMode) {
-              goToComplete(nextReviewed, nextCorrect, newCount)
-            } else {
-              refetch().then(({ data: serverQueue }) => {
-                if (serverQueue && serverQueue.length > 0) {
-                  setWorkingQueue(serverQueue)
-                  setIndex(0)
-                  setFlipped(false)
-                  lapEndIndexRef.current = serverQueue.length
-                } else {
-                  goToComplete(nextReviewed, nextCorrect, newCount)
-                }
-              })
-            }
+            refetch().then(({ data: serverQueue }) => {
+              if (serverQueue && serverQueue.length > 0) {
+                setWorkingQueue(serverQueue)
+                setIndex(0)
+                setFlipped(false)
+                lapEndIndexRef.current = serverQueue.length
+              } else {
+                goToComplete(nextReviewed, nextCorrect, newCount)
+              }
+            })
           } else {
             setWorkingQueue(nextQueue)
             setIndex(nextIndex)
@@ -212,7 +220,7 @@ export default function StudyPage() {
       </PageContent>
 
       <div className={cn("mb-2", !flipped && "invisible")}>
-        <ResponseButtons onResponse={handleResponse} />
+        <ResponseButtons onResponse={handleResponse} intervals={intervals} />
       </div>
 
       <div className="h-5 shrink-0" />
