@@ -11,7 +11,7 @@ const badgeVariants = cva(
         muted: "bg-bg-subtle text-text-secondary",
         new: "bg-accent-bg text-accent",
         learning: "bg-bg-subtle text-text-secondary",
-        mature: "bg-accent-bg text-accent",
+        memorized: "bg-accent-bg text-accent",
       },
     },
     defaultVariants: {

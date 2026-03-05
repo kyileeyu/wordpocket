@@ -5,14 +5,14 @@ interface OverallProgressCardProps {
   totalCards: number
   newCount: number
   learningCount: number
-  matureCount: number
+  memorizedCount: number
 }
 
 export default function OverallProgressCard({
   totalCards,
   newCount,
   learningCount,
-  matureCount,
+  memorizedCount,
 }: OverallProgressCardProps) {
   return (
     <div className="bg-bg-subtle rounded-[20px] p-[14px]">
@@ -24,14 +24,14 @@ export default function OverallProgressCard({
         segments={[
           { value: newCount, color: "#D4CEFA" },
           { value: learningCount, color: "#A99BF0" },
-          { value: matureCount, color: "#7C6CE7" },
+          { value: memorizedCount, color: "#7C6CE7" },
         ]}
       />
       <div className="mt-[6px]">
         <SegmentedLegend
           newCount={newCount}
           learningCount={learningCount}
-          matureCount={matureCount}
+          memorizedCount={memorizedCount}
         />
       </div>
     </div>

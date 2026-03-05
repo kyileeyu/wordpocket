@@ -10,7 +10,7 @@ interface Deck {
   total_cards: number
   new_count: number
   learning_count: number
-  review_count: number
+  memorized_count: number
 }
 
 interface FolderProgressCardProps {
@@ -24,8 +24,8 @@ export default function FolderProgressCard({ name, decks }: FolderProgressCardPr
   const totalCards = decks.reduce((sum, d) => sum + d.total_cards, 0)
   const totalNew = decks.reduce((sum, d) => sum + d.new_count, 0)
   const totalLearning = decks.reduce((sum, d) => sum + d.learning_count, 0)
-  const totalMature = totalCards - totalNew - totalLearning
-  const maturePercent = totalCards > 0 ? Math.round((totalMature / totalCards) * 100) : 0
+  const totalMemorized = decks.reduce((sum, d) => sum + (d.memorized_count ?? 0), 0)
+  const memorizedPercent = totalCards > 0 ? Math.round((totalMemorized / totalCards) * 100) : 0
 
   return (
     <div className="bg-bg-elevated rounded-[20px] p-[14px] mb-2 shadow-soft">
@@ -37,7 +37,7 @@ export default function FolderProgressCard({ name, decks }: FolderProgressCardPr
         <span className="typo-body-sm font-semibold text-text-primary">{name}</span>
         <div className="flex items-center gap-2">
           <span className="typo-caption text-text-secondary">
-            {maturePercent}% · {totalCards}장
+            {memorizedPercent}% · {totalCards}장
           </span>
           <ChevronDown
             className={cn(
@@ -53,7 +53,7 @@ export default function FolderProgressCard({ name, decks }: FolderProgressCardPr
         <div className="mt-[6px]">
           <SegmentedProgress
             segments={[
-              { value: totalMature, color: "#7C6CE7" },
+              { value: totalMemorized, color: "#7C6CE7" },
               { value: totalLearning, color: "#A99BF0" },
               { value: totalNew, color: "#D4CEFA" },
             ]}
@@ -76,7 +76,7 @@ export default function FolderProgressCard({ name, decks }: FolderProgressCardPr
               totalCards={deck.total_cards}
               newCount={deck.new_count}
               learningCount={deck.learning_count}
-              matureCount={deck.review_count}
+              memorizedCount={deck.memorized_count ?? 0}
             />
           ))}
         </div>

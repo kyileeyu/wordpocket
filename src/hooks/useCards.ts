@@ -8,7 +8,7 @@ export function useCardsByDeck(deckId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("cards")
-        .select("*, card_states(status, due_date)")
+        .select("*, card_states(status, due_date, interval)")
         .eq("deck_id", deckId)
         .order("created_at", { ascending: false })
       if (error) throw error

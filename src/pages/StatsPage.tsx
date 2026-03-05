@@ -21,7 +21,7 @@ export default function StatsPage() {
 
   const totalCards = deckProgress?.reduce((sum, d) => sum + d.total_cards, 0) ?? 0
   const mastered = deckProgress?.reduce(
-    (sum, d) => sum + (d.total_cards - d.new_count - d.learning_count),
+    (sum, d) => sum + (d.memorized_count ?? 0),
     0,
   ) ?? 0
 

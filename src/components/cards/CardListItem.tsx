@@ -3,13 +3,13 @@ import { Badge } from "@/components/ui/badge"
 interface CardListItemProps {
   word: string
   meaning: string
-  status: "new" | "learning" | "mature"
+  status: "new" | "learning" | "memorized"
 }
 
 const statusLabel = {
-  new: "New",
-  learning: "Learning",
-  mature: "Mature",
+  new: "새 단어",
+  learning: "학습중",
+  memorized: "암기 완료",
 } as const
 
 export default function CardListItem({ word, meaning, status }: CardListItemProps) {
