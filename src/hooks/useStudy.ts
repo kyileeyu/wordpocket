@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { useRef, useCallback } from "react"
 import { supabase } from "@/lib/supabase"
 
-export function useStudyQueue(deckId: string) {
+export function useStudyQueue(deckId: string, enabled = true) {
   return useQuery({
     queryKey: ["study-queue", deckId],
     queryFn: async () => {
@@ -14,6 +14,23 @@ export function useStudyQueue(deckId: string) {
       return data
     },
     staleTime: 0,
+    enabled,
+  })
+}
+
+export function useFolderReviewQueue(folderId: string, enabled = true) {
+  return useQuery({
+    queryKey: ["folder-review-queue", folderId],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("get_folder_review_queue", {
+        p_folder_id: folderId,
+        p_limit: 200,
+      })
+      if (error) throw error
+      return data
+    },
+    staleTime: 0,
+    enabled,
   })
 }
 
@@ -72,6 +89,7 @@ export function useReviewBatch() {
 
     qc.invalidateQueries({ queryKey: ["deck-progress"] })
     qc.invalidateQueries({ queryKey: ["today-stats"] })
+    qc.invalidateQueries({ queryKey: ["folder-review-queue"] })
   }, [qc])
 
   const getPendingCount = useCallback(() => pendingCountRef.current, [])
