@@ -41,7 +41,6 @@ import {
   Check,
   FileText,
   MoreHorizontal,
-  Play,
   Plus,
 } from "lucide-react";
 import {

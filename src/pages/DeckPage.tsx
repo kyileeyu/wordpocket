@@ -452,7 +452,7 @@ export default function DeckPage() {
         onClose={() => setMoveSheetOpen(false)}
         title="폴더 이동"
         items={folderPickerItems}
-        selectedId={deck?.folder_id}
+        selectedId={deck?.folder_id ?? undefined}
         onSelect={handleMoveDeck}
       />
     </>
