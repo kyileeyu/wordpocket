@@ -132,6 +132,30 @@ export default function DeckPage() {
   const studyableCount = studyQueue?.length ?? 0;
   const reviewableCount = reviewQueue?.length ?? 0;
 
+  const nextDueLabel = useMemo(() => {
+    if (!cards) return null;
+    const now = new Date();
+    const dueDates = cards
+      .map((c) => c.card_states?.[0]?.due_date)
+      .filter((d): d is string => !!d)
+      .map((d) => new Date(d))
+      .filter((d) => d > now);
+    if (dueDates.length === 0) return null;
+    const nearest = new Date(Math.min(...dueDates.map((d) => d.getTime())));
+    const diffMs = nearest.getTime() - now.getTime();
+    const diffMin = Math.round(diffMs / 60000);
+    if (diffMin < 60) return `${diffMin}분 후`;
+    const diffHour = Math.round(diffMin / 60);
+    if (diffHour < 24) return `${diffHour}시간 후`;
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    if (nearest.toDateString() === tomorrow.toDateString()) {
+      return `내일 오전 ${nearest.getHours()}시`;
+    }
+    const diffDay = Math.round(diffHour / 24);
+    return `${diffDay}일 후`;
+  }, [cards]);
+
   const handleRename = (name: string) => {
     updateDeck.mutate(
       { id: deckId!, name },
@@ -263,10 +287,14 @@ export default function DeckPage() {
                 )}
               </div>
             ) : (
-              <div className="rounded-2xl bg-bg-elevated px-4 py-3 text-center">
-                <span className="typo-body-sm text-text-secondary">
-                  오늘의 학습을 끝냈어요!
-                </span>
+              <div className="flex items-center gap-3 rounded-xl bg-accent-bg-soft border border-accent-lighter px-4 py-3">
+                <span className="text-[24px] shrink-0">😴</span>
+                <div className="min-w-0">
+                  <p className="typo-body-md font-semibold text-text-primary">지금은 복습할 카드가 없어요</p>
+                  {nextDueLabel && (
+                    <p className="typo-caption text-text-tertiary">다음 복습 예정: {nextDueLabel}</p>
+                  )}
+                </div>
               </div>
             )}
 
