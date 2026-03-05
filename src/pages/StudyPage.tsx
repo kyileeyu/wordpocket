@@ -113,7 +113,7 @@ export default function StudyPage() {
     if (!card) return
 
     const rating = label.toLowerCase()
-    const reviewDuration = Math.round((Date.now() - reviewStartRef.current) / 1000)
+    const reviewDuration = Date.now() - reviewStartRef.current
 
     const nextReviewed = reviewedCount + 1
     const nextCorrect = rating !== "again" ? correctCount + 1 : correctCount
