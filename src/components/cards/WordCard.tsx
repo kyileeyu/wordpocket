@@ -12,31 +12,39 @@ interface WordCardProps {
   onFlip: () => void
 }
 
+function wordSizeClass(word: string, flipped: boolean) {
+  const len = word.length
+  if (flipped) {
+    if (len > 40) return "text-[18px] font-semibold leading-snug"
+    if (len > 20) return "text-[22px] font-semibold leading-snug"
+    return "typo-display-xl text-[28px]"
+  }
+  if (len > 40) return "text-[22px] font-semibold leading-snug"
+  if (len > 20) return "text-[28px] font-semibold leading-snug"
+  return "typo-display-xl"
+}
+
 export default function WordCard({ word, phonetic, meaning, example, synonyms, tags, flipped, onFlip }: WordCardProps) {
   return (
     <div
       className="relative bg-bg-elevated rounded-[24px] p-[32px_24px] text-center shadow-[0_2px_16px_rgba(26,26,46,0.08)] cursor-pointer w-full h-[380px] flex flex-col items-center justify-center overflow-hidden"
       onClick={onFlip}
     >
-      {/* Word + Pronunciation */}
-      <div className="flex items-center justify-center mb-1">
-        <div className="relative inline-flex items-end">
-          <div className={cn(
-            "text-text-primary",
-            flipped ? "typo-display-xl text-[28px]" : "typo-display-xl"
-          )}>
-            {word}
-          </div>
-          <div className="absolute left-full ml-1">
-            <PronunciationButton word={word} size="sm" />
-          </div>
-        </div>
+      {/* Word */}
+      <div className={cn(
+        "text-text-primary text-center mb-1",
+        wordSizeClass(word, flipped)
+      )}>
+        {word}
       </div>
 
-      {/* Phonetic */}
-      {phonetic && (
-        <div className="typo-mono-md text-text-secondary mb-[14px]">{phonetic}</div>
-      )}
+      {/* Phonetic + Pronunciation */}
+      <div className="flex items-center justify-center gap-1 mb-[14px]">
+        {phonetic && (
+          <span className="typo-mono-md text-text-secondary">{phonetic}</span>
+        )}
+        <PronunciationButton word={word} size="sm" />
+      </div>
 
       {flipped ? (
         <>
