@@ -11,6 +11,7 @@ import InputDialog from "@/components/feedback/InputDialog";
 import ConfirmDialog from "@/components/feedback/ConfirmDialog";
 import ActionSheet from "@/components/feedback/ActionSheet";
 import SortSheet from "@/components/feedback/SortSheet";
+import PickerSheet from "@/components/feedback/PickerSheet";
 import PageContent from "@/components/layouts/PageContent";
 import {
   DropdownMenu,
@@ -30,10 +31,13 @@ import {
   useDeckProgress,
   useUpdateDeck,
   useDeleteDeck,
+  useMoveDeck,
 } from "@/hooks/useDecks";
+import { useFolders } from "@/hooks/useFolders";
 import { useCardsByDeck } from "@/hooks/useCards";
 import { useStudyQueue, useReviewOnlyQueue } from "@/hooks/useStudy";
 import { mapCardStatus } from "@/lib/utils";
+import { toast } from "sonner";
 
 const STATUS_ORDER: Record<string, number> = { new: 0, learning: 1, review: 2 };
 
@@ -60,6 +64,8 @@ export default function DeckPage() {
   const { data: deckProgress } = useDeckProgress();
   const updateDeck = useUpdateDeck();
   const deleteDeck = useDeleteDeck();
+  const moveDeck = useMoveDeck();
+  const { data: folders } = useFolders();
 
   const [renameOpen, setRenameOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -67,6 +73,7 @@ export default function DeckPage() {
   const [actionSheetOpen, setActionSheetOpen] = useState(false);
   const [sortKey, setSortKey] = useState<SortKey>("created");
   const [sortSheetOpen, setSortSheetOpen] = useState(false);
+  const [moveSheetOpen, setMoveSheetOpen] = useState(false);
 
   const allTags = useMemo(() => {
     if (!cards) return [];
@@ -138,6 +145,27 @@ export default function DeckPage() {
     });
   };
 
+  const handleMoveDeck = (targetFolderId: string) => {
+    moveDeck.mutate(
+      { deckId: deckId!, targetFolderId },
+      {
+        onSuccess: () => {
+          const targetFolder = folders?.find((f) => f.id === targetFolderId);
+          toast.success(`"${targetFolder?.name}" 폴더로 이동했습니다`);
+        },
+      },
+    );
+  };
+
+  const folderPickerItems = useMemo(
+    () =>
+      (folders ?? []).map((f) => ({
+        id: f.id,
+        label: f.name,
+      })),
+    [folders],
+  );
+
   const actionSheetItems = useMemo(
     () => [
       {
@@ -176,6 +204,9 @@ export default function DeckPage() {
             <DropdownMenuContent>
               <DropdownMenuItem onClick={() => setRenameOpen(true)}>
                 이름 편집
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setMoveSheetOpen(true)}>
+                폴더 이동
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-danger"
@@ -327,6 +358,15 @@ export default function DeckPage() {
         description="이 카드뭉치와 포함된 모든 카드가 삭제됩니다. 되돌릴 수 없습니다."
         onConfirm={handleDelete}
         loading={deleteDeck.isPending}
+      />
+
+      <PickerSheet
+        open={moveSheetOpen}
+        onClose={() => setMoveSheetOpen(false)}
+        title="폴더 이동"
+        items={folderPickerItems}
+        selectedId={deck?.folder_id}
+        onSelect={handleMoveDeck}
       />
     </>
   );

@@ -51,7 +51,7 @@ function DropdownMenuContent({ children, className, align = "end" }: {
   )
 }
 
-function DropdownMenuItem({ children, className, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+function DropdownMenuItem({ children, className, onClick, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   const { setOpen } = React.useContext(DropdownContext)
   return (
     <button
@@ -59,11 +59,11 @@ function DropdownMenuItem({ children, className, ...props }: React.ButtonHTMLAtt
         "flex w-full items-center rounded-[12px] px-3 py-2 typo-body-md text-text-primary hover:bg-bg-subtle transition-colors",
         className
       )}
+      {...props}
       onClick={(e) => {
-        props.onClick?.(e)
+        onClick?.(e)
         setOpen(false)
       }}
-      {...props}
     >
       {children}
     </button>
