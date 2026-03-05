@@ -139,40 +139,40 @@ export default function FolderPage() {
 
   return (
     <>
-      <TopBar
-        left="back"
-        title={folder ? `📁 ${folder.name}` : ""}
-        right={
-          reorderMode ? (
-            <button
-              onClick={() => setReorderMode(false)}
-              className="w-11 h-11 rounded-full bg-accent text-white flex items-center justify-center"
-            >
-              <Check className="w-[18px] h-[18px]" />
-            </button>
-          ) : (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="w-11 h-11 rounded-full bg-bg-subtle flex items-center justify-center text-text-secondary">
-                  <MoreHorizontal className="w-[18px] h-[18px]" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                {decks && decks.length > 1 && (
-                  <DropdownMenuItem onClick={() => setReorderMode(true)}>
-                    <ArrowDownUp className="w-4 h-4 mr-2" />
-                    순서 변경
-                  </DropdownMenuItem>
-                )}
-                <DropdownMenuItem onClick={() => setRenameOpen(true)}>이름 편집</DropdownMenuItem>
-                <DropdownMenuItem className="text-danger" onClick={() => setDeleteOpen(true)}>삭제</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )
-        }
-      />
-
       <PageContent>
+        <TopBar
+          left="back"
+          noPadding
+          title={folder ? `📁 ${folder.name}` : ""}
+          right={
+            reorderMode ? (
+              <button
+                onClick={() => setReorderMode(false)}
+                className="w-11 h-11 rounded-full bg-accent text-white flex items-center justify-center"
+              >
+                <Check className="w-[18px] h-[18px]" />
+              </button>
+            ) : (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="w-11 h-11 rounded-full bg-bg-subtle flex items-center justify-center text-text-secondary">
+                    <MoreHorizontal className="w-[18px] h-[18px]" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  {decks && decks.length > 1 && (
+                    <DropdownMenuItem onClick={() => setReorderMode(true)}>
+                      <ArrowDownUp className="w-4 h-4 mr-2" />
+                      순서 변경
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem onClick={() => setRenameOpen(true)}>이름 편집</DropdownMenuItem>
+                  <DropdownMenuItem className="text-danger" onClick={() => setDeleteOpen(true)}>삭제</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )
+          }
+        />
         {/* Stats */}
         <div className="flex gap-[6px] flex-wrap">
           <StatPill emoji="📖" value={totalDue} label="복습 대기" />

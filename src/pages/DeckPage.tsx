@@ -191,35 +191,35 @@ export default function DeckPage() {
 
   return (
     <>
-      <TopBar
-        left="back"
-        title={deck?.name ?? ""}
-        right={
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button className="w-11 h-11 rounded-full bg-bg-subtle flex items-center justify-center text-text-secondary">
-                <MoreHorizontal className="w-[18px] h-[18px]" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => setRenameOpen(true)}>
-                이름 편집
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setMoveSheetOpen(true)}>
-                폴더 이동
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="text-danger"
-                onClick={() => setDeleteOpen(true)}
-              >
-                삭제
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        }
-      />
-
       <PageContent>
+        <TopBar
+          left="back"
+          title={deck?.name ?? ""}
+          noPadding
+          right={
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="w-11 h-11 rounded-full bg-bg-subtle flex items-center justify-center text-text-secondary">
+                  <MoreHorizontal className="w-[18px] h-[18px]" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem onClick={() => setRenameOpen(true)}>
+                  이름 편집
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setMoveSheetOpen(true)}>
+                  폴더 이동
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="text-danger"
+                  onClick={() => setDeleteOpen(true)}
+                >
+                  삭제
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          }
+        />
         {/* Stat Boxes */}
         <div className="flex gap-[6px]">
           <StatBox value={newCount} label="새 단어" />
