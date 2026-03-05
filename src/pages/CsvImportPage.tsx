@@ -6,6 +6,7 @@ import TopBar from "@/components/navigation/TopBar"
 import { Button } from "@/components/ui/button"
 import { CsvDropZone } from "@/components/forms"
 import { Label } from "@/components/ui/label"
+import PageContent from "@/components/layouts/PageContent"
 import { supabase } from "@/lib/supabase"
 import { parseCsv, type CsvRow } from "@/lib/csvParser"
 
@@ -65,12 +66,12 @@ export default function CsvImportPage() {
   return (
     <>
       <TopBar left="back" title="CSV 가져오기" />
-      <div className="px-7 pt-7">
+      <PageContent>
         <CsvDropZone onFileSelect={handleFileSelect} />
 
         {rows.length > 0 && (
           <>
-            <div className="mt-4">
+            <div>
               <Label>미리보기 (처음 3행)</Label>
               <div className="overflow-x-auto rounded-[10px] border border-border mt-1 mb-4">
                 <table className="w-full typo-mono-sm">
@@ -138,7 +139,7 @@ export default function CsvImportPage() {
               )}
             </div>
 
-            <p className="typo-caption text-text-secondary mt-3 mb-4">
+            <p className="typo-caption text-text-secondary">
               총 <strong className="text-text-primary">{rows.length}</strong>장의 카드가 감지되었습니다.
             </p>
 
@@ -147,7 +148,7 @@ export default function CsvImportPage() {
             </Button>
           </>
         )}
-      </div>
+      </PageContent>
     </>
   )
 }

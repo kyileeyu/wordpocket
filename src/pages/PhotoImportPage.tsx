@@ -215,7 +215,7 @@ export default function PhotoImportPage() {
       {state.step === "upload" && (
         <>
           <TopBar left="back" title="사진으로 가져오기" onLeftClick={handleBack} />
-          <div className="flex-1 overflow-y-auto px-5 pt-4 pb-28">
+          <div className="flex-1 overflow-y-auto px-7 pt-4 pb-28">
             {/* Hidden file inputs */}
             <input
               ref={albumRef}
@@ -312,7 +312,7 @@ export default function PhotoImportPage() {
       {state.step === "extracting" && (
         <>
           <TopBar left="close" title="단어 추출 중" onLeftClick={handleBack} />
-          <div className="flex-1 flex items-center justify-center px-5">
+          <div className="flex-1 flex items-center justify-center px-7">
             <ExtractionProgress
               current={state.extractionProgress.current}
               total={state.extractionProgress.total}
@@ -341,7 +341,7 @@ export default function PhotoImportPage() {
               </button>
             }
           />
-          <div className="flex-1 overflow-y-auto px-5 pt-2 pb-28">
+          <div className="flex-1 overflow-y-auto px-7 pt-2 pb-28">
             {/* Thumbnail strip — tappable for fullscreen */}
             <ThumbnailStrip
               images={state.images}

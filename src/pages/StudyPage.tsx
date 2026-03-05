@@ -6,6 +6,7 @@ import { WordCard } from "@/components/cards"
 import ResponseButtons from "@/components/study/ResponseButtons"
 import EmptyState from "@/components/feedback/EmptyState"
 import { Skeleton } from "@/components/ui/skeleton"
+import PageContent from "@/components/layouts/PageContent"
 import { useStudyQueue, useAllCardsQueue, useReviewOnlyQueue, useSubmitReview } from "@/hooks/useStudy"
 import { cn, timeAgo } from "@/lib/utils"
 
@@ -142,10 +143,10 @@ export default function StudyPage() {
     return (
       <>
         <TopBar left="close" />
-        <div className="px-7 space-y-4 mt-4">
+        <PageContent className="space-y-4">
           <Skeleton className="h-2 rounded-full" />
           <Skeleton className="h-[280px] rounded-[24px]" />
-        </div>
+        </PageContent>
       </>
     )
   }
@@ -168,10 +169,10 @@ export default function StudyPage() {
     return (
       <>
         <TopBar left="close" />
-        <div className="px-7 space-y-4 mt-4">
+        <PageContent className="space-y-4">
           <Skeleton className="h-2 rounded-full" />
           <Skeleton className="h-[280px] rounded-[24px]" />
-        </div>
+        </PageContent>
       </>
     )
   }
@@ -190,7 +191,7 @@ export default function StudyPage() {
 
       <StudyProgress current={masteredCount} total={initialTotal} />
 
-      <div className="flex-1 flex flex-col items-center justify-center px-7">
+      <PageContent className="flex-1 flex flex-col items-center justify-center pt-0">
         {card.last_reviewed_at && (
           <div className="w-full text-right mb-1 pr-3">
             <span className="typo-caption text-text-tertiary">
@@ -208,7 +209,7 @@ export default function StudyPage() {
           flipped={flipped}
           onFlip={() => setFlipped((f) => !f)}
         />
-      </div>
+      </PageContent>
 
       <div className={cn("mb-2", !flipped && "invisible")}>
         <ResponseButtons onResponse={handleResponse} />

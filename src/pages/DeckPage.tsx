@@ -11,6 +11,7 @@ import InputDialog from "@/components/feedback/InputDialog"
 import ConfirmDialog from "@/components/feedback/ConfirmDialog"
 import ActionSheet from "@/components/feedback/ActionSheet"
 import SortSheet from "@/components/feedback/SortSheet"
+import PageContent from "@/components/layouts/PageContent"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal, Plus, FileText, Camera, ChevronDown } from "lucide-react"
 import { useDeck, useDeckProgress, useUpdateDeck, useDeleteDeck } from "@/hooks/useDecks"
@@ -165,17 +166,15 @@ export default function DeckPage() {
         }
       />
 
-      {/* Stat Boxes */}
-      <div className="px-7 pt-7">
-        <div className="flex gap-[6px] mb-2">
+      <PageContent>
+        {/* Stat Boxes */}
+        <div className="flex gap-[6px]">
           <StatBox value={newCount} label="New" />
           <StatBox value={learningCount} label="Learning" />
           <StatBox value={reviewCount} label="Mature" />
         </div>
-      </div>
 
-      {/* Segmented Progress */}
-      <div className="px-7 mb-4">
+        {/* Segmented Progress */}
         <SegmentedProgress
           segments={[
             { value: newCount, color: "#D4CEFA" },
@@ -183,41 +182,37 @@ export default function DeckPage() {
             { value: reviewCount, color: "#7C6CE7" },
           ]}
         />
-      </div>
 
-      {/* CTA Buttons */}
-      {(studyableCount > 0 || reviewableCount > 0) && (
-        <div className="px-7 mb-4 flex gap-2">
-          {reviewableCount > 0 && (
-            <Button asChild variant="outline" className="flex-1">
-              <Link to={`/study/${deckId}?mode=review`}>▶ 복습 · {reviewableCount}장</Link>
-            </Button>
-          )}
-          {studyableCount > 0 && (
-            <Button asChild className="flex-1">
-              <Link to={`/study/${deckId}?mode=all`}>▶ 학습 · {studyableCount}장</Link>
-            </Button>
-          )}
-        </div>
-      )}
+        {/* CTA Buttons */}
+        {(studyableCount > 0 || reviewableCount > 0) && (
+          <div className="flex gap-2">
+            {reviewableCount > 0 && (
+              <Button asChild variant="outline" className="flex-1">
+                <Link to={`/study/${deckId}?mode=review`}>▶ 복습 · {reviewableCount}장</Link>
+              </Button>
+            )}
+            {studyableCount > 0 && (
+              <Button asChild className="flex-1">
+                <Link to={`/study/${deckId}?mode=all`}>▶ 학습 · {studyableCount}장</Link>
+              </Button>
+            )}
+          </div>
+        )}
 
-      {/* Tag Filter */}
-      {allTags.length > 0 && (
-        <div className="px-7 mb-3">
+        {/* Tag Filter */}
+        {allTags.length > 0 && (
           <TagFilterBar tags={allTags} selected={selectedTag} onSelect={setSelectedTag} />
-        </div>
-      )}
+        )}
 
-      {/* Card List */}
-      <div className="px-7">
+        {/* Card List */}
         {cardsLoading ? (
-          <div className="space-y-2 mt-2">
+          <div className="space-y-2">
             <Skeleton className="h-14 rounded-[20px]" />
             <Skeleton className="h-14 rounded-[20px]" />
             <Skeleton className="h-14 rounded-[20px]" />
           </div>
         ) : cards && cards.length > 0 ? (
-          <>
+          <div>
             <div className="flex items-center justify-between mb-3">
               <span className="typo-body-sm text-text-secondary">
                 {selectedTag
@@ -250,14 +245,14 @@ export default function DeckPage() {
                 )
               })}
             </div>
-          </>
+          </div>
         ) : (
           <EmptyState
             icon="🃏"
             text="아직 카드가 없습니다. 첫 카드를 추가해보세요!"
           />
         )}
-      </div>
+      </PageContent>
 
       <FAB onClick={() => setActionSheetOpen((v) => !v)} isOpen={actionSheetOpen} />
 

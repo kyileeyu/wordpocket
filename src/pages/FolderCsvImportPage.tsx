@@ -6,6 +6,7 @@ import TopBar from "@/components/navigation/TopBar"
 import { Button } from "@/components/ui/button"
 import { CsvDropZone } from "@/components/forms"
 import { Label } from "@/components/ui/label"
+import PageContent from "@/components/layouts/PageContent"
 import { supabase } from "@/lib/supabase"
 import { parseCsv, type CsvRow } from "@/lib/csvParser"
 import { useAuthStore } from "@/stores/authStore"
@@ -80,12 +81,12 @@ export default function FolderCsvImportPage() {
   return (
     <>
       <TopBar left="back" title="CSV 가져오기" />
-      <div className="px-7 pt-7">
+      <PageContent className="pb-10">
         <CsvDropZone onFileSelect={handleFileSelect} />
 
         {rows.length > 0 && (
           <>
-            <div className="mt-4">
+            <div>
               <Label>미리보기 (처음 3행)</Label>
               <div className="overflow-x-auto rounded-[10px] border border-border mt-1 mb-4">
                 <table className="w-full typo-mono-sm">
@@ -120,7 +121,7 @@ export default function FolderCsvImportPage() {
             </div>
 
             {/* 덱 생성 예고 */}
-            <div className="rounded-[10px] bg-bg-elevated p-3 mb-4">
+            <div className="rounded-[10px] bg-bg-elevated p-3">
               <div className="typo-body-sm text-text-primary font-medium mb-1">
                 {deckGroups.size}개 카드뭉치 생성 예정
               </div>
@@ -141,7 +142,7 @@ export default function FolderCsvImportPage() {
               </div>
             </div>
 
-            <p className="typo-caption text-text-secondary mb-4">
+            <p className="typo-caption text-text-secondary">
               총 <strong className="text-text-primary">{rows.length}</strong>장의 카드가 감지되었습니다.
             </p>
 
@@ -150,7 +151,7 @@ export default function FolderCsvImportPage() {
             </Button>
           </>
         )}
-      </div>
+      </PageContent>
     </>
   )
 }

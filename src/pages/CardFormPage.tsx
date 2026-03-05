@@ -5,6 +5,7 @@ import TopBar from "@/components/navigation/TopBar"
 import CardForm from "@/components/forms/CardForm"
 import type { CardFormData } from "@/components/forms/CardForm"
 import ConfirmDialog from "@/components/feedback/ConfirmDialog"
+import PageContent from "@/components/layouts/PageContent"
 import { useCard, useCreateCard, useUpdateCard, useDeleteCard } from "@/hooks/useCards"
 
 export default function CardFormPage() {
@@ -92,14 +93,14 @@ export default function CardFormPage() {
 
       {isEdit && (
         <>
-          <div className="px-7 mt-6 pb-10">
+          <PageContent className="pt-0 mt-6 pb-10">
             <button
               className="w-full py-3 rounded-[14px] typo-body-md text-danger font-semibold transition-colors active:bg-danger/10"
               onClick={() => setDeleteOpen(true)}
             >
               카드 삭제
             </button>
-          </div>
+          </PageContent>
 
           <ConfirmDialog
             open={deleteOpen}
