@@ -17,7 +17,8 @@ import EmptyState from "@/components/feedback/EmptyState"
 import InputDialog from "@/components/feedback/InputDialog"
 import ConfirmDialog from "@/components/feedback/ConfirmDialog"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu"
-import { ArrowDownUp, Check, FileText, MoreHorizontal, Plus } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { ArrowDownUp, Check, FileText, MoreHorizontal, Play, Plus } from "lucide-react"
 import { useFolders, useUpdateFolder, useDeleteFolder } from "@/hooks/useFolders"
 import { useDecksByFolder, useDeckProgress, useCreateDeck, useReorderDecks } from "@/hooks/useDecks"
 
@@ -177,6 +178,23 @@ export default function FolderPage() {
           <StatPill emoji="📖" value={totalDue} label="복습 대기" />
           <StatPill emoji="📦" value={totalCards} label="전체 카드" />
         </div>
+
+        {/* Review CTA */}
+        {totalCards > 0 && (
+          totalDue > 0 ? (
+            <Button
+              className="w-full"
+              onClick={() => navigate(`/study/folder/${folderId}`)}
+            >
+              <Play className="w-4 h-4 mr-1" />
+              단어장 전체 복습 · {totalDue}장
+            </Button>
+          ) : (
+            <div className="text-center py-3">
+              <span className="typo-body-sm text-text-secondary">오늘의 학습을 끝냈어요!</span>
+            </div>
+          )
+        )}
 
         {/* Deck List */}
         {decksLoading ? (

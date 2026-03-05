@@ -7,7 +7,7 @@ import ResponseButtons from "@/components/study/ResponseButtons"
 import EmptyState from "@/components/feedback/EmptyState"
 import { Skeleton } from "@/components/ui/skeleton"
 import PageContent from "@/components/layouts/PageContent"
-import { useStudyQueue, useReviewOnlyQueue, useReviewBatch } from "@/hooks/useStudy"
+import { useStudyQueue, useReviewOnlyQueue, useFolderReviewQueue, useReviewBatch } from "@/hooks/useStudy"
 import ConfirmDialog from "@/components/feedback/ConfirmDialog"
 import { cn, timeAgo, computeIntervals } from "@/lib/utils"
 
@@ -28,16 +28,18 @@ interface StudyCard {
 }
 
 export default function StudyPage() {
-  const { deckId } = useParams<{ deckId: string }>()
+  const { deckId, folderId } = useParams<{ deckId?: string; folderId?: string }>()
+  const isFolderMode = !!folderId
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const mode = searchParams.get("mode")
   const isReviewMode = mode === "review"
-  const { data: srsQueue, isLoading: srsLoading, refetch: srsRefetch } = useStudyQueue(deckId!)
-  const { data: reviewQueue, isLoading: reviewLoading, refetch: reviewRefetch } = useReviewOnlyQueue(deckId!, isReviewMode)
-  const queue: StudyCard[] | undefined = isReviewMode ? reviewQueue : srsQueue
-  const isLoading = isReviewMode ? reviewLoading : srsLoading
-  const refetch = isReviewMode ? reviewRefetch : srsRefetch
+  const { data: srsQueue, isLoading: srsLoading, refetch: srsRefetch } = useStudyQueue(deckId ?? "", !isFolderMode)
+  const { data: reviewQueue, isLoading: reviewLoading, refetch: reviewRefetch } = useReviewOnlyQueue(deckId ?? "", isReviewMode && !isFolderMode)
+  const { data: folderQueue, isLoading: folderLoading, refetch: folderRefetch } = useFolderReviewQueue(folderId ?? "", isFolderMode)
+  const queue: StudyCard[] | undefined = isFolderMode ? folderQueue : isReviewMode ? reviewQueue : srsQueue
+  const isLoading = isFolderMode ? folderLoading : isReviewMode ? reviewLoading : srsLoading
+  const refetch = isFolderMode ? folderRefetch : isReviewMode ? reviewRefetch : srsRefetch
   const batch = useReviewBatch()
 
   const [workingQueue, setWorkingQueue] = useState<StudyCard[]>([])
@@ -85,9 +87,9 @@ export default function StudyPage() {
 
   const goToComplete = useCallback((reviewed: number, correct: number, newCards: number) => {
     navigate("/study/complete", {
-      state: { reviewed, correct, newCount: newCards, deckId },
+      state: { reviewed, correct, newCount: newCards, deckId, folderId },
     })
-  }, [navigate, deckId])
+  }, [navigate, deckId, folderId])
 
   const handleExit = useCallback(async () => {
     if (batch.getPendingCount() === 0) {
