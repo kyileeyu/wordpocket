@@ -206,7 +206,7 @@ export default function DeckPage() {
         />
 
         {/* CTA Buttons */}
-        {(studyableCount > 0 || reviewableCount > 0) && (
+        {studyableCount > 0 || reviewableCount > 0 ? (
           <div className="flex gap-2">
             {reviewableCount > 0 && (
               <Button asChild variant="outline" className="flex-1">
@@ -223,7 +223,13 @@ export default function DeckPage() {
               </Button>
             )}
           </div>
-        )}
+        ) : totalCards > 0 ? (
+          <div className="rounded-2xl bg-bg-elevated px-4 py-3 text-center">
+            <span className="typo-body-sm text-text-secondary">
+              오늘의 학습을 끝냈어요!
+            </span>
+          </div>
+        ) : null}
 
         {/* Tag Filter */}
         {allTags.length > 0 && (

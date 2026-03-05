@@ -7,7 +7,8 @@ import ResponseButtons from "@/components/study/ResponseButtons"
 import EmptyState from "@/components/feedback/EmptyState"
 import { Skeleton } from "@/components/ui/skeleton"
 import PageContent from "@/components/layouts/PageContent"
-import { useStudyQueue, useReviewOnlyQueue, useSubmitReview } from "@/hooks/useStudy"
+import { useStudyQueue, useReviewOnlyQueue, useReviewBatch } from "@/hooks/useStudy"
+import ConfirmDialog from "@/components/feedback/ConfirmDialog"
 import { cn, timeAgo, computeIntervals } from "@/lib/utils"
 
 interface StudyCard {
@@ -37,7 +38,7 @@ export default function StudyPage() {
   const queue: StudyCard[] | undefined = isReviewMode ? reviewQueue : srsQueue
   const isLoading = isReviewMode ? reviewLoading : srsLoading
   const refetch = isReviewMode ? reviewRefetch : srsRefetch
-  const submitReview = useSubmitReview()
+  const batch = useReviewBatch()
 
   const [workingQueue, setWorkingQueue] = useState<StudyCard[]>([])
   const [index, setIndex] = useState(0)
@@ -47,6 +48,8 @@ export default function StudyPage() {
   const [newCount, setNewCount] = useState(0)
   const [lapCount, setLapCount] = useState(0)
   const [masteredCount, setMasteredCount] = useState(0)
+  const [showExitDialog, setShowExitDialog] = useState(false)
+  const [exitLoading, setExitLoading] = useState(false)
   const initialTotalRef = useRef(0)
   const lapEndIndexRef = useRef(0)
 
@@ -86,7 +89,25 @@ export default function StudyPage() {
     })
   }, [navigate, deckId])
 
-  const handleResponse = (label: string) => {
+  const handleExit = useCallback(async () => {
+    if (batch.getPendingCount() === 0) {
+      navigate(-1)
+      return
+    }
+    setShowExitDialog(true)
+  }, [batch, navigate])
+
+  const handleExitConfirm = useCallback(async () => {
+    setExitLoading(true)
+    try {
+      await batch.flush()
+    } catch {
+      // 실패해도 나가기
+    }
+    navigate(-1)
+  }, [batch, navigate])
+
+  const handleResponse = async (label: string) => {
     if (!card) return
 
     const rating = label.toLowerCase()
@@ -97,54 +118,44 @@ export default function StudyPage() {
     setReviewedCount(nextReviewed)
     setCorrectCount(nextCorrect)
 
-    submitReview.mutate(
-      { cardId: card.card_id, rating, reviewDuration },
-      {
-        onSuccess: () => {
-          if (rating === "good" || rating === "easy") {
-            setMasteredCount((c) => c + 1)
-          }
+    batch.addReview(card.card_id, rating, reviewDuration)
 
-          let nextQueue = [...workingQueue]
-          if (rating === "again" || rating === "hard") {
-            nextQueue = [...nextQueue, card]
-          }
+    if (rating === "good" || rating === "easy") {
+      setMasteredCount((c) => c + 1)
+    }
 
-          const nextIndex = index + 1
+    let nextQueue = [...workingQueue]
+    if (rating === "again" || rating === "hard") {
+      nextQueue = [...nextQueue, card]
+    }
 
-          if (nextIndex >= lapEndIndexRef.current && nextIndex < nextQueue.length) {
-            setLapCount((c) => c + 1)
-            lapEndIndexRef.current = nextQueue.length
-          }
+    const nextIndex = index + 1
 
-          if (nextIndex >= nextQueue.length) {
-            refetch().then(({ data: serverQueue }) => {
-              if (serverQueue && serverQueue.length > 0) {
-                setWorkingQueue(serverQueue)
-                setIndex(0)
-                setFlipped(false)
-                lapEndIndexRef.current = serverQueue.length
-              } else {
-                goToComplete(nextReviewed, nextCorrect, newCount)
-              }
-            })
-          } else {
-            setWorkingQueue(nextQueue)
-            setIndex(nextIndex)
-            setFlipped(false)
-          }
-        },
-        onError: () => {
-          const nextIndex = index + 1
-          if (nextIndex >= workingQueue.length) {
-            goToComplete(nextReviewed, nextCorrect, newCount)
-          } else {
-            setFlipped(false)
-            setIndex(nextIndex)
-          }
-        },
-      },
-    )
+    if (nextIndex >= lapEndIndexRef.current && nextIndex < nextQueue.length) {
+      setLapCount((c) => c + 1)
+      lapEndIndexRef.current = nextQueue.length
+    }
+
+    if (nextIndex >= nextQueue.length) {
+      try {
+        await batch.flush()
+      } catch {
+        // flush 실패해도 계속 진행
+      }
+      const { data: serverQueue } = await refetch()
+      if (serverQueue && serverQueue.length > 0) {
+        setWorkingQueue(serverQueue)
+        setIndex(0)
+        setFlipped(false)
+        lapEndIndexRef.current = serverQueue.length
+      } else {
+        goToComplete(nextReviewed, nextCorrect, newCount)
+      }
+    } else {
+      setWorkingQueue(nextQueue)
+      setIndex(nextIndex)
+      setFlipped(false)
+    }
   }
 
   if (isLoading) {
@@ -189,6 +200,7 @@ export default function StudyPage() {
     <>
       <TopBar
         left="close"
+        onLeftClick={handleExit}
         title={
           <span className="typo-mono-md text-text-secondary font-normal">
             {masteredCount} / {initialTotal}
@@ -224,6 +236,16 @@ export default function StudyPage() {
       </div>
 
       <div className="h-5 shrink-0" />
+
+      <ConfirmDialog
+        open={showExitDialog}
+        onOpenChange={setShowExitDialog}
+        title="학습을 종료하시겠습니까?"
+        description="지금까지의 학습 내용이 저장됩니다."
+        onConfirm={handleExitConfirm}
+        loading={exitLoading}
+        confirmLabel="종료"
+      />
     </>
   )
 }

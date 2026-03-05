@@ -325,6 +325,12 @@ export type Database = {
         };
         Returns: Json;
       };
+      submit_reviews_batch: {
+        Args: {
+          p_reviews: Json;
+        };
+        Returns: Json;
+      };
       get_today_stats: {
         Args: Record<string, never>;
         Returns: Json;
