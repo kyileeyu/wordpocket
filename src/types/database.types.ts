@@ -359,6 +359,7 @@ export type Database = {
           new_count: number;
           learning_count: number;
           review_count: number;
+          memorized_count: number;
           suspended_count: number;
           due_today: number;
         }[];
