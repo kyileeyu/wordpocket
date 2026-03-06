@@ -86,3 +86,17 @@ export function useDeleteCard() {
     },
   })
 }
+
+export function useDeleteCards() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async ({ ids }: { ids: string[]; deckId: string }) => {
+      const { error } = await supabase.from("cards").delete().in("id", ids)
+      if (error) throw error
+    },
+    onSuccess: (_data, { deckId }) => {
+      qc.invalidateQueries({ queryKey: ["cards", deckId] })
+      qc.invalidateQueries({ queryKey: ["deck-progress"] })
+    },
+  })
+}
