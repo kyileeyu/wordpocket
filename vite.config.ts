@@ -108,6 +108,10 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      'libheif-js': path.resolve(__dirname, 'node_modules/libheif-js/libheif-wasm/libheif-bundle.mjs'),
     },
+  },
+  optimizeDeps: {
+    exclude: ['libheif-js'],
   },
 })
