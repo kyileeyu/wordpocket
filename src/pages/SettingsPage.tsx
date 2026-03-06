@@ -79,7 +79,7 @@ export default function SettingsPage() {
       {/* Notification Section */}
       <div>
         <Label>알림</Label>
-        <SettingsRow label="일일 복습 리마인더" value="09:00" />
+        <SettingsRow label="일일 학습 리마인더" value="09:00" />
       </div>
 
       {/* Account Section */}

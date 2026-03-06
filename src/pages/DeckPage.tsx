@@ -342,14 +342,14 @@ export default function DeckPage() {
                 {reviewableCount > 0 && (
                   <Button asChild variant="outline" className="flex-1">
                     <Link to={`/study/${deckId}?mode=review`}>
-                      ▶ 오늘 복습 · {reviewableCount}장
+                      ▶ 복습만 · {reviewableCount}장
                     </Link>
                   </Button>
                 )}
                 {studyableCount > 0 && (
                   <Button asChild className="flex-1">
                     <Link to={`/study/${deckId}`}>
-                      ▶ 전체 학습 · {studyableCount}장
+                      ▶ 학습 시작 · {studyableCount}장
                     </Link>
                   </Button>
                 )}
