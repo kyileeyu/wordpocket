@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { StatBox, SegmentedProgress } from "@/components/stats";
 import { CardListItem, TagFilterBar } from "@/components/cards";
 import FAB from "@/components/feedback/FAB";
+import NoReviewBanner from "@/components/feedback/NoReviewBanner";
 import InputDialog from "@/components/feedback/InputDialog";
 import ConfirmDialog from "@/components/feedback/ConfirmDialog";
 import ActionSheet from "@/components/feedback/ActionSheet";
@@ -287,15 +288,7 @@ export default function DeckPage() {
                 )}
               </div>
             ) : (
-              <div className="flex items-center gap-3 rounded-xl bg-accent-bg-soft border border-accent-lighter px-4 py-3">
-                <span className="text-[24px] shrink-0">😴</span>
-                <div className="min-w-0">
-                  <p className="typo-body-md font-semibold text-text-primary">지금은 복습할 카드가 없어요</p>
-                  {nextDueLabel && (
-                    <p className="typo-caption text-text-tertiary">다음 복습 예정: {nextDueLabel}</p>
-                  )}
-                </div>
-              </div>
+              <NoReviewBanner nextDueLabel={nextDueLabel} />
             )}
 
             {/* Tag Filter */}

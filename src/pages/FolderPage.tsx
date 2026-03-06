@@ -25,6 +25,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { StatPill } from "@/components/stats";
 import { DeckCard } from "@/components/cards";
 import FAB from "@/components/feedback/FAB";
+import NoReviewBanner from "@/components/feedback/NoReviewBanner";
 import ActionSheet from "@/components/feedback/ActionSheet";
 import EmptyState from "@/components/feedback/EmptyState";
 import InputDialog from "@/components/feedback/InputDialog";
@@ -253,11 +254,7 @@ export default function FolderPage() {
               ▶ 단어장 전체 복습 · {totalDue}장
             </Button>
           ) : (
-            <div className="text-center py-3">
-              <span className="typo-body-sm text-text-secondary">
-                오늘의 학습을 끝냈어요!
-              </span>
-            </div>
+            <NoReviewBanner />
           ))}
 
         {/* Deck List */}
