@@ -24,17 +24,12 @@ serve(async (req: Request) => {
       );
     }
 
-    const apiKey = Deno.env.get("VISION_API_KEY");
-    const apiUrl =
-      Deno.env.get("VISION_API_URL") ??
-      "https://openrouter.ai/api/v1/chat/completions";
-    const model =
-      Deno.env.get("VISION_MODEL") ??
-      "qwen/qwen-2.5-vl-72b-instruct:free";
+    const apiKey = Deno.env.get("GEMINI_API_KEY");
+    const model = Deno.env.get("GEMINI_MODEL") ?? "gemini-2.5-flash";
 
     if (!apiKey) {
       return new Response(
-        JSON.stringify({ error: "VISION_API_KEY not configured" }),
+        JSON.stringify({ error: "GEMINI_API_KEY not configured" }),
         {
           status: 500,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -58,39 +53,44 @@ Rules:
 - Do NOT wrap the JSON in markdown code fences.
 - Return [] if no words are found.`;
 
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model,
-        messages: [
-          { role: "system", content: systemPrompt },
+        systemInstruction: {
+          parts: [{ text: systemPrompt }],
+        },
+        contents: [
           {
             role: "user",
-            content: [
+            parts: [
               {
-                type: "image_url",
-                image_url: { url: `data:image/jpeg;base64,${image}` },
+                inlineData: {
+                  mimeType: "image/jpeg",
+                  data: image,
+                },
               },
               {
-                type: "text",
                 text: "이 사진에서 영단어와 뜻을 추출해 JSON 배열로 반환해주세요.",
               },
             ],
           },
         ],
-        temperature: 0,
-        max_tokens: 4096,
+        generationConfig: {
+          temperature: 0,
+          maxOutputTokens: 4096,
+        },
       }),
     });
 
     if (!response.ok) {
       const err = await response.text();
       return new Response(
-        JSON.stringify({ error: `Vision API error: ${err}` }),
+        JSON.stringify({ error: `Gemini API error: ${err}` }),
         {
           status: 502,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -99,7 +99,8 @@ Rules:
     }
 
     const result = await response.json();
-    const content = result.choices?.[0]?.message?.content ?? "[]";
+    const content =
+      result.candidates?.[0]?.content?.parts?.[0]?.text ?? "[]";
 
     // Parse the JSON from the response, stripping markdown fences if present
     let words;
