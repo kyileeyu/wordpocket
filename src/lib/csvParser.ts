@@ -39,8 +39,46 @@ function parseCsvLine(line: string): string[] {
   return result
 }
 
+function splitCsvLines(text: string): string[] {
+  const lines: string[] = []
+  let current = ""
+  let inQuotes = false
+
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i]
+    if (inQuotes) {
+      if (char === '"' && text[i + 1] === '"') {
+        current += '""'
+        i++
+      } else if (char === '"') {
+        inQuotes = false
+        current += char
+      } else {
+        current += char
+      }
+    } else {
+      if (char === '"') {
+        inQuotes = true
+        current += char
+      } else if (char === "\n") {
+        lines.push(current)
+        current = ""
+      } else if (char === "\r") {
+        // skip \r, handle \r\n
+        if (text[i + 1] === "\n") i++
+        lines.push(current)
+        current = ""
+      } else {
+        current += char
+      }
+    }
+  }
+  if (current) lines.push(current)
+  return lines
+}
+
 export function parseCsv(text: string): CsvRow[] {
-  const lines = text.trim().split("\n")
+  const lines = splitCsvLines(text.trim())
   if (lines.length < 2) return []
 
   const header = parseCsvLine(lines[0]).map((h) => h.trim().toLowerCase())

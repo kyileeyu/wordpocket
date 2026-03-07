@@ -27,7 +27,17 @@ export default function FolderCsvImportPage() {
       if (!groups.has(deckName)) groups.set(deckName, [])
       groups.get(deckName)!.push(row)
     })
-    return groups
+    const sorted = new Map(
+      [...groups.entries()].sort((a, b) => {
+        const numA = a[0].match(/\d+/)
+        const numB = b[0].match(/\d+/)
+        if (numA && numB) return Number(numA[0]) - Number(numB[0])
+        if (numA) return -1
+        if (numB) return 1
+        return a[0].localeCompare(b[0])
+      })
+    )
+    return sorted
   }, [rows])
 
   const handleFileSelect = (file: File) => {
