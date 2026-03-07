@@ -62,7 +62,7 @@ export default function PhotoImportPage() {
 
   // --- File handling ---
   const handleFiles = useCallback(
-    (files: FileList | null) => {
+    async (files: FileList | null) => {
       if (!files || files.length === 0) return
       const currentCount = state.images.length
       const fileArray = Array.from(files)
@@ -74,11 +74,13 @@ export default function PhotoImportPage() {
       const remaining = MAX_IMAGES - currentCount
       const toAdd = fileArray.slice(0, remaining)
 
-      const newImages: ImportImage[] = toAdd.map((f) => ({
-        id: crypto.randomUUID(),
-        file: f,
-        thumbnailUrl: createThumbnailUrl(f),
-      }))
+      const newImages: ImportImage[] = await Promise.all(
+        toAdd.map(async (f) => ({
+          id: crypto.randomUUID(),
+          file: f,
+          thumbnailUrl: await createThumbnailUrl(f),
+        }))
+      )
 
       dispatch({ type: "ADD_IMAGES", images: newImages })
     },

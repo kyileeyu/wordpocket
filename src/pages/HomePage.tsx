@@ -73,7 +73,7 @@ export default function HomePage() {
           <div className="typo-display-l font-display text-text-secondary italic mb-[2px]">
             {getGreeting()}
           </div>
-          <h1 className="typo-display-xl text-text-primary">오늘의 복습</h1>
+          <h1 className="typo-display-xl text-text-primary">오늘의 학습</h1>
         </div>
         <button
           type="button"

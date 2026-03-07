@@ -35,7 +35,7 @@ import {
   useMoveDeck,
 } from "@/hooks/useDecks";
 import { useFolders } from "@/hooks/useFolders";
-import { useCardsByDeck } from "@/hooks/useCards";
+import { useCardsByDeck, useDeleteCards } from "@/hooks/useCards";
 import { useStudyQueue, useReviewOnlyQueue } from "@/hooks/useStudy";
 import { mapCardStatus } from "@/lib/utils";
 import { toast } from "sonner";
@@ -68,6 +68,8 @@ export default function DeckPage() {
   const moveDeck = useMoveDeck();
   const { data: folders } = useFolders();
 
+  const deleteCards = useDeleteCards();
+
   const [renameOpen, setRenameOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
@@ -75,6 +77,45 @@ export default function DeckPage() {
   const [sortKey, setSortKey] = useState<SortKey>("created");
   const [sortSheetOpen, setSortSheetOpen] = useState(false);
   const [moveSheetOpen, setMoveSheetOpen] = useState(false);
+
+  const [selectMode, setSelectMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkDeleteOpen, setBulkDeleteOpen] = useState(false);
+
+  const exitSelectMode = () => {
+    setSelectMode(false);
+    setSelectedIds(new Set());
+  };
+
+  const toggleSelect = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === filteredCards.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredCards.map((c) => c.id)));
+    }
+  };
+
+  const handleBulkDelete = () => {
+    deleteCards.mutate(
+      { ids: [...selectedIds], deckId: deckId! },
+      {
+        onSuccess: () => {
+          toast.success(`${selectedIds.size}장 카드 삭제 완료`);
+          exitSelectMode();
+          setBulkDeleteOpen(false);
+        },
+      },
+    );
+  };
 
   const allTags = useMemo(() => {
     if (!cards) return [];
@@ -217,34 +258,60 @@ export default function DeckPage() {
   return (
     <>
       <PageContent className={totalCards === 0 && !cardsLoading ? "flex flex-col min-h-[calc(100dvh-80px)]" : ""}>
-        <TopBar
-          left="back"
-          title={deck?.name ?? ""}
-          noPadding
-          right={
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="w-11 h-11 rounded-full bg-bg-subtle flex items-center justify-center text-text-secondary">
-                  <MoreHorizontal className="w-[18px] h-[18px]" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem onClick={() => setRenameOpen(true)}>
-                  이름 편집
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setMoveSheetOpen(true)}>
-                  폴더 이동
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="text-danger"
-                  onClick={() => setDeleteOpen(true)}
-                >
-                  삭제
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          }
-        />
+        {selectMode ? (
+          <TopBar
+            noPadding
+            left="back"
+            onLeftClick={exitSelectMode}
+            title={
+              selectedIds.size > 0
+                ? `${selectedIds.size}장 선택됨`
+                : "카드 선택"
+            }
+            right={
+              <button
+                onClick={toggleSelectAll}
+                className="typo-body-sm text-accent font-semibold whitespace-nowrap"
+              >
+                {selectedIds.size === filteredCards.length ? "전체해제" : "전체선택"}
+              </button>
+            }
+          />
+        ) : (
+          <TopBar
+            left="back"
+            title={deck?.name ?? ""}
+            noPadding
+            right={
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="w-11 h-11 rounded-full bg-bg-subtle flex items-center justify-center text-text-secondary">
+                    <MoreHorizontal className="w-[18px] h-[18px]" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  {totalCards > 0 && (
+                    <DropdownMenuItem onClick={() => setSelectMode(true)}>
+                      선택
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuItem onClick={() => setRenameOpen(true)}>
+                    이름 편집
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setMoveSheetOpen(true)}>
+                    폴더 이동
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="text-danger"
+                    onClick={() => setDeleteOpen(true)}
+                  >
+                    삭제
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            }
+          />
+        )}
         {cardsLoading ? (
           <div className="space-y-2">
             <Skeleton className="h-14 rounded-[20px]" />
@@ -275,14 +342,14 @@ export default function DeckPage() {
                 {reviewableCount > 0 && (
                   <Button asChild variant="outline" className="flex-1">
                     <Link to={`/study/${deckId}?mode=review`}>
-                      ▶ 오늘 복습 · {reviewableCount}장
+                      ▶ 복습만 · {reviewableCount}장
                     </Link>
                   </Button>
                 )}
                 {studyableCount > 0 && (
                   <Button asChild className="flex-1">
                     <Link to={`/study/${deckId}`}>
-                      ▶ 전체 학습 · {studyableCount}장
+                      ▶ 학습 시작 · {studyableCount}장
                     </Link>
                   </Button>
                 )}
@@ -319,11 +386,27 @@ export default function DeckPage() {
               <div className="rounded-[20px] bg-bg-elevated overflow-hidden mb-6">
                 {filteredCards.map((card, i) => {
                   const state = card.card_states?.[0];
-                  return (
+                  const divider = i < filteredCards.length - 1 ? "border-b border-border" : "";
+                  return selectMode ? (
+                    <button
+                      key={card.id}
+                      type="button"
+                      className={`block w-full text-left ${divider}`}
+                      onClick={() => toggleSelect(card.id)}
+                    >
+                      <CardListItem
+                        word={card.word}
+                        meaning={card.meaning}
+                        status={mapCardStatus(state?.status, state?.interval)}
+                        showCheckbox
+                        checked={selectedIds.has(card.id)}
+                      />
+                    </button>
+                  ) : (
                     <Link
                       key={card.id}
                       to={`/deck/${deckId}/edit/${card.id}`}
-                      className={`block ${i < filteredCards.length - 1 ? "border-b border-border" : ""}`}
+                      className={`block ${divider}`}
                     >
                       <CardListItem
                         word={card.word}
@@ -398,7 +481,7 @@ export default function DeckPage() {
         )}
       </PageContent>
 
-      {totalCards > 0 && (
+      {totalCards > 0 && !selectMode && (
         <>
           <FAB
             onClick={() => setActionSheetOpen((v) => !v)}
@@ -410,6 +493,19 @@ export default function DeckPage() {
             items={actionSheetItems}
           />
         </>
+      )}
+
+      {selectMode && (
+        <div className="fixed bottom-0 left-0 right-0 p-4 pb-[calc(16px+env(safe-area-inset-bottom))] bg-bg-base border-t border-border z-50">
+          <Button
+            variant="destructive"
+            className="w-full"
+            disabled={selectedIds.size === 0}
+            onClick={() => setBulkDeleteOpen(true)}
+          >
+            {selectedIds.size > 0 ? `${selectedIds.size}장 삭제` : "삭제"}
+          </Button>
+        </div>
       )}
 
       <SortSheet
@@ -438,6 +534,15 @@ export default function DeckPage() {
         description="이 카드뭉치와 포함된 모든 카드가 삭제됩니다. 되돌릴 수 없습니다."
         onConfirm={handleDelete}
         loading={deleteDeck.isPending}
+      />
+
+      <ConfirmDialog
+        open={bulkDeleteOpen}
+        onOpenChange={setBulkDeleteOpen}
+        title="카드 삭제"
+        description={`${selectedIds.size}장의 카드를 삭제합니다. 되돌릴 수 없습니다.`}
+        onConfirm={handleBulkDelete}
+        loading={deleteCards.isPending}
       />
 
       <PickerSheet

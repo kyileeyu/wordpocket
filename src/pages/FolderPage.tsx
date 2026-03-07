@@ -240,7 +240,7 @@ export default function FolderPage() {
         />
         {/* Stats */}
         <div className="flex gap-[6px] flex-wrap">
-          <StatPill emoji="📖" value={totalDue} label="복습 대기" />
+          <StatPill emoji="📖" value={totalDue} label="학습 대기" />
           <StatPill emoji="📦" value={totalCards} label="전체 카드" />
         </div>
 
@@ -251,7 +251,7 @@ export default function FolderPage() {
               className="w-full"
               onClick={() => navigate(`/study/folder/${folderId}`)}
             >
-              ▶ 단어장 전체 복습 · {totalDue}장
+              ▶ 복습 시작 · {totalDue}장
             </Button>
           ) : (
             <NoReviewBanner />

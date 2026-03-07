@@ -59,8 +59,8 @@ export default function WordCard({ word, phonetic, meaning, example, synonyms, t
 
           {/* Example */}
           {example && (
-            <div className="typo-body-md text-text-tertiary mt-[10px] line-clamp-3">
-              "{example}"
+            <div className="typo-body-md text-text-tertiary mt-[10px] whitespace-pre-line">
+              {example}
             </div>
           )}
 
