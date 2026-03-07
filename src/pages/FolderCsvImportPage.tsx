@@ -69,6 +69,7 @@ export default function FolderCsvImportPage() {
           meaning: row.meaning,
           example: row.example || "",
           pronunciation: row.pronunciation || "",
+          synonyms: row.synonyms ? row.synonyms.split(";").map((s) => s.trim()) : [],
           tags: row.tags ? row.tags.split(";").map((t) => t.trim()) : [],
         }))
         const { error: cardErr } = await supabase.from("cards").insert(cardData)
@@ -106,6 +107,7 @@ export default function FolderCsvImportPage() {
                       <th className="typo-overline text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary whitespace-nowrap">뜻</th>
                       <th className="typo-overline text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary whitespace-nowrap">예문</th>
                       <th className="typo-overline text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary whitespace-nowrap">발음</th>
+                      <th className="typo-overline text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary whitespace-nowrap">유의어</th>
                       <th className="typo-overline text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary whitespace-nowrap">태그</th>
                       {hasDeckColumn && (
                         <th className="typo-overline text-text-secondary text-left p-[6px_8px] border-b border-text-tertiary whitespace-nowrap">카드뭉치</th>
@@ -119,6 +121,7 @@ export default function FolderCsvImportPage() {
                         <td className={`p-[6px_8px] ${i < preview.length - 1 ? "border-b border-border" : ""}`}>{row.meaning}</td>
                         <td className={`p-[6px_8px] ${i < preview.length - 1 ? "border-b border-border" : ""}`}>{row.example ?? ""}</td>
                         <td className={`p-[6px_8px] ${i < preview.length - 1 ? "border-b border-border" : ""}`}>{row.pronunciation ?? ""}</td>
+                        <td className={`p-[6px_8px] ${i < preview.length - 1 ? "border-b border-border" : ""}`}>{row.synonyms ?? ""}</td>
                         <td className={`p-[6px_8px] ${i < preview.length - 1 ? "border-b border-border" : ""}`}>{row.tags ?? ""}</td>
                         {hasDeckColumn && (
                           <td className={`p-[6px_8px] ${i < preview.length - 1 ? "border-b border-border" : ""}`}>{row.deck ?? ""}</td>
