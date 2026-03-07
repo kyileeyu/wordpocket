@@ -52,8 +52,9 @@ export default function StudyPage() {
   const [masteredCount, setMasteredCount] = useState(0)
   const [showExitDialog, setShowExitDialog] = useState(false)
   const [exitLoading, setExitLoading] = useState(false)
+  const [lapStartIndex, setLapStartIndex] = useState(0)
+  const [lapEndIndex, setLapEndIndex] = useState(0)
   const initialTotalRef = useRef(0)
-  const lapEndIndexRef = useRef(0)
 
   const reviewStartRef = useRef(Date.now())
   const newCountTrackedRef = useRef(false)
@@ -63,7 +64,7 @@ export default function StudyPage() {
       setWorkingQueue(queue)
       setNewCount(queue.filter((c) => c.queue_type === "new").length)
       initialTotalRef.current = queue.length
-      lapEndIndexRef.current = queue.length
+      setLapEndIndex(queue.length)
       newCountTrackedRef.current = true
     }
   }, [queue])
@@ -133,9 +134,10 @@ export default function StudyPage() {
 
     const nextIndex = index + 1
 
-    if (nextIndex >= lapEndIndexRef.current && nextIndex < nextQueue.length) {
+    if (nextIndex >= lapEndIndex && nextIndex < nextQueue.length) {
       setLapCount((c) => c + 1)
-      lapEndIndexRef.current = nextQueue.length
+      setLapStartIndex(lapEndIndex)
+      setLapEndIndex(nextQueue.length)
     }
 
     if (nextIndex >= nextQueue.length) {
@@ -149,7 +151,8 @@ export default function StudyPage() {
         setWorkingQueue(serverQueue)
         setIndex(0)
         setFlipped(false)
-        lapEndIndexRef.current = serverQueue.length
+        setLapStartIndex(0)
+        setLapEndIndex(serverQueue.length)
       } else {
         goToComplete(nextReviewed, nextCorrect, newCount)
       }
@@ -205,13 +208,17 @@ export default function StudyPage() {
         onLeftClick={handleExit}
         title={
           <span className="typo-mono-md text-text-secondary font-normal">
-            {masteredCount} / {initialTotal}
+            {index - lapStartIndex + 1} / {lapEndIndex - lapStartIndex}
             {lapCount > 0 && ` + 복습 ${["한", "두", "세", "네", "다섯"][lapCount - 1] ?? lapCount}바퀴`}
           </span>
         }
       />
 
-      <StudyProgress current={masteredCount} total={initialTotal} />
+      <StudyProgress
+        current={index - lapStartIndex + 1}
+        total={lapEndIndex - lapStartIndex}
+        lapCount={lapCount}
+      />
 
       <PageContent className="flex-1 flex flex-col items-center justify-center pt-0">
         {card.last_reviewed_at && (
