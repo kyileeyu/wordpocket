@@ -49,13 +49,10 @@ export default function StudyPage() {
   const [correctCount, setCorrectCount] = useState(0)
   const [newCount, setNewCount] = useState(0)
   const [lapCount, setLapCount] = useState(0)
-  const [masteredCount, setMasteredCount] = useState(0)
   const [showExitDialog, setShowExitDialog] = useState(false)
   const [exitLoading, setExitLoading] = useState(false)
   const [lapStartIndex, setLapStartIndex] = useState(0)
   const [lapEndIndex, setLapEndIndex] = useState(0)
-  const initialTotalRef = useRef(0)
-
   const reviewStartRef = useRef(Date.now())
   const newCountTrackedRef = useRef(false)
 
@@ -63,7 +60,6 @@ export default function StudyPage() {
     if (queue && queue.length > 0 && !newCountTrackedRef.current) {
       setWorkingQueue(queue)
       setNewCount(queue.filter((c) => c.queue_type === "new").length)
-      initialTotalRef.current = queue.length
       setLapEndIndex(queue.length)
       newCountTrackedRef.current = true
     }
@@ -73,7 +69,6 @@ export default function StudyPage() {
     reviewStartRef.current = Date.now()
   }, [index])
 
-  const initialTotal = initialTotalRef.current || (queue?.length ?? 0)
   const card = workingQueue[index]
 
   const intervals = useMemo(() => {
@@ -122,10 +117,6 @@ export default function StudyPage() {
     setCorrectCount(nextCorrect)
 
     batch.addReview(card.card_id, rating, reviewDuration)
-
-    if (rating === "good" || rating === "easy") {
-      setMasteredCount((c) => c + 1)
-    }
 
     let nextQueue = [...workingQueue]
     if (rating === "again" || rating === "hard") {
