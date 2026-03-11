@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
@@ -30,6 +30,7 @@ interface CardFormProps {
 
 export default function CardForm({ initialData, onSubmit, loading }: CardFormProps) {
   const [form, setForm] = useState<CardFormData>(empty)
+  const wordInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (initialData) {
@@ -62,9 +63,11 @@ export default function CardForm({ initialData, onSubmit, loading }: CardFormPro
         <div>
           <Label>앞(단어/표현) *</Label>
           <Input
+            ref={wordInputRef}
             placeholder="ubiquitous 또는 I'll have..."
             className="font-display text-[16px] py-[14px]"
             autoCapitalize="none"
+            autoFocus
             value={form.word}
             onChange={set("word")}
             disabled={loading}
