@@ -29,6 +29,10 @@
   --color-danger: #E55B5B;
   --color-danger-bg: #FDECEC;
 
+  /* Warning (amber) */
+  --color-warning: #E5A04B;
+  --color-warning-bg: #FDF3E8;
+
   /* Again (rose) */
   --color-again: #E55B7A;
   --color-again-bg: #FDE8EE;

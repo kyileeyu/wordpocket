@@ -40,14 +40,14 @@ import { useStudyQueue, useReviewOnlyQueue } from "@/hooks/useStudy";
 import { mapCardStatus } from "@/lib/utils";
 import { toast } from "sonner";
 
-const STATUS_ORDER: Record<string, number> = { new: 0, learning: 1, review: 2 };
+const DISPLAY_STATUS_ORDER: Record<string, number> = { unknown: 0, learning: 1, upcoming: 2, memorized: 3 };
 
 const SORT_OPTIONS = [
   { value: "created", label: "추가일순", description: "최신 먼저" },
   {
     value: "status",
     label: "상태순",
-    description: "새 단어 → 학습중 → 암기 완료",
+    description: "모름 → 배우는중 → 복습예정 → 암기완료",
   },
   { value: "alpha", label: "알파벳순", description: "A → Z" },
   { value: "due", label: "복습일순", description: "오래된 먼저" },
@@ -138,12 +138,15 @@ export default function DeckPage() {
       : [...cards];
 
     switch (sortKey) {
-      case "status":
-        return base.sort(
-          (a, b) =>
-            (STATUS_ORDER[a.card_states?.[0]?.status ?? "new"] ?? 0) -
-            (STATUS_ORDER[b.card_states?.[0]?.status ?? "new"] ?? 0),
-        );
+      case "status": {
+        return base.sort((a, b) => {
+          const sa = a.card_states?.[0];
+          const sb = b.card_states?.[0];
+          const oa = DISPLAY_STATUS_ORDER[mapCardStatus(sa?.status, sa?.interval, sa?.step_index)] ?? 0;
+          const ob = DISPLAY_STATUS_ORDER[mapCardStatus(sb?.status, sb?.interval, sb?.step_index)] ?? 0;
+          return oa - ob;
+        });
+      }
       case "alpha":
         return base.sort((a, b) => a.word.localeCompare(b.word));
       case "created":
@@ -166,8 +169,9 @@ export default function DeckPage() {
   }, [cards, selectedTag, sortKey]);
 
   const progress = deckProgress?.find((d) => d.deck_id === deckId);
-  const newCount = progress?.new_count ?? 0;
+  const unknownCount = progress?.unknown_count ?? 0;
   const learningCount = progress?.learning_count ?? 0;
+  const upcomingCount = progress?.upcoming_count ?? 0;
   const memorizedCount = progress?.memorized_count ?? 0;
   const totalCards = progress?.total_cards ?? 0;
 
@@ -322,16 +326,18 @@ export default function DeckPage() {
           <>
             {/* Stat Boxes */}
             <div className="flex gap-[6px]">
-              <StatBox value={newCount} label="새 단어" />
-              <StatBox value={learningCount} label="학습중" />
-              <StatBox value={memorizedCount} label="암기 완료" />
+              <StatBox value={unknownCount} label="모름" />
+              <StatBox value={learningCount} label="배우는중" />
+              <StatBox value={upcomingCount} label="복습예정" />
+              <StatBox value={memorizedCount} label="암기완료" />
             </div>
 
             {/* Segmented Progress */}
             <SegmentedProgress
               segments={[
-                { value: newCount, color: "#D4CEFA" },
-                { value: learningCount, color: "#A99BF0" },
+                { value: unknownCount, color: "#E57373" },
+                { value: learningCount, color: "#FFB74D" },
+                { value: upcomingCount, color: "#A99BF0" },
                 { value: memorizedCount, color: "#7C6CE7" },
               ]}
             />
@@ -397,7 +403,7 @@ export default function DeckPage() {
                       <CardListItem
                         word={card.word}
                         meaning={card.meaning}
-                        status={mapCardStatus(state?.status, state?.interval)}
+                        status={mapCardStatus(state?.status, state?.interval, state?.step_index)}
                         showCheckbox
                         checked={selectedIds.has(card.id)}
                       />
@@ -411,7 +417,7 @@ export default function DeckPage() {
                       <CardListItem
                         word={card.word}
                         meaning={card.meaning}
-                        status={mapCardStatus(state?.status, state?.interval)}
+                        status={mapCardStatus(state?.status, state?.interval, state?.step_index)}
                       />
                     </Link>
                   );

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react"
 import { useParams, useNavigate, useSearchParams } from "react-router"
+import { Pencil } from "lucide-react"
 import TopBar from "@/components/navigation/TopBar"
 import StudyProgress from "@/components/study/StudyProgress"
 import { WordCard } from "@/components/cards"
@@ -10,6 +11,7 @@ import PageContent from "@/components/layouts/PageContent"
 import { useStudyQueue, useReviewOnlyQueue, useFolderReviewQueue, useReviewBatch } from "@/hooks/useStudy"
 import ConfirmDialog from "@/components/feedback/ConfirmDialog"
 import { cn, timeAgo, computeIntervals } from "@/lib/utils"
+import { supabase } from "@/lib/supabase"
 
 interface StudyCard {
   card_id: string
@@ -86,6 +88,27 @@ export default function StudyPage() {
       state: { reviewed, correct, newCount: newCards, deckId, folderId },
     })
   }, [navigate, deckId, folderId])
+
+  const handleEdit = useCallback(async () => {
+    if (!card) return
+    // 수정 전 배치 저장
+    if (batch.getPendingCount() > 0) {
+      try { await batch.flush() } catch { /* noop */ }
+    }
+    if (deckId) {
+      navigate(`/deck/${deckId}/edit/${card.card_id}`)
+    } else {
+      // 폴더 모드: card_id로 deck_id 조회
+      const { data } = await supabase
+        .from("cards")
+        .select("deck_id")
+        .eq("id", card.card_id)
+        .single()
+      if (data) {
+        navigate(`/deck/${data.deck_id}/edit/${card.card_id}`)
+      }
+    }
+  }, [card, deckId, batch, navigate])
 
   const handleExit = useCallback(async () => {
     if (batch.getPendingCount() === 0) {
@@ -202,6 +225,14 @@ export default function StudyPage() {
             {index - lapStartIndex + 1} / {lapEndIndex - lapStartIndex}
             {lapCount > 0 && ` + 복습 ${["한", "두", "세", "네", "다섯"][lapCount - 1] ?? lapCount}바퀴`}
           </span>
+        }
+        right={
+          <button
+            onClick={handleEdit}
+            className="w-11 h-11 rounded-full bg-bg-subtle flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors"
+          >
+            <Pencil className="w-[18px] h-[18px]" />
+          </button>
         }
       />
 

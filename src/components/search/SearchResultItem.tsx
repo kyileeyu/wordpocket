@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge"
 import { mapCardStatus } from "@/lib/utils"
+import type { CardDisplayStatus } from "@/lib/utils"
 
 interface SearchResultItemProps {
   word: string
@@ -8,15 +9,17 @@ interface SearchResultItemProps {
   folderName: string | null
   status: "new" | "learning" | "review"
   interval?: number
+  stepIndex?: number
   query: string
   onClick: () => void
 }
 
-const statusLabel = {
-  new: "새 단어",
-  learning: "학습중",
-  memorized: "암기 완료",
-} as const
+const statusLabel: Record<CardDisplayStatus, string> = {
+  unknown: "모름",
+  learning: "배우는중",
+  upcoming: "복습예정",
+  memorized: "암기완료",
+}
 
 function highlightMatch(text: string, query: string) {
   if (!query) return text
@@ -41,11 +44,12 @@ export default function SearchResultItem({
   folderName,
   status,
   interval,
+  stepIndex,
   query,
   onClick,
 }: SearchResultItemProps) {
   const location = folderName ? `${folderName} · ${deckName}` : deckName
-  const mappedStatus = mapCardStatus(status, interval)
+  const mappedStatus = mapCardStatus(status, interval, stepIndex)
 
   return (
     <button

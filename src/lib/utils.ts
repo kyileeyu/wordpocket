@@ -5,15 +5,23 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-const MEMORIZED_INTERVAL_THRESHOLD = 21
+const MEMORIZED_INTERVAL_THRESHOLD = 7
+
+export type CardDisplayStatus = "unknown" | "learning" | "upcoming" | "memorized"
 
 export function mapCardStatus(
   dbStatus: string | undefined,
   interval: number | undefined,
-): "new" | "learning" | "memorized" {
-  if (dbStatus === "review" && (interval ?? 0) >= MEMORIZED_INTERVAL_THRESHOLD) return "memorized"
-  if (dbStatus === "learning" || dbStatus === "review") return "learning"
-  return "new"
+  stepIndex: number | undefined,
+): CardDisplayStatus {
+  if (!dbStatus || dbStatus === "new") return "unknown"
+  if (dbStatus === "learning") {
+    return (stepIndex ?? 0) === 0 ? "unknown" : "learning"
+  }
+  if (dbStatus === "review") {
+    return (interval ?? 0) >= MEMORIZED_INTERVAL_THRESHOLD ? "memorized" : "upcoming"
+  }
+  return "unknown"
 }
 
 export function formatInterval(days: number): string {

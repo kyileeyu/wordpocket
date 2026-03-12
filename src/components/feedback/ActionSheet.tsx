@@ -44,10 +44,16 @@ export default function ActionSheet({ open, onClose, items }: ActionSheetProps) 
         onClick={handleClose}
       />
 
-      {/* Floating menu — positioned above FAB */}
+      {/* Floating menu — positioned above FAB, centered to content area */}
+      <div className="absolute inset-0 flex justify-center pointer-events-none">
       <div
         className={cn(
-          "absolute bottom-[132px] right-5 rounded-[16px] bg-bg-elevated shadow-lg py-2 px-1 min-w-[200px] transition-all duration-150 origin-bottom-right",
+          "relative w-full max-w-[480px] sm:max-w-[640px] lg:max-w-[768px] pointer-events-none",
+        )}
+      >
+      <div
+        className={cn(
+          "absolute bottom-[calc(env(safe-area-inset-bottom)+180px)] right-5 rounded-[16px] bg-bg-elevated shadow-lg py-2 px-1 min-w-[200px] transition-all duration-150 origin-bottom-right pointer-events-auto",
           visible ? "opacity-100 scale-100" : "opacity-0 scale-90",
         )}
       >
@@ -64,6 +70,8 @@ export default function ActionSheet({ open, onClose, items }: ActionSheetProps) 
             <span className="typo-body-md text-text-primary">{item.label}</span>
           </button>
         ))}
+      </div>
+      </div>
       </div>
     </div>,
     document.body,

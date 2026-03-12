@@ -1,20 +1,22 @@
 import { Badge } from "@/components/ui/badge"
 import { Check } from "lucide-react"
 import { cn } from "@/lib/utils"
+import type { CardDisplayStatus } from "@/lib/utils"
 
 interface CardListItemProps {
   word: string
   meaning: string
-  status: "new" | "learning" | "memorized"
+  status: CardDisplayStatus
   showCheckbox?: boolean
   checked?: boolean
 }
 
-const statusLabel = {
-  new: "새 단어",
-  learning: "학습중",
-  memorized: "암기 완료",
-} as const
+const statusLabel: Record<CardDisplayStatus, string> = {
+  unknown: "모름",
+  learning: "배우는중",
+  upcoming: "복습예정",
+  memorized: "암기완료",
+}
 
 export default function CardListItem({ word, meaning, status, showCheckbox, checked }: CardListItemProps) {
   return (

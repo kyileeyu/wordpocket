@@ -309,8 +309,8 @@ export type Database = {
           folder_id: string
           learning_count: number
           memorized_count: number
-          new_count: number
-          review_count: number
+          unknown_count: number
+          upcoming_count: number
           suspended_count: number
           total_cards: number
         }[]
