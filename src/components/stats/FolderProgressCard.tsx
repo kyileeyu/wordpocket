@@ -8,8 +8,9 @@ interface Deck {
   deck_id: string
   deck_name: string
   total_cards: number
-  new_count: number
+  unknown_count: number
   learning_count: number
+  upcoming_count: number
   memorized_count: number
 }
 
@@ -22,8 +23,9 @@ export default function FolderProgressCard({ name, decks }: FolderProgressCardPr
   const [isExpanded, setIsExpanded] = useState(false)
 
   const totalCards = decks.reduce((sum, d) => sum + d.total_cards, 0)
-  const totalNew = decks.reduce((sum, d) => sum + d.new_count, 0)
+  const totalUnknown = decks.reduce((sum, d) => sum + d.unknown_count, 0)
   const totalLearning = decks.reduce((sum, d) => sum + d.learning_count, 0)
+  const totalUpcoming = decks.reduce((sum, d) => sum + d.upcoming_count, 0)
   const totalMemorized = decks.reduce((sum, d) => sum + (d.memorized_count ?? 0), 0)
   const memorizedPercent = totalCards > 0 ? Math.round((totalMemorized / totalCards) * 100) : 0
 
@@ -54,8 +56,9 @@ export default function FolderProgressCard({ name, decks }: FolderProgressCardPr
           <SegmentedProgress
             segments={[
               { value: totalMemorized, color: "#7C6CE7" },
-              { value: totalLearning, color: "#A99BF0" },
-              { value: totalNew, color: "#D4CEFA" },
+              { value: totalUpcoming, color: "#A99BF0" },
+              { value: totalLearning, color: "#FFB74D" },
+              { value: totalUnknown, color: "#E57373" },
             ]}
           />
         </div>
@@ -74,8 +77,9 @@ export default function FolderProgressCard({ name, decks }: FolderProgressCardPr
               key={deck.deck_id}
               name={deck.deck_name}
               totalCards={deck.total_cards}
-              newCount={deck.new_count}
+              unknownCount={deck.unknown_count}
               learningCount={deck.learning_count}
+              upcomingCount={deck.upcoming_count}
               memorizedCount={deck.memorized_count ?? 0}
             />
           ))}

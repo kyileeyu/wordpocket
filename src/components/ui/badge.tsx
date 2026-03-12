@@ -9,8 +9,9 @@ const badgeVariants = cva(
       variant: {
         default: "bg-accent-bg text-accent",
         muted: "bg-bg-subtle text-text-secondary",
-        new: "bg-accent-bg text-accent",
-        learning: "bg-bg-subtle text-text-secondary",
+        unknown: "bg-danger/10 text-danger",
+        learning: "bg-warning/10 text-warning",
+        upcoming: "bg-bg-subtle text-text-secondary",
         memorized: "bg-accent-bg text-accent",
       },
     },

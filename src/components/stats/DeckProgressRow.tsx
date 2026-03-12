@@ -4,16 +4,18 @@ import SegmentedLegend from "./SegmentedLegend"
 interface DeckProgressRowProps {
   name: string
   totalCards: number
-  newCount: number
+  unknownCount: number
   learningCount: number
+  upcomingCount: number
   memorizedCount: number
 }
 
 export default function DeckProgressRow({
   name,
   totalCards,
-  newCount,
+  unknownCount,
   learningCount,
+  upcomingCount,
   memorizedCount,
 }: DeckProgressRowProps) {
   return (
@@ -25,14 +27,16 @@ export default function DeckProgressRow({
       <SegmentedProgress
         segments={[
           { value: memorizedCount, color: "#7C6CE7" },
-          { value: learningCount, color: "#A99BF0" },
-          { value: newCount, color: "#D4CEFA" },
+          { value: upcomingCount, color: "#A99BF0" },
+          { value: learningCount, color: "#FFB74D" },
+          { value: unknownCount, color: "#E57373" },
         ]}
       />
       <div className="mt-[6px]">
         <SegmentedLegend
-          newCount={newCount}
+          unknownCount={unknownCount}
           learningCount={learningCount}
+          upcomingCount={upcomingCount}
           memorizedCount={memorizedCount}
         />
       </div>

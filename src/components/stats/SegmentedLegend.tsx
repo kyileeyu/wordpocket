@@ -1,17 +1,19 @@
 interface SegmentedLegendProps {
-  newCount: number
+  unknownCount: number
   learningCount: number
+  upcomingCount: number
   memorizedCount: number
 }
 
 const LEGEND_ITEMS = [
-  { key: "new", label: "새 단어", color: "#D4CEFA" },
-  { key: "learning", label: "학습중", color: "#A99BF0" },
-  { key: "memorized", label: "암기 완료", color: "#7C6CE7" },
+  { key: "unknown", label: "모름", color: "#E57373" },
+  { key: "learning", label: "배우는중", color: "#FFB74D" },
+  { key: "upcoming", label: "복습예정", color: "#A99BF0" },
+  { key: "memorized", label: "암기완료", color: "#7C6CE7" },
 ] as const
 
-export default function SegmentedLegend({ newCount, learningCount, memorizedCount }: SegmentedLegendProps) {
-  const counts = [newCount, learningCount, memorizedCount]
+export default function SegmentedLegend({ unknownCount, learningCount, upcomingCount, memorizedCount }: SegmentedLegendProps) {
+  const counts = [unknownCount, learningCount, upcomingCount, memorizedCount]
 
   return (
     <div className="flex items-center gap-3">
