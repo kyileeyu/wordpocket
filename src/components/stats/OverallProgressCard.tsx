@@ -3,15 +3,17 @@ import SegmentedLegend from "./SegmentedLegend"
 
 interface OverallProgressCardProps {
   totalCards: number
-  newCount: number
+  unknownCount: number
   learningCount: number
+  upcomingCount: number
   memorizedCount: number
 }
 
 export default function OverallProgressCard({
   totalCards,
-  newCount,
+  unknownCount,
   learningCount,
+  upcomingCount,
   memorizedCount,
 }: OverallProgressCardProps) {
   return (
@@ -22,15 +24,17 @@ export default function OverallProgressCard({
       </div>
       <SegmentedProgress
         segments={[
-          { value: newCount, color: "#D4CEFA" },
-          { value: learningCount, color: "#A99BF0" },
+          { value: unknownCount, color: "#E57373" },
+          { value: learningCount, color: "#FFB74D" },
+          { value: upcomingCount, color: "#A99BF0" },
           { value: memorizedCount, color: "#7C6CE7" },
         ]}
       />
       <div className="mt-[6px]">
         <SegmentedLegend
-          newCount={newCount}
+          unknownCount={unknownCount}
           learningCount={learningCount}
+          upcomingCount={upcomingCount}
           memorizedCount={memorizedCount}
         />
       </div>
