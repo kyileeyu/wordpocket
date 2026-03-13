@@ -69,7 +69,7 @@ export default function LoginPage() {
           </div>
 
           <div className="text-right">
-            <span className="typo-caption text-text-secondary cursor-pointer hover:text-text-primary transition-colors">비밀번호를 잊으셨나요?</span>
+            <Link to="/forgot-password" className="typo-caption text-text-secondary hover:text-text-primary transition-colors">비밀번호를 잊으셨나요?</Link>
           </div>
 
           <Button type="submit" className="w-full" disabled={loading}>

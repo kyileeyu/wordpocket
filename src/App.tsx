@@ -11,7 +11,6 @@ const queryClient = new QueryClient()
 export default function App() {
   const initialize = useAuthStore((s) => s.initialize)
   const initializePwa = usePwaStore((s) => s.initialize)
-
   useEffect(() => {
     initialize()
     initializePwa()

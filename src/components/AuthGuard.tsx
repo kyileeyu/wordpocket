@@ -3,7 +3,7 @@ import { useAuthStore } from '@/stores/authStore';
 
 /** 인증된 사용자만 접근 가능한 라우트를 보호한다. */
 export default function AuthGuard() {
-  const { user, initialized } = useAuthStore();
+  const { user, initialized, passwordRecovery } = useAuthStore();
 
   if (!initialized) {
     return (
@@ -11,6 +11,10 @@ export default function AuthGuard() {
         <div className="text-text-secondary text-sm">로딩 중...</div>
       </div>
     );
+  }
+
+  if (passwordRecovery) {
+    return <Navigate to="/reset-password/update" replace />;
   }
 
   if (!user) {

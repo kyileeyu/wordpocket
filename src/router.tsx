@@ -8,6 +8,9 @@ import {
   LoginPage,
   SignupPage,
   VerifyPage,
+  ForgotPasswordPage,
+  ResetPasswordPage,
+  ChangePasswordPage,
   HomePage,
   FolderPage,
   DeckPage,
@@ -22,6 +25,13 @@ import {
 } from "@/pages"
 
 export const router = createBrowserRouter([
+  // Password reset (accessible with PASSWORD_RECOVERY session)
+  {
+    element: <AuthShell />,
+    children: [
+      { path: "/reset-password/update", element: <ResetPasswordPage /> },
+    ],
+  },
   // Guest-only routes (redirect to / if already logged in)
   {
     element: <GuestGuard />,
@@ -33,6 +43,7 @@ export const router = createBrowserRouter([
           { path: "/login", element: <LoginPage /> },
           { path: "/signup", element: <SignupPage /> },
           { path: "/verify", element: <VerifyPage /> },
+          { path: "/forgot-password", element: <ForgotPasswordPage /> },
         ],
       },
     ],
@@ -63,6 +74,7 @@ export const router = createBrowserRouter([
           { path: "/study/folder/:folderId", element: <StudyPage /> },
           { path: "/study/:deckId", element: <StudyPage /> },
           { path: "/study/complete", element: <CompletePage /> },
+          { path: "/change-password", element: <ChangePasswordPage /> },
         ],
       },
     ],
