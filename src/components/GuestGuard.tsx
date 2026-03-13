@@ -3,7 +3,7 @@ import { useAuthStore } from '@/stores/authStore';
 
 /** 이미 로그인된 사용자는 대시보드로 리다이렉트한다. */
 export default function GuestGuard() {
-  const { user, initialized } = useAuthStore();
+  const { user, initialized, passwordRecovery } = useAuthStore();
 
   if (!initialized) {
     return (
@@ -11,6 +11,10 @@ export default function GuestGuard() {
         <div className="text-text-secondary text-sm">로딩 중...</div>
       </div>
     );
+  }
+
+  if (passwordRecovery) {
+    return <Navigate to="/reset-password/update" replace />;
   }
 
   if (user) {

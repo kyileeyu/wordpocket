@@ -39,6 +39,7 @@ import { useCardsByDeck, useDeleteCards } from "@/hooks/useCards";
 import { useStudyQueue, useReviewOnlyQueue } from "@/hooks/useStudy";
 import { mapCardStatus } from "@/lib/utils";
 import { toast } from "sonner";
+import { downloadCsv } from "@/lib/csvExporter";
 
 const DISPLAY_STATUS_ORDER: Record<string, number> = { unknown: 0, learning: 1, upcoming: 2, memorized: 3 };
 
@@ -304,6 +305,14 @@ export default function DeckPage() {
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setMoveSheetOpen(true)}>
                     폴더 이동
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    disabled={totalCards === 0}
+                    onClick={() => {
+                      if (cards && deck) downloadCsv(cards, deck.name);
+                    }}
+                  >
+                    CSV 내보내기
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     className="text-danger"

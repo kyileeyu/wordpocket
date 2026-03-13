@@ -7,12 +7,15 @@ interface AuthState {
   session: Session | null;
   loading: boolean;
   initialized: boolean;
+  passwordRecovery: boolean;
 
   initialize: () => Promise<void>;
   signUp: (email: string, password: string) => Promise<{ error: string | null }>;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
   resendVerification: (email: string) => Promise<{ error: string | null }>;
+  resetPassword: (email: string) => Promise<{ error: string | null }>;
+  updatePassword: (password: string) => Promise<{ error: string | null }>;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -20,23 +23,19 @@ export const useAuthStore = create<AuthState>((set) => ({
   session: null,
   loading: false,
   initialized: false,
+  passwordRecovery: false,
 
   initialize: async () => {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    set({
-      session,
-      user: session?.user ?? null,
-      initialized: true,
-    });
-
-    supabase.auth.onAuthStateChange((_event, session) => {
+    // 리스너를 먼저 등록해야 PASSWORD_RECOVERY 등 초기 이벤트를 놓치지 않음
+    supabase.auth.onAuthStateChange((event, session) => {
       set({
         session,
         user: session?.user ?? null,
+        initialized: true,
       });
+      if (event === 'PASSWORD_RECOVERY') {
+        set({ passwordRecovery: true });
+      }
     });
   },
 
@@ -71,6 +70,22 @@ export const useAuthStore = create<AuthState>((set) => ({
       options: { emailRedirectTo: window.location.origin },
     });
     set({ loading: false });
+    return { error: error?.message ?? null };
+  },
+
+  resetPassword: async (email) => {
+    set({ loading: true });
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password/update`,
+    });
+    set({ loading: false });
+    return { error: error?.message ?? null };
+  },
+
+  updatePassword: async (password) => {
+    set({ loading: true });
+    const { error } = await supabase.auth.updateUser({ password });
+    set({ loading: false, passwordRecovery: false });
     return { error: error?.message ?? null };
   },
 }));

@@ -85,7 +85,11 @@ export default function SettingsPage() {
       {/* Account Section */}
       <div>
         <Label>계정</Label>
-        <SettingsRow label="비밀번호 변경" chevron />
+        <SettingsRow
+          label="비밀번호 변경"
+          chevron
+          onPress={() => navigate("/change-password")}
+        />
         <SettingsRow label="로그아웃" danger noBorder onPress={handleSignOut} />
       </div>
 

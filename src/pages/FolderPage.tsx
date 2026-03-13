@@ -55,6 +55,10 @@ import {
   useCreateDeck,
   useReorderDecks,
 } from "@/hooks/useDecks";
+import { supabase } from "@/lib/supabase";
+import { downloadCsv } from "@/lib/csvExporter";
+import type { ExportableCard } from "@/lib/csvExporter";
+import { toast } from "sonner";
 
 const STRIPE_COLOR = "#7C6CE7";
 
@@ -174,6 +178,35 @@ export default function FolderPage() {
     });
   };
 
+  const handleExportCsv = async () => {
+    if (!decks || decks.length === 0) return;
+    const deckIds = decks.map((d) => d.id);
+    const PAGE_SIZE = 1000;
+    let allCards: { word: string; meaning: string; example: string | null; pronunciation: string | null; synonyms: string[] | null; tags: string[] | null; deck_id: string }[] = [];
+    let from = 0;
+    while (true) {
+      const { data, error } = await supabase
+        .from("cards")
+        .select("word, meaning, example, pronunciation, synonyms, tags, deck_id")
+        .in("deck_id", deckIds)
+        .order("created_at", { ascending: false })
+        .range(from, from + PAGE_SIZE - 1);
+      if (error) {
+        toast.error("카드를 불러오지 못했습니다");
+        return;
+      }
+      allCards = allCards.concat(data);
+      if (data.length < PAGE_SIZE) break;
+      from += PAGE_SIZE;
+    }
+    const deckNameMap = new Map(decks.map((d) => [d.id, d.name]));
+    const exportCards: ExportableCard[] = allCards.map((c) => ({
+      ...c,
+      deckName: deckNameMap.get(c.deck_id) ?? "",
+    }));
+    downloadCsv(exportCards, folder?.name ?? "export", true);
+  };
+
   const handleDragStart = (event: DragStartEvent) => {
     setActiveDeckId(event.active.id as string);
   };
@@ -226,6 +259,12 @@ export default function FolderPage() {
                   )}
                   <DropdownMenuItem onClick={() => setRenameOpen(true)}>
                     이름 편집
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    disabled={totalCards === 0}
+                    onClick={handleExportCsv}
+                  >
+                    CSV 내보내기
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     className="text-danger"
