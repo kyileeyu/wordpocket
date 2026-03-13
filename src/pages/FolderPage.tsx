@@ -181,17 +181,26 @@ export default function FolderPage() {
   const handleExportCsv = async () => {
     if (!decks || decks.length === 0) return;
     const deckIds = decks.map((d) => d.id);
-    const { data: cards, error } = await supabase
-      .from("cards")
-      .select("word, meaning, example, pronunciation, synonyms, tags, deck_id")
-      .in("deck_id", deckIds)
-      .order("created_at", { ascending: false });
-    if (error) {
-      toast.error("카드를 불러오지 못했습니다");
-      return;
+    const PAGE_SIZE = 1000;
+    let allCards: { word: string; meaning: string; example: string | null; pronunciation: string | null; synonyms: string[] | null; tags: string[] | null; deck_id: string }[] = [];
+    let from = 0;
+    while (true) {
+      const { data, error } = await supabase
+        .from("cards")
+        .select("word, meaning, example, pronunciation, synonyms, tags, deck_id")
+        .in("deck_id", deckIds)
+        .order("created_at", { ascending: false })
+        .range(from, from + PAGE_SIZE - 1);
+      if (error) {
+        toast.error("카드를 불러오지 못했습니다");
+        return;
+      }
+      allCards = allCards.concat(data);
+      if (data.length < PAGE_SIZE) break;
+      from += PAGE_SIZE;
     }
     const deckNameMap = new Map(decks.map((d) => [d.id, d.name]));
-    const exportCards: ExportableCard[] = cards.map((c) => ({
+    const exportCards: ExportableCard[] = allCards.map((c) => ({
       ...c,
       deckName: deckNameMap.get(c.deck_id) ?? "",
     }));
