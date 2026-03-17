@@ -26,6 +26,7 @@ import { StatPill } from "@/components/stats";
 import { DeckCard } from "@/components/cards";
 import FAB from "@/components/feedback/FAB";
 import NoReviewBanner from "@/components/feedback/NoReviewBanner";
+import RangePickerSheet from "@/components/feedback/RangePickerSheet";
 import ActionSheet from "@/components/feedback/ActionSheet";
 import EmptyState from "@/components/feedback/EmptyState";
 import InputDialog from "@/components/feedback/InputDialog";
@@ -117,6 +118,7 @@ export default function FolderPage() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [reorderMode, setReorderMode] = useState(false);
   const [activeDeckId, setActiveDeckId] = useState<string | null>(null);
+  const [rangeSheetOpen, setRangeSheetOpen] = useState(false);
 
   const folder = folders?.find((f) => f.id === folderId);
 
@@ -286,12 +288,23 @@ export default function FolderPage() {
         {/* Review CTA */}
         {totalCards > 0 &&
           (totalDue > 0 ? (
-            <Button
-              className="w-full"
-              onClick={() => navigate(`/study/folder/${folderId}`)}
-            >
-              ▶ 복습 시작 · {totalDue}장
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                className="flex-1 min-w-0"
+                onClick={() => navigate(`/study/folder/${folderId}`)}
+              >
+                ▶ 복습 시작 · {totalDue}장
+              </Button>
+              {decks && decks.length > 1 && (
+                <Button
+                  variant="outline"
+                  className="flex-1 min-w-0"
+                  onClick={() => setRangeSheetOpen(true)}
+                >
+                  구간 복습
+                </Button>
+              )}
+            </div>
           ) : (
             <NoReviewBanner />
           ))}
@@ -410,6 +423,22 @@ export default function FolderPage() {
         onConfirm={handleDelete}
         loading={deleteFolder.isPending}
       />
+
+      {decks && decks.length > 1 && (
+        <RangePickerSheet
+          open={rangeSheetOpen}
+          onClose={() => setRangeSheetOpen(false)}
+          decks={decks.map((d) => ({ id: d.id, name: d.name }))}
+          deckDueMap={deckDueMap}
+          onConfirm={(fromIdx, toIdx) => {
+            const selectedIds = decks
+              .slice(fromIdx, toIdx + 1)
+              .map((d) => d.id)
+              .join(",");
+            navigate(`/study/folder/${folderId}?deckIds=${selectedIds}`);
+          }}
+        />
+      )}
     </>
   );
 }

@@ -34,6 +34,22 @@ export function useFolderReviewQueue(folderId: string, enabled = true) {
   })
 }
 
+export function useRangeReviewQueue(deckIds: string[], enabled = true) {
+  return useQuery({
+    queryKey: ["range-review-queue", deckIds],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("get_range_review_queue", {
+        p_deck_ids: deckIds,
+        p_limit: 200,
+      })
+      if (error) throw error
+      return data
+    },
+    staleTime: 0,
+    enabled: enabled && deckIds.length > 0,
+  })
+}
+
 export function useReviewOnlyQueue(deckId: string, enabled: boolean) {
   return useQuery({
     queryKey: ["review-only-queue", deckId],
@@ -90,6 +106,7 @@ export function useReviewBatch() {
     qc.invalidateQueries({ queryKey: ["deck-progress"] })
     qc.invalidateQueries({ queryKey: ["today-stats"] })
     qc.invalidateQueries({ queryKey: ["folder-review-queue"] })
+    qc.invalidateQueries({ queryKey: ["range-review-queue"] })
   }, [qc])
 
   const getPendingCount = useCallback(() => pendingCountRef.current, [])

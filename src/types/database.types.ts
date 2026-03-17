@@ -309,10 +309,10 @@ export type Database = {
           folder_id: string
           learning_count: number
           memorized_count: number
-          unknown_count: number
-          upcoming_count: number
           suspended_count: number
           total_cards: number
+          unknown_count: number
+          upcoming_count: number
         }[]
       }
       get_folder_review_queue: {
@@ -347,6 +347,26 @@ export type Database = {
         Returns: {
           date: string
           memorized_count: number
+        }[]
+      }
+      get_range_review_queue: {
+        Args: { p_deck_ids: string[]; p_limit?: number }
+        Returns: {
+          card_id: string
+          due_date: string
+          ease_factor: number
+          example: string
+          interval: number
+          lapse_count: number
+          last_reviewed_at: string
+          meaning: string
+          pronunciation: string
+          queue_type: string
+          status: string
+          step_index: number
+          synonyms: string[]
+          tags: string[]
+          word: string
         }[]
       }
       get_streak: { Args: never; Returns: Json }
@@ -526,9 +546,3 @@ export const Constants = {
     Enums: {},
   },
 } as const
-
-// Convenience type aliases (legacy compat)
-export type InsertDto<T extends keyof Database['public']['Tables']> =
-  Database['public']['Tables'][T]['Insert'];
-export type UpdateDto<T extends keyof Database['public']['Tables']> =
-  Database['public']['Tables'][T]['Update'];

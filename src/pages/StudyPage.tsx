@@ -8,7 +8,7 @@ import ResponseButtons from "@/components/study/ResponseButtons"
 import EmptyState from "@/components/feedback/EmptyState"
 import { Skeleton } from "@/components/ui/skeleton"
 import PageContent from "@/components/layouts/PageContent"
-import { useStudyQueue, useReviewOnlyQueue, useFolderReviewQueue, useReviewBatch } from "@/hooks/useStudy"
+import { useStudyQueue, useReviewOnlyQueue, useFolderReviewQueue, useRangeReviewQueue, useReviewBatch } from "@/hooks/useStudy"
 import ConfirmDialog from "@/components/feedback/ConfirmDialog"
 import { cn, timeAgo, computeIntervals } from "@/lib/utils"
 import { supabase } from "@/lib/supabase"
@@ -36,12 +36,16 @@ export default function StudyPage() {
   const [searchParams] = useSearchParams()
   const mode = searchParams.get("mode")
   const isReviewMode = mode === "review"
+  const deckIdsParam = searchParams.get("deckIds")
+  const rangeDeckIds = useMemo(() => deckIdsParam ? deckIdsParam.split(",").filter(Boolean) : [], [deckIdsParam])
+  const isRangeMode = isFolderMode && rangeDeckIds.length > 0
   const { data: srsQueue, isLoading: srsLoading, refetch: srsRefetch } = useStudyQueue(deckId ?? "", !isFolderMode)
   const { data: reviewQueue, isLoading: reviewLoading, refetch: reviewRefetch } = useReviewOnlyQueue(deckId ?? "", isReviewMode && !isFolderMode)
-  const { data: folderQueue, isLoading: folderLoading, refetch: folderRefetch } = useFolderReviewQueue(folderId ?? "", isFolderMode)
-  const queue: StudyCard[] | undefined = isFolderMode ? folderQueue : isReviewMode ? reviewQueue : srsQueue
-  const isLoading = isFolderMode ? folderLoading : isReviewMode ? reviewLoading : srsLoading
-  const refetch = isFolderMode ? folderRefetch : isReviewMode ? reviewRefetch : srsRefetch
+  const { data: folderQueue, isLoading: folderLoading, refetch: folderRefetch } = useFolderReviewQueue(folderId ?? "", isFolderMode && !isRangeMode)
+  const { data: rangeQueue, isLoading: rangeLoading, refetch: rangeRefetch } = useRangeReviewQueue(rangeDeckIds, isRangeMode)
+  const queue: StudyCard[] | undefined = isRangeMode ? rangeQueue : isFolderMode ? folderQueue : isReviewMode ? reviewQueue : srsQueue
+  const isLoading = isRangeMode ? rangeLoading : isFolderMode ? folderLoading : isReviewMode ? reviewLoading : srsLoading
+  const refetch = isRangeMode ? rangeRefetch : isFolderMode ? folderRefetch : isReviewMode ? reviewRefetch : srsRefetch
   const batch = useReviewBatch()
 
   const [workingQueue, setWorkingQueue] = useState<StudyCard[]>([])
