@@ -223,11 +223,11 @@ Auth 가드: `_layout.tsx`에서 `useAuthStore` → `<Redirect>` 처리
 - [ ] 드래그 앤 드롭 정렬 (`react-native-draggable-flatlist`) - 추후 개선
 - [ ] 검색 오버레이 - 추후 개선
 
-### Phase 6: 학습 플로우 (5~6주)
-- WordCard 플립 애니메이션 (Reanimated)
-- ResponseButtons, StudyProgress, CompletePage
-- 발음 재생 (expo-av + expo-speech)
-- 학습 큐 + 배치 리뷰 제출
+### Phase 6: 학습 플로우 (5~6주) ✅
+- [x] WordCard 플립 (탭 기반)
+- [x] ResponseButtons, StudyProgress, CompletePage
+- [ ] 발음 재생 (expo-av + expo-speech) - 추후 개선
+- [x] 학습 큐 + 배치 리뷰 제출 + 폴더 학습
 
 ### Phase 7: 가져오기 기능 (6~7주)
 - CSV 가져오기 (expo-document-picker + csvParser 재사용)
