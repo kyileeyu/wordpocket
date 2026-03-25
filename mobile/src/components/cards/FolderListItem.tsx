@@ -16,8 +16,8 @@ export function FolderListItem({ id, emoji, name, deckCount, reviewCount }: Fold
   return (
     <Pressable
       onPress={() => router.push(`/(app)/folder/${id}`)}
-      className="flex-row items-center gap-3 bg-bg-elevated rounded-xl p-[14px] mb-[10px]"
-      style={shadows.soft}
+      className="flex-row items-center gap-3 bg-bg-elevated p-[14px] mb-[10px]"
+      style={[shadows.soft, { borderRadius: 20 }]}
     >
       <View
         className="w-9 h-9 rounded-icon items-center justify-center"

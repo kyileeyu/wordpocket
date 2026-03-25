@@ -1,9 +1,16 @@
 import React from "react";
-import { Pressable, Text, ActivityIndicator, type PressableProps } from "react-native";
+import { Pressable, Text, ActivityIndicator, type PressableProps, type StyleProp, type ViewStyle } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 import { gradients } from "@/lib/theme";
+
+const sizeStyles = {
+  default: { height: 48, paddingHorizontal: 16 },
+  sm: { height: 36, paddingHorizontal: 12 },
+  lg: { height: 52, paddingHorizontal: 16 },
+  icon: { height: 36, width: 36 },
+} as const;
 
 const buttonVariants = cva(
   "flex-row items-center justify-center gap-2 rounded-full",
@@ -17,16 +24,9 @@ const buttonVariants = cva(
         destructive: "bg-danger",
         outline: "border border-border bg-transparent",
       },
-      size: {
-        default: "h-12 px-4 py-3",
-        sm: "h-9 px-3",
-        lg: "h-[52px] px-4 py-[14px]",
-        icon: "h-9 w-9",
-      },
     },
     defaultVariants: {
       variant: "default",
-      size: "default",
     },
   }
 );
@@ -59,6 +59,7 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {
   children: React.ReactNode;
   loading?: boolean;
+  size?: "default" | "sm" | "lg" | "icon";
 }
 
 export function Button({
@@ -68,9 +69,12 @@ export function Button({
   loading = false,
   disabled,
   children,
+  style,
   ...props
 }: ButtonProps) {
   const isDisabled = disabled || loading;
+  const sizeStyle = sizeStyles[size ?? "default"];
+  const isFull = className?.includes("w-full");
 
   const content = (
     <>
@@ -89,14 +93,22 @@ export function Button({
     return (
       <Pressable
         disabled={isDisabled}
-        className={cn("rounded-full overflow-hidden", isDisabled && "opacity-50")}
+        className={cn(isDisabled && "opacity-50")}
+        style={[{ borderRadius: 9999, overflow: "hidden" }, sizeStyle, isFull && { width: "100%" }, style as StyleProp<ViewStyle>]}
         {...props}
       >
         <LinearGradient
           colors={[gradients.glass[0], gradients.glass[1]]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          className={cn(buttonVariants({ variant: "default", size }), className)}
+          style={{
+            flex: 1,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8,
+            borderRadius: 9999,
+          }}
         >
           {content}
         </LinearGradient>
@@ -108,10 +120,10 @@ export function Button({
     <Pressable
       disabled={isDisabled}
       className={cn(
-        buttonVariants({ variant, size }),
+        buttonVariants({ variant }),
         isDisabled && "opacity-50",
-        className,
       )}
+      style={[sizeStyle, { borderRadius: 9999 }, isFull && { width: "100%" }, style as StyleProp<ViewStyle>]}
       {...props}
     >
       {content}
