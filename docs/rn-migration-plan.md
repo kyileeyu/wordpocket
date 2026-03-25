@@ -200,12 +200,12 @@ Auth 가드: `_layout.tsx`에서 `useAuthStore` → `<Redirect>` 처리
 - [x] 커스텀 폰트 로딩 (Outfit, Pretendard)
 - [x] 테마 상수 파일 (색상, 그림자)
 
-### Phase 2: 데이터 레이어 (2~3주)
-- 모든 데이터 hooks 복사 및 검증
-- lib 유틸리티 복사 (csvParser, heatmap, utils)
-- useSearch의 localStorage → AsyncStorage 교체
-- QueryClientProvider 설정
-- Supabase RPC 호출 RN 환경 검증
+### Phase 2: 데이터 레이어 (2~3주) ✅
+- [x] 모든 데이터 hooks 복사 및 검증
+- [x] lib 유틸리티 복사 (csvParser, heatmap, utils)
+- [x] useSearch의 localStorage → AsyncStorage 교체
+- [x] QueryClientProvider 설정
+- [x] Supabase RPC 호출 RN 환경 검증
 
 ### Phase 3: 인증 플로우 (3주)
 - 인증 페이지 7개 구현

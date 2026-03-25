@@ -544,3 +544,9 @@ export const Constants = {
     Enums: {},
   },
 } as const
+
+export type InsertDto<T extends keyof DefaultSchema["Tables"]> =
+  DefaultSchema["Tables"][T] extends { Insert: infer I } ? I : never
+
+export type UpdateDto<T extends keyof DefaultSchema["Tables"]> =
+  DefaultSchema["Tables"][T] extends { Update: infer U } ? U : never
