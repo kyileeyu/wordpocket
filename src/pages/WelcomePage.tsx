@@ -19,9 +19,14 @@ export default function WelcomePage() {
   return (
     <div className="flex-1 flex flex-col justify-center px-8 bg-[linear-gradient(135deg,#7C6CE7_0%,#A99BF0_50%,#D4CEFA_100%)]">
       <div className="text-center mb-12">
-        <h1 className="typo-display-xl text-white mb-1">WordPocket</h1>
+        <img
+          src="/mascot.png"
+          alt="다외워봄 캐릭터"
+          className="w-40 h-40 mx-auto mb-4 drop-shadow-lg object-contain"
+        />
+        <h1 className="typo-display-xl text-white mb-1">다외워봄</h1>
         <p className="typo-body-md text-white/80">
-          단어를 주머니에 넣듯,<br />매일 조금씩 꺼내 익히세요.
+          두꺼운 단어장 대신,<br />어느새 다 외워봄.
         </p>
       </div>
       <div className="space-y-[10px]">

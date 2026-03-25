@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Image } from "react-native";
 import { router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { gradients } from "@/lib/theme";
@@ -13,11 +13,16 @@ export default function WelcomePage() {
       style={{ flex: 1, justifyContent: "center", paddingHorizontal: 32 }}
     >
       <View style={{ alignItems: "center", marginBottom: 48 }}>
+        <Image
+          source={require("@/assets/mascot.png")}
+          style={{ width: 160, height: 160, marginBottom: 16 }}
+          resizeMode="contain"
+        />
         <Text style={{ fontSize: 32, fontWeight: "700", color: "#fff", marginBottom: 4 }}>
-          WordPocket
+          다외워봄
         </Text>
         <Text style={{ fontSize: 13, color: "rgba(255,255,255,0.8)", textAlign: "center", lineHeight: 20 }}>
-          단어를 주머니에 넣듯,{"\n"}매일 조금씩 꺼내 익히세요.
+          두꺼운 단어장 대신,{"\n"}어느새 다 외워봄.
         </Text>
       </View>
 

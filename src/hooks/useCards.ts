@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { supabase } from "@/lib/supabase"
-import type { InsertDto, UpdateDto } from "@/types/database.types"
+import type { TablesInsert, TablesUpdate } from "@/types/database.types"
 
 export function useCardsByDeck(deckId: string) {
   return useQuery({
@@ -36,7 +36,7 @@ export function useCard(cardId: string | undefined) {
 export function useCreateCard() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: async (card: InsertDto<"cards">) => {
+    mutationFn: async (card: TablesInsert<"cards">) => {
       const { data, error } = await supabase
         .from("cards")
         .insert(card)
@@ -59,7 +59,7 @@ export function useUpdateCard() {
       id,
       deckId,
       ...updates
-    }: UpdateDto<"cards"> & { id: string; deckId: string }) => {
+    }: TablesUpdate<"cards"> & { id: string; deckId: string }) => {
       const { error } = await supabase
         .from("cards")
         .update(updates)

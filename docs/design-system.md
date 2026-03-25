@@ -1,4 +1,4 @@
-# WordPocket — Integrated Design System
+# 다외워봄 — Integrated Design System
 
 > Concept "Soft Focus" · v2.1
 
@@ -8,7 +8,7 @@
 
 **Core Metaphor:** 부드러운 초점 — 라벤더 모노크로매틱 톤 위에서 단어가 자연스럽게 떠오른다.
 
-WordPocket은 현대적이고 깔끔한 학습 도구다. 울트라 라운드 컴포넌트와 라벤더 팔레트가 편안한 학습 환경을 만든다. 모든 시각 요소는 "이 요소가 학습에 도움이 되는가?"라는 질문을 통과해야 한다.
+다외워봄은 현대적이고 깔끔한 학습 도구다. 울트라 라운드 컴포넌트와 라벤더 팔레트가 편안한 학습 환경을 만든다. 모든 시각 요소는 "이 요소가 학습에 도움이 되는가?"라는 질문을 통과해야 한다.
 
 ### Design Principles
 

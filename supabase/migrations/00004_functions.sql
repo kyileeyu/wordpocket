@@ -1,5 +1,5 @@
 -- ============================================
--- WordPocket: PostgreSQL RPC Functions
+-- 다외워봄: PostgreSQL RPC Functions
 -- ============================================
 
 -- ── get_study_queue: 학습 큐 조회 (학습중 > 복습 > 새카드) ──
