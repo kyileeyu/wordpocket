@@ -229,10 +229,11 @@ Auth 가드: `_layout.tsx`에서 `useAuthStore` → `<Redirect>` 처리
 - [ ] 발음 재생 (expo-av + expo-speech) - 추후 개선
 - [x] 학습 큐 + 배치 리뷰 제출 + 폴더 학습
 
-### Phase 7: 가져오기 기능 (6~7주)
-- CSV 가져오기 (expo-document-picker + csvParser 재사용)
-- 사진 가져오기 (expo-image-picker + expo-image-manipulator)
-- FullscreenViewer, CardDraftItem 스와이프
+### Phase 7: 가져오기 기능 (6~7주) ✅
+- [x] CSV 가져오기 (expo-document-picker + csvParser 재사용)
+- [x] 사진 가져오기 (expo-image-picker + Gemini AI 추출)
+- [x] 폴더 CSV 가져오기 (deck 열 기반 자동 카드뭉치 생성)
+- [ ] FullscreenViewer, CardDraftItem 스와이프 - 추후 개선
 
 ### Phase 8: 마무리 (7~8주)
 - 햅틱 피드백, 키보드 회피 처리
