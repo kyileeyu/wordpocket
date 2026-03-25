@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Image } from "react-native";
 import { router } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { gradients } from "@/lib/theme";
@@ -7,17 +7,30 @@ import { gradients } from "@/lib/theme";
 export default function WelcomePage() {
   return (
     <LinearGradient
-      colors={[gradients.brandVivid[0], gradients.brandVivid[1], gradients.brandVivid[2]]}
+      colors={[
+        gradients.brandVivid[0],
+        gradients.brandVivid[1],
+        gradients.brandVivid[2],
+      ]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={{ flex: 1, justifyContent: "center", paddingHorizontal: 32 }}
     >
       <View style={{ alignItems: "center", marginBottom: 48 }}>
-        <Text style={{ fontSize: 32, fontWeight: "700", color: "#fff", marginBottom: 4 }}>
-          WordPocket
-        </Text>
-        <Text style={{ fontSize: 13, color: "rgba(255,255,255,0.8)", textAlign: "center", lineHeight: 20 }}>
-          단어를 주머니에 넣듯,{"\n"}매일 조금씩 꺼내 익히세요.
+        <Image
+          source={require("../../assets/mascot.png")}
+          style={{ width: 300, height: 300 }}
+          resizeMode="contain"
+        />
+        <Text
+          style={{
+            fontSize: 14,
+            color: "rgba(255,255,255,0.8)",
+            textAlign: "center",
+            lineHeight: 20,
+          }}
+        >
+          두꺼운 단어장 대신, 어느새 다 외워봄.
         </Text>
       </View>
 

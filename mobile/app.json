@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "WordPocket",
-    "slug": "wordpocket",
+    "name": "다외워봄",
+    "slug": "daweowobom",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "scheme": "wordpocket",
+    "scheme": "daweowobom",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -14,7 +14,7 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.wordpocket.app"
+      "bundleIdentifier": "com.daweowobom.app"
     },
     "android": {
       "adaptiveIcon": {
@@ -23,7 +23,7 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "package": "com.wordpocket.app"
+      "package": "com.daweowobom.app"
     },
     "plugins": [
       "expo-router",

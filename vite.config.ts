@@ -11,8 +11,8 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'WordPocket — 단어 암기 앱',
-        short_name: 'WordPocket',
+        name: '다외워봄 — 단어 암기 앱',
+        short_name: '다외워봄',
         description: '반복 학습 기반 단어 암기 웹앱',
         theme_color: '#FAFAFE',
         background_color: '#FAFAFE',

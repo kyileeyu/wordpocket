@@ -1,4 +1,4 @@
-# WordPocket SRS (간격 반복) 시스템 정리
+# 다외워봄 SRS (간격 반복) 시스템 정리
 
 ## 카드 상태 (card_states.status)
 
