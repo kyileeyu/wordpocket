@@ -22,7 +22,7 @@ const badgeVariants = cva(
   }
 );
 
-const textVariants = cva("text-mono-sm font-semibold", {
+const textVariants = cva("text-[10px] font-semibold", {
   variants: {
     variant: {
       default: "text-accent",
