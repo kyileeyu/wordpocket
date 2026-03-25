@@ -207,10 +207,10 @@ Auth 가드: `_layout.tsx`에서 `useAuthStore` → `<Redirect>` 처리
 - [x] QueryClientProvider 설정
 - [x] Supabase RPC 호출 RN 환경 검증
 
-### Phase 3: 인증 플로우 (3주)
-- 인증 페이지 7개 구현
-- 딥링크 설정 (비밀번호 재설정 리다이렉트)
-- Supabase 리다이렉트 URL을 `wordpocket://` 스킴으로 업데이트
+### Phase 3: 인증 플로우 (3주) ✅
+- [x] 인증 페이지 7개 구현
+- [x] 딥링크 설정 (비밀번호 재설정 리다이렉트)
+- [x] Supabase 리다이렉트 URL을 `wordpocket://` 스킴으로 업데이트
 
 ### Phase 4: 메인 화면 (3~4주)
 - Tab 네비게이터 (Home, Stats, Settings)
