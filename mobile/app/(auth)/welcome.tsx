@@ -7,22 +7,30 @@ import { gradients } from "@/lib/theme";
 export default function WelcomePage() {
   return (
     <LinearGradient
-      colors={[gradients.brandVivid[0], gradients.brandVivid[1], gradients.brandVivid[2]]}
+      colors={[
+        gradients.brandVivid[0],
+        gradients.brandVivid[1],
+        gradients.brandVivid[2],
+      ]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
       style={{ flex: 1, justifyContent: "center", paddingHorizontal: 32 }}
     >
       <View style={{ alignItems: "center", marginBottom: 48 }}>
         <Image
-          source={require("@/assets/mascot.png")}
-          style={{ width: 160, height: 160, marginBottom: 16 }}
+          source={require("../../assets/mascot.png")}
+          style={{ width: 300, height: 300 }}
           resizeMode="contain"
         />
-        <Text style={{ fontSize: 32, fontWeight: "700", color: "#fff", marginBottom: 4 }}>
-          다외워봄
-        </Text>
-        <Text style={{ fontSize: 13, color: "rgba(255,255,255,0.8)", textAlign: "center", lineHeight: 20 }}>
-          두꺼운 단어장 대신,{"\n"}어느새 다 외워봄.
+        <Text
+          style={{
+            fontSize: 14,
+            color: "rgba(255,255,255,0.8)",
+            textAlign: "center",
+            lineHeight: 20,
+          }}
+        >
+          두꺼운 단어장 대신, 어느새 다 외워봄.
         </Text>
       </View>
 
