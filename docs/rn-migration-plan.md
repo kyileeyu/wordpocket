@@ -212,11 +212,11 @@ Auth 가드: `_layout.tsx`에서 `useAuthStore` → `<Redirect>` 처리
 - [x] 딥링크 설정 (비밀번호 재설정 리다이렉트)
 - [x] Supabase 리다이렉트 URL을 `wordpocket://` 스킴으로 업데이트
 
-### Phase 4: 메인 화면 (3~4주)
-- Tab 네비게이터 (Home, Stats, Settings)
-- HomePage: 폴더/덱 목록, FAB, 검색
-- StatsPage: 진행률, 히트맵, 주간 차트
-- SettingsPage: 설정 행 목록
+### Phase 4: 메인 화면 (3~4주) ✅
+- [x] Tab 네비게이터 (Home, Stats, Settings)
+- [x] HomePage: 폴더/덱 목록, FAB, 검색
+- [x] StatsPage: 진행률, 히트맵, 주간 차트
+- [x] SettingsPage: 설정 행 목록
 
 ### Phase 5: 콘텐츠 화면 (4~5주)
 - FolderPage, DeckPage, CardFormPage
