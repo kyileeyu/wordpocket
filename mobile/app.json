@@ -14,7 +14,7 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.wordpocket.app"
+      "bundleIdentifier": "com.daweowobom.app"
     },
     "android": {
       "adaptiveIcon": {
@@ -23,7 +23,7 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "package": "com.wordpocket.app"
+      "package": "com.daweowobom.app"
     },
     "plugins": [
       "expo-router",
