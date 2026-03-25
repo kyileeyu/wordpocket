@@ -22,6 +22,7 @@
     "production": {
       "ios": {
         "appleId": "nullandflow@gmail.com",
+        "ascAppId": "6761119139",
         "appleTeamId": "74XG5A77MU"
       }
     }
