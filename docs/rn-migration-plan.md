@@ -218,10 +218,10 @@ Auth 가드: `_layout.tsx`에서 `useAuthStore` → `<Redirect>` 처리
 - [x] StatsPage: 진행률, 히트맵, 주간 차트
 - [x] SettingsPage: 설정 행 목록
 
-### Phase 5: 콘텐츠 화면 (4~5주)
-- FolderPage, DeckPage, CardFormPage
-- 드래그 앤 드롭 정렬 (`react-native-draggable-flatlist`)
-- 검색 오버레이
+### Phase 5: 콘텐츠 화면 (4~5주) ✅
+- [x] FolderPage, DeckPage, CardFormPage (Add/Edit)
+- [ ] 드래그 앤 드롭 정렬 (`react-native-draggable-flatlist`) - 추후 개선
+- [ ] 검색 오버레이 - 추후 개선
 
 ### Phase 6: 학습 플로우 (5~6주)
 - WordCard 플립 애니메이션 (Reanimated)
