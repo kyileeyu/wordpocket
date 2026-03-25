@@ -235,11 +235,12 @@ Auth 가드: `_layout.tsx`에서 `useAuthStore` → `<Redirect>` 처리
 - [x] 폴더 CSV 가져오기 (deck 열 기반 자동 카드뭉치 생성)
 - [ ] FullscreenViewer, CardDraftItem 스와이프 - 추후 개선
 
-### Phase 8: 마무리 (7~8주)
-- 햅틱 피드백, 키보드 회피 처리
-- CSV 내보내기 (expo-file-system + expo-sharing)
-- Android 뒤로가기, 스플래시 스크린, 앱 아이콘
-- 성능 최적화 및 QA
+### Phase 8: 마무리 (7~8주) ✅
+- [x] 키보드 회피 처리 (모든 폼 화면에 KeyboardAvoidingView 적용)
+- [x] CSV 내보내기 (expo-file-system + expo-sharing)
+- [ ] 햅틱 피드백 - 추후 개선
+- [ ] 스플래시 스크린 / 앱 아이콘 커스터마이징 - 추후 개선
+- [ ] 성능 최적화 및 QA
 
 ---
 
