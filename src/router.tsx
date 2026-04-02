@@ -22,9 +22,17 @@ import {
   CompletePage,
   StatsPage,
   SettingsPage,
+  SupportPage,
 } from "@/pages"
 
 export const router = createBrowserRouter([
+  // Public pages (no auth required)
+  {
+    element: <AuthShell />,
+    children: [
+      { path: "/support", element: <SupportPage /> },
+    ],
+  },
   // Password reset (accessible with PASSWORD_RECOVERY session)
   {
     element: <AuthShell />,
