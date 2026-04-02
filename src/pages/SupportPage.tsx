@@ -12,7 +12,7 @@ export default function SupportPage() {
       <PageContent>
         <div className="space-y-2">
           <h1 className="display-xl text-primary">도움이 필요하신가요?</h1>
-          <p className="body-md text-secondary">
+          <p className="body-md text-primary">
             다외워봄 이용 중 궁금한 점이나 문제가 있으시면 언제든지 문의해 주세요.
           </p>
         </div>
@@ -47,7 +47,7 @@ export default function SupportPage() {
           <h2 className="display-md text-primary">문의하기</h2>
 
           <div className="rounded-[20px] bg-elevated p-5 shadow-soft space-y-3">
-            <p className="body-md text-secondary">
+            <p className="body-md text-primary">
               아래 이메일로 문의해 주시면 빠르게 답변드리겠습니다.
             </p>
             <Button
@@ -76,7 +76,7 @@ function FaqItem({ question, answer }: { question: string; answer: string }) {
   return (
     <div className="space-y-1">
       <h3 className="body-sm text-primary">{question}</h3>
-      <p className="body-md text-secondary">{answer}</p>
+      <p className="body-md text-primary">{answer}</p>
     </div>
   )
 }
